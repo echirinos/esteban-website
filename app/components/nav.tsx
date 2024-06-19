@@ -7,11 +7,11 @@ const navItems = {
   '/work': {
     name: 'work',
   },
-  '/blog': {
+  'https://world.hey.com/echi/': {
     name: 'blog',
   },
-  '/guestbook': {
-    name: 'guestbook',
+  '/projects': {
+    name: 'projects',
   },
 };
 

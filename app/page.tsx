@@ -1,29 +1,15 @@
-import { Suspense } from 'react';
-import { unstable_noStore as noStore } from 'next/cache';
-import Link from 'next/link';
-import Image from 'next/image';
-import smashing from 'public/images/home/smashing.jpg';
-import summit from 'public/images/home/summit.jpg';
-import reactathon from 'public/images/home/reactathon.jpg';
-import ship from 'public/images/home/ship.jpg';
-import filming from 'public/images/home/filming.jpg';
-import meetups from 'public/images/home/meetups.jpg';
-import vercel from 'public/images/home/vercel.jpg';
-import avatar from 'app/avatar.jpg';
-import ViewCounter from 'app/blog/view-counter';
-import { PreloadResources } from 'app/preload';
-import {
-  getLeeYouTubeSubs,
-  getVercelYouTubeSubs,
-  getViewsCount,
-} from 'app/db/queries';
+import { Suspense } from "react";
+import Link from "next/link";
+import ViewCounter from "app/blog/view-counter";
+import { PreloadResources } from "app/preload";
+import { getViewsCount } from "app/db/queries";
 
 function Badge(props) {
   return (
     <a
       {...props}
       target="_blank"
-      className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded p-1 text-sm inline-flex items-center leading-4 text-neutral-900 dark:text-neutral-100 no-underline"
+      className="inline-flex items-center rounded border border-neutral-200 bg-neutral-50 p-1 text-sm leading-4 text-neutral-900 no-underline dark:border-neutral-700 dark:bg-neutral-800 dark:text-neutral-100"
     />
   );
 }
@@ -45,70 +31,12 @@ function ArrowIcon() {
   );
 }
 
-function ChannelLink({ img, link, name }) {
-  return (
-    <div className="group flex w-full">
-      <a
-        href={link}
-        target="_blank"
-        className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4 w-full"
-      >
-        <div className="flex items-center space-x-3">
-          <div className="relative h-16">
-            <Image
-              alt={name}
-              src={img}
-              height={64}
-              width={64}
-              sizes="33vw"
-              className="border border-neutral-200 dark:border-neutral-700 rounded-full h-16 w-16"
-              priority
-            />
-            <div className="border border-neutral-200 dark:border-neutral-700 rounded-full bg-white inline-flex p-1 relative h-6 w-6 items-center -top-6 -right-10">
-              <svg width="15" height="11" role="img" aria-label="YouTube logo">
-                <use href="/sprite.svg#youtube" />
-              </svg>
-            </div>
-          </div>
-          <div className="flex flex-col">
-            <p className="font-medium text-neutral-900 dark:text-neutral-100">
-              {name}
-            </p>
-            <Suspense fallback={<p className="h-6" />}>
-              <Subs name={name} />
-            </Suspense>
-          </div>
-        </div>
-        <div className="text-neutral-700 dark:text-neutral-300 transform transition-transform duration-300 group-hover:-rotate-12">
-          <ArrowIcon />
-        </div>
-      </a>
-    </div>
-  );
-}
-
-async function Subs({ name }: { name: string }) {
-  noStore();
-  let subscribers;
-  if (name === '@leerob') {
-    subscribers = await getLeeYouTubeSubs();
-  } else {
-    subscribers = await getVercelYouTubeSubs();
-  }
-
-  return (
-    <p className="text-neutral-600 dark:text-neutral-400">
-      {subscribers} subscribers
-    </p>
-  );
-}
-
 function BlogLink({ slug, name }) {
   return (
     <div className="group">
       <a
         href={`/blog/${slug}`}
-        className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4 w-full"
+        className="flex w-full items-center justify-between rounded border border-neutral-200 bg-neutral-50 px-3 py-4 dark:border-neutral-700 dark:bg-neutral-800"
       >
         <div className="flex flex-col">
           <p className="font-medium text-neutral-900 dark:text-neutral-100">
@@ -118,7 +46,7 @@ function BlogLink({ slug, name }) {
             <Views slug={slug} />
           </Suspense>
         </div>
-        <div className="text-neutral-700 dark:text-neutral-300 transform transition-transform duration-300 group-hover:-rotate-12">
+        <div className="transform text-neutral-700 transition-transform duration-300 group-hover:-rotate-12 dark:text-neutral-300">
           <ArrowIcon />
         </div>
       </a>
@@ -135,225 +63,241 @@ export default function Page() {
   return (
     <section>
       <PreloadResources />
-      <h1 className="font-medium text-2xl mb-8 tracking-tighter">
-        hey, I'm leerob 👋
+      <h1 className="mb-8 text-2xl font-medium tracking-tighter">
+        hey, I'm esteban 👋
       </h1>
       <p className="prose prose-neutral dark:prose-invert">
-        {`I'm a frontend developer, optimist, and community builder. I currently `}
-        <Link href="/work">work</Link>
-        {` as the VP of Product at `}
-        <span className="not-prose">
-          <Badge href="https://vercel.com/home">
-            <svg
-              width="13"
-              height="11"
-              role="img"
-              aria-label="Vercel logo"
-              className="inline-flex mr-1"
-            >
-              <use href="/sprite.svg#vercel" />
-            </svg>
-            Vercel
-          </Badge>
-        </span>
-        {`, where I help teach the `}
-        <Badge href="https://nextjs.org">
+        I'm a versatile engineer, optimist, community builder, educator, sales
+        enthusiast, and real estate aficionado with a passion for technology,
+        music, and DIY projects. I currently
+        <Link href="/work"> work </Link>
+        as a Technical Services Engineer at
+        <Badge href="https://www.coinbase.com">
           <img
-            alt="Next.js logomark"
-            src="/next-logo.svg"
+            alt="Coinbase logomark"
+            src="/coinbase.svg"
             className="!mr-1"
             width="14"
             height="14"
           />
-          Next.js
+          Coinbase
         </Badge>
-        {` community, an open-source web framework built with `}
-        <Badge href="https://react.dev">
-          <svg
+        , where I leverage my expertise in Python and TypeScript to build
+        innovative solutions for developers, maintain comprehensive
+        documentation on
+        <Badge href="https://docs.cdp.coinbase.com/">
+          <img
+            alt="Coinbase logomark"
+            src="/coinbase.svg"
+            className="!mr-1"
             width="14"
             height="14"
-            role="img"
-            aria-label="React logo"
+          />
+          CDP (Coinbase Developer Platform)
+        </Badge>
+        , and drive solution-oriented strategies to meet client needs
+        effectively. I love working with people and thrive on building
+        meaningful connections and collaborations.
+      </p>
+      <p className="prose prose-neutral dark:text-neutral-400">
+        Previously, I have made significant contributions at
+        <Badge href="https://www.trmlabs.com">
+          <img
+            alt="TRM Labs logomark"
+            src="/Trm-labs.svg"
             className="!mr-1"
-          >
-            <use href="/sprite.svg#react" />
-          </svg>
-          React
+            width="14"
+            height="14"
+          />
+          TRM Labs
+        </Badge>
+        ,
+        <Badge href="https://polygon.technology">
+          <img
+            alt="Polygon logomark"
+            src="/polygon-matic-icon.svg"
+            className="!mr-1"
+            width="14"
+            height="14"
+          />
+          Polygon
+        </Badge>
+        ,
+        <Badge href="https://opensea.io">
+          <img
+            alt="OpenSea logomark"
+            src="/opensea.svg"
+            className="!mr-1"
+            width="14"
+            height="14"
+          />
+          OpenSea
+        </Badge>
+        ,
+        <Badge href="https://about.google">
+          <img
+            alt="Google logomark"
+            src="/google-icon.svg"
+            className="!mr-1"
+            width="14"
+            height="14"
+          />
+          Google
+        </Badge>
+        ,
+        <Badge href="https://www.microsoft.com">
+          <img
+            alt="Microsoft logomark"
+            src="/Microsoft_logo.svg"
+            className="!mr-1"
+            width="14"
+            height="14"
+          />
+          Microsoft
+        </Badge>
+        , and
+        <Badge href="https://www.jpmorganchase.com">
+          <img
+            alt="JPMorgan Chase logomark"
+            src="/J_P_Morgan_Logo_2008.svg"
+            className="!mr-1"
+            width="14"
+            height="14"
+          />
+          JPMorgan Chase
         </Badge>
         .
       </p>
-      <div className="columns-2 sm:columns-3 gap-4 my-8">
-        <div className="relative h-40 mb-4">
-          <Image
-            alt="Me speaking on stage at React Summit about the future of Next.js"
-            src={summit}
-            fill
-            sizes="(max-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover"
-          />
-        </div>
-        <div className="relative h-80 mb-4 sm:mb-0">
-          <Image
-            alt="Me, Lydia, and Delba filming the Next.js Conf keynote"
-            src={filming}
-            fill
-            sizes="(max-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover object-[-16px] sm:object-center"
-          />
-        </div>
-        <div className="relative h-40 sm:h-80 sm:mb-4">
-          <Image
-            alt="Me standing on stage at Reactathon delivering the keynote"
-            src={reactathon}
-            fill
-            sizes="(max-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover object-top sm:object-center"
-          />
-        </div>
-        <div className="relative h-40 mb-4 sm:mb-0">
-          <Image
-            alt="Me standing on stage at SmashingConf giving a talk about my optimism for the web"
-            src={smashing}
-            fill
-            sizes="(max-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover"
-          />
-        </div>
-        <div className="relative h-40 mb-4">
-          <Image
-            alt="Me and Guillermo Rauch on stage for Vercel Ship, answering questions from the Next.js community"
-            src={ship}
-            fill
-            sizes="(max-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover"
-          />
-        </div>
-        <div className="relative h-80">
-          <Image
-            alt="My badge on top of a pile of badges from a Vercel meetup we held"
-            src={meetups}
-            fill
-            sizes="(min-width: 768px) 213px, 33vw"
-            priority
-            className="rounded-lg object-cover"
-          />
-        </div>
+      <div className="prose prose-neutral dark:prose-invert">
+        <p>
+          My career is built on a foundation of strategic thinking, continuous
+          learning, and impactful contributions. I excel at creating innovative
+          solutions that drive success and growth for both my team and our
+          clients. My ability to build strong alliances and a robust personal
+          brand has been key to my professional achievements.
+        </p>
       </div>
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          I create educational content for developers, teaching them about web
-          development, JavaScript and TypeScript, React and Next.js, and more.
-          This comes in all forms: blog posts, videos, tweets, conference talks,
-          and workshops. You can watch some of my favorites below.
+          Beyond my professional endeavors, I am passionate about sales and
+          business development. I love exploring new market opportunities,
+          crafting compelling value propositions, and building lasting
+          relationships with clients. These interests complement my technical
+          skills, enabling me to deliver holistic and impactful solutions.
+        </p>
+        <p>
+          Additionally, I am an avid reader and enjoy diving into DIY projects,
+          exploring new music genres, and staying active with various sports.
+          These interests fuel my creativity and provide a well-rounded
+          perspective, essential for innovative problem-solving.
+        </p>
+        <p>
+          In my free time, you can find me working on my real estate projects, playing basketball, offering guidance, drinking espresso, or reading a book.
+          But my laptop will be open and I will be working on by next project too!
         </p>
       </div>
-      <div className="my-8 flex flex-col sm:flex-row space-x-0 sm:space-x-4 space-y-4 sm:space-y-0 w-full">
-        <ChannelLink
-          img={avatar}
-          name="@leerob"
-          link="https://www.youtube.com/@leerob"
-        />
-        <ChannelLink
-          img={vercel}
-          name="@vercel"
-          link="https://www.youtube.com/@vercelhq"
-        />
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Skills & Technologies
+      </h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-4">
+        <div className="flex justify-center items-center">
+          <img src="/python-logo.png" alt="Python" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/typescript-logo.png" alt="TypeScript" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/javascript-logo.png" alt="JavaScript" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/react-logo.png" alt="React" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/nodejs-logo.png" alt="Node.js" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/aws-logo.png" alt="AWS" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/gcp-logo.png" alt="GCP" className="h-12" />
+        </div>
+        <div className="flex justify-center items-center">
+          <img src="/docker-logo.png" alt="Docker" className="h-12" />
+        </div>
       </div>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Blog & Articles
+      </h2>
+      <div className="my-8 flex w-full flex-col space-y-4">
+        <a
+          href="https://world.hey.com/echi/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="group"
+        >
+          <div className="flex items-center space-x-3">
+            <img
+              src="/esteban.png"
+              alt="Esteban"
+              className="h-16 w-16 rounded-full"
+            />
+            <div className="flex flex-col">
+              <p className="font-medium text-neutral-900 dark:text-neutral-100">
+                My Blog Posts on HEY
+              </p>
+              <p className="text-neutral-600 dark:text-neutral-400">
+                Read my latest thoughts and insights on my blog.
+              </p>
+            </div>
+          </div>
+        </a>
+      </div>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">Contact</h2>
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          Over the past decade, I've written content on my blog and newsletter.
-          I try to keep things simple. You'll find writing about technologies
-          I'm interested in at the time, or how I'm learning and growing in my
-          career, sharing knowledge along the way.
+          I'm always open to discussing new projects, creative ideas, or
+          opportunities to be part of your visions. Feel free to reach out
+          through any of the platforms below.
         </p>
+        <ul className="list-disc pl-5 mt-8 text-neutral-600 dark:text-neutral-300">
+          <li>
+            <a
+              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://twitter.com/estebano_c"
+            >
+              <ArrowIcon />
+              <p className="ml-2 h-7">follow me</p>
+            </a>
+          </li>
+          <li>
+            <a
+              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://www.linkedin.com/in/esteban-chirinos/"
+            >
+              <ArrowIcon />
+              <p className="ml-2 h-7">connect with me</p>
+            </a>
+          </li>
+          <li>
+            <a
+              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+              rel="noopener noreferrer"
+              target="_blank"
+              href="https://github.com/echirinos"
+            >
+              <ArrowIcon />
+              <p className="ml-2 h-7">see my work</p>
+            </a>
+          </li>
+        </ul>
       </div>
-      <div className="my-8 flex flex-col space-y-4 w-full">
-        <BlogLink
-          name="What Makes A Great Developer Experience?"
-          slug="developer-experience-examples"
-        />
-        <BlogLink name="What is Developer Relations?" slug="devrel-at-vercel" />
-        <BlogLink name="The Story of Heroku" slug="heroku" />
-      </div>
-      <div className="prose prose-neutral dark:prose-invert">
-        <p>
-          I invest small angel checks into early stage startups building tools
-          for developers.
-        </p>
-      </div>
-      <div className="my-8 flex flex-row space-x-2 w-full h-14 overflow-x-auto">
-        <div className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4">
-          <a href="https://linear.app">
-            <svg width="78" height="20" role="img" aria-label="Linear logo">
-              <use href="/sprite.svg#linear" />
-            </svg>
-          </a>
-        </div>
-        <div className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4">
-          <a href="https://supabase.com">
-            <svg width="100" height="19" role="img" aria-label="Supabase logo">
-              <use href="/sprite.svg#supabase" />
-            </svg>
-          </a>
-        </div>
-        <div className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4">
-          <a href="https://www.makeswift.com/blog/makeswift-is-joining-bigcommerce">
-            <svg width="96" height="19" role="img" aria-label="Makeswift logo">
-              <use href="/sprite.svg#makeswift" />
-            </svg>
-          </a>
-        </div>
-        <div className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4">
-          <a href="https://resend.com">
-            <svg width="70" height="17" role="img" aria-label="Resend logo">
-              <use href="/sprite.svg#resend" />
-            </svg>
-          </a>
-        </div>
-        <div className="border border-neutral-200 dark:border-neutral-700 bg-neutral-50 dark:bg-neutral-800 rounded flex items-center justify-between px-3 py-4">
-          <a href="https://bun.sh">
-            <svg width="35" height="27" role="img" aria-label="Bun logo">
-              <use href="/sprite.svg#bun" />
-            </svg>
-          </a>
-        </div>
-      </div>
-      <div className="prose prose-neutral dark:prose-invert">
-        <p>
-          I've worked with and advised companies on developer marketing,{' '}
-          <Link href="/blog/devrel-at-vercel">developer relations</Link>,
-          building open-source communities, product-led growth, and more.
-        </p>
-      </div>
-      <ul className="flex flex-col md:flex-row mt-8 space-x-0 md:space-x-4 space-y-2 md:space-y-0 font-sm text-neutral-600 dark:text-neutral-300">
-        <li>
-          <a
-            className="flex items-center hover:text-neutral-800 dark:hover:text-neutral-100 transition-all"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://twitter.com/leeerob"
-          >
-            <ArrowIcon />
-            <p className="h-7 ml-2">follow me</p>
-          </a>
-        </li>
-        <li>
-          <a
-            className="flex items-center hover:text-neutral-800 dark:hover:text-neutral-100 transition-all"
-            rel="noopener noreferrer"
-            target="_blank"
-            href="https://leerob.substack.com"
-          >
-            <ArrowIcon />
-            <p className="h-7 ml-2">get email updates</p>
-          </a>
-        </li>
-      </ul>
     </section>
   );
 }

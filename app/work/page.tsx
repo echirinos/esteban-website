@@ -1,13 +1,13 @@
-import type { Metadata } from 'next';
-import Link from 'next/link';
+import type { Metadata } from "next";
+import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: 'Work',
-  description: 'A summary of my work and contributions.',
+  title: "Work",
+  description: "A summary of my work and contributions.",
 };
 
 async function Stars() {
-  let res = await fetch('https://api.github.com/repos/vercel/next.js');
+  let res = await fetch("https://api.github.com/repos/vercel/next.js");
   let json = await res.json();
   let count = Math.round(json.stargazers_count / 1000);
   return `${count}k stars`;
@@ -19,97 +19,292 @@ export default function WorkPage() {
       <h1 className="font-medium text-2xl mb-8 tracking-tighter">my work</h1>
       <div className="prose prose-neutral dark:prose-invert">
         <p>
-          On a mission to build products developers{' '}
-          <Link href="/blog/developer-experience-examples">love</Link>, and
-          along the way, teach the next generation of developers. Here's a
-          summary of my work so far.
+          I thrive on building innovative solutions and tackling diverse
+          projects. From leading the design and rollout of blockchain
+          intelligence tools to spearheading web3 solutions and managing cloud
+          migrations, my journey has been all about creating impactful
+          technology. Here's a summary of my work so far.
         </p>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Vercel</h2>
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">Coinbase</h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-          VP of Product
+          Technical Services Engineer, March 2024 - Present
         </p>
         <p>
-          I joined <a href="https://vercel.com/home">Vercel</a> early to grow{' '}
-          <a href="https://nextjs.org">Next.js</a> and our developer community.
-          I built our Developer Relations team to teach our community about our
-          products.
+          Working with enterprise customers to help them build with our cloud
+          development platform. Assisting and building solutions for developers
+          using our products, updating documentation, and creating code samples
+          with all our API products.
         </p>
         <ul>
           <li>
-            In 2021, I was promoted to Director of DevRel. We{' '}
-            <a href="https://twitter.com/kelseyhightower/status/1105985400110112768">
-              translated customer pain
-            </a>{' '}
-            back into the product roadmap. We spoke at{' '}
-            <Link href="/blog/nextjs-conf-2022-recap">conferences</Link>, wrote
-            blog posts, and created videos. We built open-source examples and
-            contributed back to the product.
+            Collaborated with enterprise customers to architect and deploy
+            solutions using Coinbase's cloud development platform, ensuring
+            seamless integration and optimal performance.
           </li>
           <li>
-            In 2022, I was promoted to VP of Developer Experience, now also
-            leading our product documentation team. My team created a{' '}
-            <a href="https://nextjs.org/learn">new free course</a> to teach
-            Next.js, which had 17 million page views that year.{' '}
-            <a href="https://twitter.com/leeerob/status/1608900031859527682">
-              I shipped.
-            </a>{' '}
-            I partnered with our open-source community, collaborating with
-            frameworks like{' '}
-            <a href="https://vercel.com/docs/frameworks/nuxt">Nuxt</a> and{' '}
-            <a href="https://astro.build/blog/vercel-official-hosting-partner/">
-              Astro
-            </a>{' '}
-            and sponsoring individuals and projects.
+            Developed and maintained comprehensive documentation and code
+            samples for all API products, enhancing the developer experience and
+            facilitating easier adoption of Coinbase's technologies. Check out
+            the documentation{" "}
+            <a
+              href="https://docs.cdp.coinbase.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              here
+            </a>
+            .
           </li>
           <li>
-            In 2023, I was promoted to VP of Product, now also leading Product
-            Management.
+            Provided technical support and guidance to developers, helping them
+            troubleshoot issues and optimize their use of Coinbase's products.
+          </li>
+          <li>
+            Built custom solutions and tools to address specific customer needs,
+            driving increased satisfaction and engagement with Coinbase's
+            platform.
           </li>
         </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">TRM Labs</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Staff Solutions Architect, June 2023 - Present
+        </p>
         <p>
-          Since I joined Vercel in 2020, Next.js active developers have grown
-          1000%, now at ~900k. Next.js is now a top 10 software project on
-          GitHub with <Stars />. It's used by Walmart, ChatGPT, Starbucks, Okta,
-          Datastax, Notion, and <a href="https://nextjs.org/showcase">more</a>.
+          Leading the tailored design and rollout of TRM Labs API, a leading
+          blockchain intelligence tool that provides financial institutions and
+          governments with the tools and data to fight crypto-based financial
+          crime.
+        </p>
+        <ul>
+          <li>
+            Steering the design and delivery of TRM API integration solutions
+            for 40+ projects, transforming client requirements into tailored
+            platform customizations, leading to a 30% uptick in client success
+            and satisfaction rates.
+          </li>
+          <li>
+            Championing 60+ high-impact technical client discovery sessions to
+            increase TRM's technology suite adoption by 25% and ensure a high
+            level of alignment rate between client visions and platform
+            capabilities.
+          </li>
+          <li>
+            Standardizing integration resources, launching 10+ advanced
+            dashboard tools and refining API documentation, raising the bar for
+            integration quality and leading to a 35% CSAT improvement in client
+            and internal feedback.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">
+          Polygon Labs
+        </h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Solutions Engineer, August 2022 - February 2023
+        </p>
+        <ul>
+          <li>
+            Spearheaded cutting-edge web3 solutions for the Entertainment, DeFi,
+            and NFT sectors, significantly boosting client satisfaction and
+            retention rates. Delivered tailored solutions that drove increased
+            adoption and customer engagement.
+          </li>
+          <li>
+            Standardized the operational strategy for the solutions engineering
+            and support teams, comprising 12 members, enhancing team efficiency
+            and effectiveness in meeting customer needs and interfacing with
+            external teams.
+          </li>
+          <li>
+            Developed and showcased Proof-of-Concept (POC) integrations using
+            Next.js and JavaScript, demonstrating to potential customers the
+            ease and effectiveness of integrating with Polygon's platform. This
+            initiative played a critical role in driving further adoption and
+            engagement with the platform.
+          </li>
+          <li>
+            Successfully recommended, architected, and delivered innovative web3
+            solutions, resulting in a measurable increase in customer
+            satisfaction and retention within the Entertainment, DeFi, and NFT
+            industries.
+          </li>
+          <li>
+            Played a pivotal role in driving Polygon integration by developing
+            comprehensive integration solutions, further solidifying Polygon's
+            position as a leading web3 platform.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">OpenSea</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Developer Relations Engineer and Product Manager Rotation, January
+          2022 - July 2022
+        </p>
+        <ul>
+          <li>
+            Spearheaded product management for the developer community, owning
+            comprehensive documentation, robust sample code (Python and JS), and
+            best practices. Effectively distilled actionable feedback for
+            product engineering and cross-functional teams, enhancing overall
+            product quality and user satisfaction.
+          </li>
+          <li>
+            Directed the architecture of partner engineering strategy, adeptly
+            engaging and resolving technical issues with key partners such as
+            Consensys, Snap, Instagram, Coinbase, Yuga Labs, Rarible, MoonPay,
+            and Cool Cats. This initiative culminated in a streamlined redesign
+            of the partner relationship management tracker, significantly
+            improving team efficiency.
+          </li>
+          <li>
+            Oversaw level 2 developer support, expertly addressing complex
+            partner and developer queries, ensuring swift and accurate
+            solutions.
+          </li>
+        </ul>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Product Manager (Trial), March 2022 - July 2022
+        </p>
+        <ul>
+          <li>
+            Orchestrated the strategic development of the OpenSea API and SDK,
+            prioritizing over 100 developer feature requests. This effort led to
+            a substantial increase in NPS scores, a notable reduction in support
+            tickets, and higher adoption rates for the SDK/API.
+          </li>
+          <li>
+            Implemented a highly efficient Zendesk automation system, processing
+            over 400 cases per week and significantly boosting developer NPS
+            scores.
+          </li>
+          <li>
+            Drove the development and deployment of an API key distribution
+            tool, resulting in a remarkable 30-point NPS score increase and
+            establishing a consistent Service Level Agreement (SLA) for API
+            performance.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">Google</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Technical Account Manager, October 2020 - January 2022
+        </p>
+        <ul>
+          <li>
+            Selected for Google's prestigious internal rotational Software
+            Engineering Bootcamp, an exclusive program with only 40 out of 500
+            candidates accepted. Shipped code that met Google's rigorous
+            engineering standards and completed rotations across various teams.
+          </li>
+          <li>
+            Coached enterprise customers to architect and deploy critical cloud
+            solutions, ensuring optimal performance and alignment with business
+            objectives. Successfully managed multiple accounts, contributing to
+            a total of $217M in managed customer revenue.
+          </li>
+          <li>
+            Led an AWS to GCP BigQuery/Dataproc migration for a new customer,
+            providing comprehensive support, technical guidance, and project
+            management. This initiative resulted in over $300K revenue growth,
+            with GCP spend increasing by more than 10% each month.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">Microsoft</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Technical Account Manager, July 2019 – October 2020
+        </p>
+        <ul>
+          <li>
+            Managed 20+ enterprise accounts utilizing Microsoft's full suite of
+            products, including Azure and Office 365, maintaining direct
+            communication with executives. Achieved a 50% annual increase in
+            revenue for Azure and Office, and improved customer uptime by 30%.
+          </li>
+          <li>
+            Orchestrated on-premises to cloud migrations for over 10 accounts,
+            completing 100% of the migrations ahead of schedule, demonstrating
+            exceptional project management and technical expertise.
+          </li>
+          <li>
+            Headed the Modern Workplace team, providing innovative internal
+            tools and training programs to over 40 account managers, enhancing
+            overall team performance and customer satisfaction.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">
+          JPMorgan Chase
+        </h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Software Engineering Intern, New York, New York, June 2018 - August
+          2018
+        </p>
+        <ul>
+          <li>
+            Designed and implemented a centralized rule engine, reducing rule
+            modification time by 40%, allowing Wealth Management users to easily
+            modify business function rules and manage operations.
+          </li>
+          <li>
+            Created a Business Rule Management System, cutting the cost and risk
+            of modifying rules by 35%.
+          </li>
+          <li>
+            Enhanced user experience by implementing a user interface that
+            simplified rule functionality, resulting in a 25% increase in user
+            satisfaction.
+          </li>
+        </ul>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Software Engineering Intern, Houston, Texas, June 2017 - August 2017
+        </p>
+        <ul>
+          <li>
+            Implemented a quality assurance dashboard that improved tech team
+            productivity metrics visibility by 50%.
+          </li>
+          <li>
+            Analyzed level of productivity by running SQL queries in HP ALM tool
+            database, leading to a 20% increase in process efficiency.
+          </li>
+          <li>
+            Streamlined efficiencies by designing features such as project
+            tracking, defect report, and requirement mappings, which enhanced
+            overall project delivery time by 30%.
+          </li>
+          <li>
+            Collaborated with the cloud migration team to test data on the
+            internal cloud platform, improving data migration accuracy by 15%.
+          </li>
+        </ul>
+        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">Education</h2>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Hack Reactor, Advanced Software Engineering Certificate, Graduated
+          2022
+        </p>
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Florida International University, Bachelors in Computer Science,
+          Graduated 2019
         </p>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Hy-Vee</h2>
+        <h2 className="font-medium text-xl mb-1 tracking-tighter">
+          Skills & Interests
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-          Senior Software Engineer, 2018 — 2020
+          Expertise: Cloud Infrastructure, Process Automation, NFT's, Web3,
+          Strategy, Partner Development
         </p>
-        <p>
-          Hy-Vee, an almost 100-year-old grocery chain in the United States,
-          wanted to build a new version of their digital storefront. I joined a
-          team of <Link href="/blog/product-engineers">product engineers</Link>{' '}
-          working across web and mobile to rebuild their legacy .NET application
-          (~500k MAU) with React and React Native.
-        </p>
-        <p>
-          On the frontend, I led our move from a custom webpack and React
-          configuration to Next.js and the latest React patterns. In the
-          process, I shared my learnings online, helping educate members of the
-          React and Next.js community by creating courses.
-        </p>
-        <p>
-          Throughout my two years, I was able to work on some hard problems:
-          decoupling a decade old monolith into microservices, working with a
-          federated GraphQL API, learning and occasionally managing a Kubernetes
-          cluster, building and implementing a design system, incrementally
-          migrating individual components and routes to a new framework and
-          infrastructure, and more.
-        </p>
-        <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Workiva</h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
-          Software Engineer, 2015 — 2018
+          Technologies & Languages: JavaScript, Next.js, Vercel, Python, React,
+          SQL, Solidity, Django, Flask, WordPress, NodeJS
         </p>
-        <p>
-          Workiva ($WK) is a cloud platform for data reporting and compliance.
-          During my time at Workiva, I gained my first production experience
-          using React. I worked on tooling to help predict and alert and
-          regressions in our SaaS platform, building a product similar to
-          open-source tools like Sentry.
+        <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+          Certificates: GCP Professional Cloud Architect, Azure Fundamentals,
+          HVAC Technician
         </p>
       </div>
     </section>
