@@ -239,7 +239,7 @@ export default function Page() {
         >
           <div className="flex items-center space-x-3">
             <img
-              src="/esteban.png"
+              src="/images/esteban.png"
               alt="Esteban"
               className="h-16 w-16 rounded-full"
             />
