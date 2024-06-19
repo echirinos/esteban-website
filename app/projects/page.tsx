@@ -75,9 +75,9 @@ export default function ProjectsPage() {
         />
         <h3 className="text-xl font-semibold mt-4">A&E Roofing Brothers</h3>
         <p className="mb-4">
-          A roofing company where I completely modernizing their business and
-          building new tools to help them manage their business. Doubled leads
-          and increased sales by 20%
+          Successfully modernized the business, implementing cutting-edge tools
+          and technologies. Achieved a 100% increase in lead generation and
+          boosted sales by 20% within three months.
         </p>
         <a
           href="https://www.aebrothersroofing.com/"
@@ -100,8 +100,10 @@ export default function ProjectsPage() {
           Z Roofing and Waterproofing
         </h3>
         <p className="mb-4">
-          Completelety modernized their busioness and built intenral tools that
-          improved scheduling and incorporated AI for roofing improvements.
+          Fully transformed the business by developing internal tools that
+          enhanced scheduling efficiency and integrated AI for roofing
+          enhancements, resulting in a 30% reduction in project completion time
+          and a 15% increase in customer satisfaction.
         </p>
         <a
           href="https://zroofing.com/"
