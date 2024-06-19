@@ -23,7 +23,7 @@ export default function ProjectsPage() {
       <div className="mb-10">
         <Image
           alt="QuikBuild Innovations"
-          src="/images/Quikbuild.png" // Make sure this is the correct path starting from the "public" directory
+          src="/images/quikbuild_logo.png" // Make sure this is the correct path starting from the "public" directory
           width={80}
           height={80}
         />
@@ -46,7 +46,7 @@ export default function ProjectsPage() {
       <div className="mb-10">
         <Image
           alt="QuikBuild Innovations"
-          src="/images/KlearSky.png" // Make sure this is the correct path starting from the "public" directory
+          src="/images/KlearSky_pic.png" // Make sure this is the correct path starting from the "public" directory
           width={80}
           height={80}
         />
@@ -69,7 +69,7 @@ export default function ProjectsPage() {
       <div className="mb-10">
         <Image
           alt="AE Roofing"
-          src="/ae.png" // Make sure this is the correct path starting from the "public" directory
+          src="/images/ae.png" // Make sure this is the correct path starting from the "public" directory
           width={80}
           height={80}
         />
@@ -92,7 +92,7 @@ export default function ProjectsPage() {
       <div className="mb-10">
         <Image
           alt="Z Roofing"
-          src="/z_roofing.png" // Make sure this is the correct path starting from the "public" directory
+          src="/images/z_roofing.png" // Make sure this is the correct path starting from the "public" directory
           width={80}
           height={80}
         />
@@ -112,7 +112,7 @@ export default function ProjectsPage() {
           https://zroofing.com/
         </a>
       </div>
-{/*
+      {/*
       <div className="mb-10">
         <Image
           alt="QuikBuild Innovations"

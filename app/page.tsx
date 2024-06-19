@@ -75,7 +75,7 @@ export default function Page() {
         <Badge href="https://www.coinbase.com">
           <img
             alt="Coinbase logomark"
-            src="/coinbase.svg"
+            src="/images/coinbase.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -88,7 +88,7 @@ export default function Page() {
         <Badge href="https://docs.cdp.coinbase.com/">
           <img
             alt="Coinbase logomark"
-            src="/coinbase.svg"
+            src="/images/coinbase.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -104,7 +104,7 @@ export default function Page() {
         <Badge href="https://www.trmlabs.com">
           <img
             alt="TRM Labs logomark"
-            src="/Trm-labs.svg"
+            src="/images/Trm-labs.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -115,7 +115,7 @@ export default function Page() {
         <Badge href="https://polygon.technology">
           <img
             alt="Polygon logomark"
-            src="/polygon-matic-icon.svg"
+            src="/images/polygon-matic-icon.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -126,7 +126,7 @@ export default function Page() {
         <Badge href="https://opensea.io">
           <img
             alt="OpenSea logomark"
-            src="/opensea.svg"
+            src="/images/opensea.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -137,7 +137,7 @@ export default function Page() {
         <Badge href="https://about.google">
           <img
             alt="Google logomark"
-            src="/google-icon.svg"
+            src="/images/google-icon.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -148,7 +148,7 @@ export default function Page() {
         <Badge href="https://www.microsoft.com">
           <img
             alt="Microsoft logomark"
-            src="/Microsoft_logo.svg"
+            src="/images/Microsoft_logo.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -159,7 +159,7 @@ export default function Page() {
         <Badge href="https://www.jpmorganchase.com">
           <img
             alt="JPMorgan Chase logomark"
-            src="/J_P_Morgan_Logo_2008.svg"
+            src="/images/J_P_Morgan_Logo_2008.svg"
             className="!mr-1"
             width="14"
             height="14"
@@ -202,28 +202,28 @@ export default function Page() {
       </h2>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-4">
         <div className="flex justify-center items-center">
-          <img src="/python-logo.png" alt="Python" className="h-12" />
+          <img src="/images/python-logo.png" alt="Python" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/typescript-logo.png" alt="TypeScript" className="h-12" />
+          <img src="/images/typescript-logo.png" alt="TypeScript" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/javascript-logo.png" alt="JavaScript" className="h-12" />
+          <img src="/images/javascript-logo.png" alt="JavaScript" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/react-logo.png" alt="React" className="h-12" />
+          <img src="/images/react-logo.png" alt="React" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/nodejs-logo.png" alt="Node.js" className="h-12" />
+          <img src="/images/nodejs-logo.png" alt="Node.js" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/aws-logo.png" alt="AWS" className="h-12" />
+          <img src="/images/aws-logo.png" alt="AWS" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/gcp-logo.png" alt="GCP" className="h-12" />
+          <img src="/images/gcp-logo.png" alt="GCP" className="h-12" />
         </div>
         <div className="flex justify-center items-center">
-          <img src="/docker-logo.png" alt="Docker" className="h-12" />
+          <img src="/images/docker-logo.png" alt="Docker" className="h-12" />
         </div>
       </div>
 
