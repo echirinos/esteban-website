@@ -26,48 +26,60 @@ export default function WorkPage() {
           technology. Here's a summary of my work so far.
         </p>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Coinbase</h2>
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="Coinbase logomark"
+            src="/images/coinbase.svg"
+            className="!mr-2 h-5 w-5"
+          />
+          Coinbase
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
           Technical Services Engineer, March 2024 - Present
         </p>
-        <p>
-          Working with enterprise customers to help them build with our cloud
-          development platform. Assisting and building solutions for developers
-          using our products, updating documentation, and creating code samples
-          with all our API products.
+        <p className="prose prose-neutral dark:prose-invert">
+          As a Technical Services Engineer at Coinbase, I provide deep technical
+          support for the Coinbase Developer Platform (CDP), collaborating
+          closely with developers and enterprise customers. My responsibilities
+          include:
         </p>
-        <ul>
+        <ul className="prose prose-neutral dark:prose-invert list-disc pl-5">
           <li>
-            Collaborated with enterprise customers to architect and deploy
-            solutions using Coinbase's cloud development platform, ensuring
-            seamless integration and optimal performance.
+            Leading the technical integration and onboarding of developers onto
+            CDP APIs and SDKs.
           </li>
           <li>
-            Developed and maintained comprehensive documentation and code
-            samples for all API products, enhancing the developer experience and
-            facilitating easier adoption of Coinbase's technologies. Check out
-            the documentation{" "}
-            <a
-              href="https://docs.cdp.coinbase.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              here
-            </a>
-            .
+            Designing optimal, scalable integration architectures and providing
+            best practice guidance.
           </li>
           <li>
-            Provided technical support and guidance to developers, helping them
-            troubleshoot issues and optimize their use of Coinbase's products.
+            Troubleshooting complex technical issues through log analysis, code
+            reviews (TypeScript/Javascript, Python primarily), and internal
+            reproduction.
           </li>
           <li>
-            Built custom solutions and tools to address specific customer needs,
-            driving increased satisfaction and engagement with Coinbase's
-            platform.
+            Authoring and maintaining comprehensive technical documentation,
+            including runbooks, troubleshooting guides, and multi-language code
+            samples (TS/JS, Python, Java, C#).
+          </li>
+          <li>
+            Contributing to product improvements by analyzing developer feedback
+            and collaborating with Product, Engineering, and Sales teams.
+          </li>
+          <li>
+            Participating in on-call rotations and supporting developers via
+            Discord and during hackathons.
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">TRM Labs</h2>
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="TRM Labs logomark"
+            src="/images/Trm-labs.svg"
+            className="!mr-2 h-5 w-5"
+          />
+          TRM Labs
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
           Staff Solutions Architect, June 2023 - Present
         </p>
@@ -98,7 +110,12 @@ export default function WorkPage() {
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="Polygon logomark"
+            src="/images/polygon-matic-icon.svg"
+            className="!mr-2 h-5 w-5"
+          />
           Polygon Labs
         </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
@@ -137,7 +154,14 @@ export default function WorkPage() {
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">OpenSea</h2>
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="OpenSea logomark"
+            src="/images/opensea.svg"
+            className="!mr-2 h-5 w-5"
+          />
+          OpenSea
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
           Developer Relations Engineer and Product Manager Rotation, January
           2022 - July 2022
@@ -187,7 +211,14 @@ export default function WorkPage() {
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Google</h2>
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="Google logomark"
+            src="/images/google-icon.svg"
+            className="!mr-2 h-5 w-5"
+          />
+          Google
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
           Technical Account Manager, October 2020 - January 2022
         </p>
@@ -212,7 +243,14 @@ export default function WorkPage() {
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">Microsoft</h2>
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="Microsoft logomark"
+            src="/images/Microsoft_logo.svg"
+            className="!mr-2 h-5 w-5"
+          />
+          Microsoft
+        </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">
           Technical Account Manager, July 2019 – October 2020
         </p>
@@ -235,7 +273,12 @@ export default function WorkPage() {
           </li>
         </ul>
         <hr className="my-6 border-neutral-100 dark:border-neutral-800" />
-        <h2 className="font-medium text-xl mb-1 tracking-tighter">
+        <h2 className="flex items-center font-medium text-xl mb-1 tracking-tighter">
+          <img
+            alt="JPMorgan Chase logomark"
+            src="/images/J_P_Morgan_Logo_2008.svg"
+            className="!mr-2 h-5 w-5"
+          />
           JPMorgan Chase
         </h2>
         <p className="text-neutral-600 dark:text-neutral-400 text-sm">

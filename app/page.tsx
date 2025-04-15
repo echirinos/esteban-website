@@ -69,38 +69,41 @@ export default function Page() {
       <p className="prose prose-neutral dark:prose-invert">
         I'm a versatile engineer, optimist, community builder, educator, sales
         enthusiast, and real estate aficionado with a passion for technology,
-        music, and DIY projects. I currently
-        <Link href="/work"> work </Link>
-        as a Technical Services Engineer at
-        <Badge href="https://www.coinbase.com">
-          <img
-            alt="Coinbase logomark"
-            src="/images/coinbase.svg"
-            className="!mr-1"
-            width="14"
-            height="14"
-          />
-          Coinbase
-        </Badge>
-        , where I leverage my expertise in Python and TypeScript to build
-        innovative solutions for developers, maintain comprehensive
-        documentation on
-        <Badge href="https://docs.cdp.coinbase.com/">
-          <img
-            alt="Coinbase logomark"
-            src="/images/coinbase.svg"
-            className="!mr-1"
-            width="14"
-            height="14"
-          />
-          CDP (Coinbase Developer Platform)
-        </Badge>
-        , and drive solution-oriented strategies to meet client needs
-        effectively. I love working with people and thrive on building
-        meaningful connections and collaborations.
+        music, and DIY projects.
       </p>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Current Role
+      </h2>
+      <div className="prose prose-neutral dark:prose-invert">
+        <p>
+          As a Technical Services Engineer at{" "}
+          <Badge href="https://www.coinbase.com">
+            <img
+              alt="Coinbase logomark"
+              src="/images/coinbase.svg"
+              className="!mr-1 h-4 w-4"
+            />
+            Coinbase
+          </Badge>
+          , I empower developers building on the Coinbase Developer Platform
+          (CDP).
+        </p>
+        <p>
+          My role involves providing architectural guidance, troubleshooting
+          complex integration challenges, creating technical documentation and
+          sample code (primarily using Python and TypeScript), and advocating
+          for developer needs to enhance our products. I thrive on collaborating
+          with development teams to ensure they successfully leverage CDP's APIs
+          and SDKs to build the future of the onchain economy.
+        </p>
+      </div>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Past Experiences
+      </h2>
       <p className="prose prose-neutral dark:text-neutral-400">
-        Previously, I have made significant contributions at
+        I have made significant contributions at innovative companies including:
         <Badge href="https://www.trmlabs.com">
           <img
             alt="TRM Labs logomark"
@@ -168,135 +171,147 @@ export default function Page() {
         </Badge>
         .
       </p>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Professional Strengths
+      </h2>
       <div className="prose prose-neutral dark:prose-invert">
+        <p>Reflecting back, my career has been built on:</p>
+        <ul className="list-disc pl-5">
+          <li>Strategic thinking</li>
+          <li>Continuous learning</li>
+          <li>Impactful contributions</li>
+        </ul>
         <p>
-          My career is built on a foundation of strategic thinking, continuous
-          learning, and impactful contributions. I excel at creating innovative
-          solutions that drive success and growth for both my team and our
-          clients. My ability to build strong alliances and a robust personal
-          brand has been key to my professional achievements.
-        </p>
-      </div>
-      <div className="prose prose-neutral dark:prose-invert">
-        <p>
-          Beyond my professional endeavors, I am passionate about sales and
-          business development. I love exploring new market opportunities,
-          crafting compelling value propositions, and building lasting
-          relationships with clients. These interests complement my technical
-          skills, enabling me to deliver holistic and impactful solutions.
-        </p>
-        <p>
-          Additionally, I am an avid reader and enjoy diving into DIY projects,
-          exploring new music genres, and staying active with various sports.
-          These interests fuel my creativity and provide a well-rounded
-          perspective, essential for innovative problem-solving.
-        </p>
-        <p>
-          In my free time, you can find me working on my real estate projects, playing basketball, offering guidance, drinking espresso, or reading a book.
-          But my laptop will be open and I will be working on by next project too!
+          I excel at creating innovative solutions that drive success and growth
+          for both my team and our clients. Building strong alliances and a
+          robust personal brand has been key to my achievements.
         </p>
       </div>
 
       <h2 className="mt-8 text-xl font-medium tracking-tighter">
-        Skills & Technologies
+        Beyond My Technical Expertise
       </h2>
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 my-4">
-        <div className="flex justify-center items-center">
+      <div className="prose prose-neutral dark:prose-invert">
+        <p>I am passionate about:</p>
+        <ul className="list-disc pl-5">
+          <li>Exploring new market opportunities</li>
+          <li>Crafting compelling value propositions</li>
+          <li>Building lasting relationships with clients</li>
+        </ul>
+        <p>
+          These interests enhance my ability to deliver holistic and impactful
+          solutions.
+        </p>
+      </div>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Personal Interests
+      </h2>
+      <div className="prose prose-neutral dark:prose-invert">
+        <p>
+          Outside of work, I am an avid reader, DIY enthusiast, music lover, and
+          sports enthusiast (basketball and more!)
+        </p>
+        <p>
+          These activities fuel my creativity and provide a well-rounded
+          perspective essential for innovative problem-solving. In my free time,
+          you can find me working on real estate projects, playing basketball,
+          offering guidance, drinking espresso, or reading a book ...all while
+          likely brainstorming my next big project with my laptop open!
+        </p>
+      </div>
+
+      <h2 className="mt-8 text-xl font-medium tracking-tighter">
+        Core Skills & Technologies
+      </h2>
+      <div className="grid grid-cols-2 gap-4 my-8 sm:grid-cols-3 md:grid-cols-4">
+        <div className="flex items-center justify-center">
           <img src="/images/python-logo.png" alt="Python" className="h-12" />
         </div>
-        <div className="flex justify-center items-center">
-          <img src="/images/typescript-logo.png" alt="TypeScript" className="h-12" />
+        <div className="flex items-center justify-center">
+          <img
+            src="/images/typescript-logo.png"
+            alt="TypeScript"
+            className="h-12"
+          />
         </div>
-        <div className="flex justify-center items-center">
-          <img src="/images/javascript-logo.png" alt="JavaScript" className="h-12" />
+        <div className="flex items-center justify-center">
+          <img
+            src="/images/javascript-logo.png"
+            alt="JavaScript"
+            className="h-12"
+          />
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img src="/images/react-logo.png" alt="React" className="h-12" />
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img src="/images/nodejs-logo.png" alt="Node.js" className="h-12" />
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img src="/images/aws-logo.png" alt="AWS" className="h-12" />
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img src="/images/gcp-logo.png" alt="GCP" className="h-12" />
         </div>
-        <div className="flex justify-center items-center">
+        <div className="flex items-center justify-center">
           <img src="/images/docker-logo.png" alt="Docker" className="h-12" />
         </div>
       </div>
 
       <h2 className="mt-8 text-xl font-medium tracking-tighter">
-        Blog & Articles
+        Thoughts & Ideas
       </h2>
-      <div className="my-8 flex w-full flex-col space-y-4">
-        <a
-          href="https://world.hey.com/echi/"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="group"
-        >
-          <div className="flex items-center space-x-3">
-            <img
-              src="/images/esteban.png"
-              alt="Esteban"
-              className="h-16 w-16 rounded-full"
-            />
-            <div className="flex flex-col">
-              <p className="font-medium text-neutral-900 dark:text-neutral-100">
-                My Blog Posts on HEY
-              </p>
-              <p className="text-neutral-600 dark:text-neutral-400">
-                Read my latest thoughts and insights on my blog.
-              </p>
-            </div>
-          </div>
-        </a>
-      </div>
+      <ul className="font-sm mt-8 flex flex-col space-x-0 space-y-2 text-neutral-600 md:flex-row md:space-x-4 md:space-y-0 dark:text-neutral-300">
+        <li>
+          <a
+            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            rel="noopener noreferrer"
+            target="_blank"
+            href="/blog"
+          >
+            <ArrowIcon />
+            <p className="ml-2 h-7">read my latest thoughts and insights</p>
+          </a>
+        </li>
+        <li>
+          <a
+            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            rel="noopener noreferrer"
+            target="_blank"
+            href="https://twitter.com/estebanmakes"
+          >
+            <ArrowIcon />
+            <p className="ml-2 h-7">follow me</p>
+          </a>
+        </li>
+        <li>
+          <a
+            className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
+            rel="noopener noreferrer"
+            target="_blank"
+            href="/contact"
+          >
+            <ArrowIcon />
+            <p className="ml-2 h-7">connect with me</p>
+          </a>
+        </li>
+      </ul>
 
       <h2 className="mt-8 text-xl font-medium tracking-tighter">Contact</h2>
-      <div className="prose prose-neutral dark:prose-invert">
-        <p>
-          I'm always open to discussing new projects, creative ideas, or
-          opportunities to be part of your visions. Feel free to reach out
-          through any of the platforms below.
-        </p>
-        <ul className="list-disc pl-5 mt-8 text-neutral-600 dark:text-neutral-300">
-          <li>
-            <a
-              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-              rel="noopener noreferrer"
-              target="_blank"
-              href="https://twitter.com/estebano_c"
-            >
-              <ArrowIcon />
-              <p className="ml-2 h-7">follow me</p>
-            </a>
-          </li>
-          <li>
-            <a
-              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-              rel="noopener noreferrer"
-              target="_blank"
-              href="https://www.linkedin.com/in/esteban-chirinos/"
-            >
-              <ArrowIcon />
-              <p className="ml-2 h-7">connect with me</p>
-            </a>
-          </li>
-          <li>
-            <a
-              className="flex items-center transition-all hover:text-neutral-800 dark:hover:text-neutral-100"
-              rel="noopener noreferrer"
-              target="_blank"
-              href="https://github.com/echirinos"
-            >
-              <ArrowIcon />
-              <p className="ml-2 h-7">see my work</p>
-            </a>
-          </li>
-        </ul>
+      <p className="prose prose-neutral dark:prose-invert">
+        I'm always open to discussing new projects, creative ideas, or
+        opportunities to be part of your visions. Feel free to reach out through
+        any of the platforms below.
+      </p>
+      <div className="mt-8 flex justify-start">
+        <Link
+          href="/contact"
+          className="inline-flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+        >
+          Let's Chat
+        </Link>
       </div>
     </section>
   );
