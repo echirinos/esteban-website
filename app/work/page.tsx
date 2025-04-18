@@ -82,7 +82,7 @@ export default function WorkPage() {
             <h2 className="card-title flex items-center">
               <img
                 alt="TRM Labs logomark"
-                src="/images/Trm-labs.svg"
+                src="/images/Trm-Labs.svg"
                 className="mr-2 h-5 w-5"
               />
               TRM Labs
