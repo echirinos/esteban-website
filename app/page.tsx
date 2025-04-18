@@ -105,7 +105,7 @@ export default function Page() {
         >
           <img
             alt="TRM Labs logomark"
-            src="/images/Trm-labs.svg"
+            src="/images/trm.jpeg"
             className="mr-1"
             width="14"
             height="14"
