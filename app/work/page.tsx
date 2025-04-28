@@ -56,18 +56,48 @@ export default function WorkPage() {
               </li>
               <li>
                 Troubleshooting complex technical issues through log analysis,
-                code reviews (TypeScript/Javascript, Python primarily), and
-                internal reproduction.
+                code reviews (
+                <span className="badge badge-primary font-mono text-xs">
+                  TypeScript
+                </span>
+                /
+                <span className="badge badge-primary font-mono text-xs">
+                  Javascript
+                </span>
+                ,
+                <span className="badge badge-primary font-mono text-xs">
+                  Python
+                </span>{" "}
+                primarily), and internal reproduction.
               </li>
               <li>
                 Authoring and maintaining comprehensive technical documentation,
                 including runbooks, troubleshooting guides, and multi-language
-                code samples (TS/JS, Python, Java, C#).
+                code samples (
+                <span className="badge badge-primary font-mono text-xs">
+                  TS/JS
+                </span>
+                ,
+                <span className="badge badge-primary font-mono text-xs">
+                  Python
+                </span>
+                ,
+                <span className="badge badge-primary font-mono text-xs">
+                  Java
+                </span>
+                ,
+                <span className="badge badge-primary font-mono text-xs">
+                  C#
+                </span>
+                ).
               </li>
               <li>
                 Contributing to product improvements by analyzing developer
-                feedback and collaborating with Product, Engineering, and Sales
-                teams.
+                feedback and collaborating with
+                <span className="badge badge-ghost text-xs">Product</span>,
+                <span className="badge badge-ghost text-xs">Engineering</span>,
+                and
+                <span className="badge badge-ghost text-xs">Sales</span> teams.
               </li>
               <li>
                 Participating in on-call rotations and supporting developers via
@@ -147,14 +177,23 @@ export default function WorkPage() {
               </li>
               <li>
                 Developed and showcased Proof-of-Concept (POC) integrations
-                using Next.js and JavaScript, demonstrating to potential
-                customers the ease and effectiveness of integrating with
-                Polygon's platform. This initiative played a critical role in
-                driving further adoption and engagement with the platform.
+                using{" "}
+                <span className="badge badge-primary font-mono text-xs">
+                  Next.js
+                </span>{" "}
+                and
+                <span className="badge badge-primary font-mono text-xs">
+                  JavaScript
+                </span>
+                , demonstrating to potential customers the ease and
+                effectiveness of integrating with Polygon's platform. This
+                initiative played a critical role in driving further adoption
+                and engagement with the platform.
               </li>
               <li>
                 Successfully recommended, architected, and delivered innovative
-                web3 solutions, resulting in a measurable increase in customer
+                <span className="badge badge-accent text-xs">web3</span>{" "}
+                solutions, resulting in a measurable increase in customer
                 satisfaction and retention within the Entertainment, DeFi, and
                 NFT industries.
               </li>
@@ -183,11 +222,22 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Spearheaded product management for the developer community,
-                owning comprehensive documentation, robust sample code (Python
-                and JS), and best practices. Effectively distilled actionable
-                feedback for product engineering and cross-functional teams,
-                enhancing overall product quality and user satisfaction.
+                Spearheaded{" "}
+                <span className="badge badge-ghost text-xs">
+                  product management
+                </span>{" "}
+                for the developer community, owning comprehensive documentation,
+                robust sample code (
+                <span className="badge badge-primary font-mono text-xs">
+                  Python
+                </span>{" "}
+                and
+                <span className="badge badge-primary font-mono text-xs">
+                  JS
+                </span>
+                ), and best practices. Effectively distilled actionable feedback
+                for product engineering and cross-functional teams, enhancing
+                overall product quality and user satisfaction.
               </li>
               <li>
                 Directed the architecture of partner engineering strategy,
@@ -208,16 +258,21 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Orchestrated the strategic development of the OpenSea API and
-                SDK, prioritizing over 100 developer feature requests. This
-                effort led to a substantial increase in NPS scores, a notable
-                reduction in support tickets, and higher adoption rates for the
-                SDK/API.
+                Orchestrated the strategic development of the
+                <span className="badge badge-secondary text-xs">
+                  OpenSea API
+                </span>{" "}
+                and
+                <span className="badge badge-secondary text-xs">SDK</span>,
+                prioritizing over 100 developer feature requests. This effort
+                led to a substantial increase in NPS scores, a notable reduction
+                in support tickets, and higher adoption rates for the SDK/API.
               </li>
               <li>
-                Implemented a highly efficient Zendesk automation system,
-                processing over 400 cases per week and significantly boosting
-                developer NPS scores.
+                Implemented a highly efficient{" "}
+                <span className="badge badge-info text-xs">Zendesk</span>{" "}
+                automation system, processing over 400 cases per week and
+                significantly boosting developer NPS scores.
               </li>
               <li>
                 Drove the development and deployment of an API key distribution
