@@ -20,6 +20,38 @@ export default function ProjectsPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* Creator Tip Application */}
+        <div className="card card-bordered bg-base-100 shadow-sm h-full">
+          <div className="card-body">
+            <figure className="mb-4" style={{ width: "80px", height: "80px" }}>
+              <Image
+                alt="Creator Tip"
+                src="/images/Coinbase-icon-symbol-1.svg"
+                width={80}
+                height={80}
+              />
+            </figure>
+            <h3 className="card-title text-xl font-semibold">
+              Creator Tip Application
+            </h3>
+            <p className="mb-4">
+              A decentralized tipping application built with Next.js and
+              OnchainKit that allows users to support creators with
+              cryptocurrency payments on Base network.
+            </p>
+            <div className="card-actions justify-start mt-auto">
+              <a
+                href="https://creator-tip-onchainkit.vercel.app/"
+                className="link link-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Try Creator Tip
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Coinbase Onramp Demo App */}
         <div className="card card-bordered bg-base-100 shadow-sm h-full">
           <div className="card-body">
