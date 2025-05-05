@@ -53,6 +53,16 @@ export default function Page() {
       <PreloadResources />
       <div className="card w-full bg-base-100 shadow-sm border border-primary/20 mb-8">
         <div className="card-body text-center">
+          <div className="flex justify-center mb-6">
+            <div className="w-40">
+              <img
+                src="/images/esteba-pfp.png"
+                alt="Esteban Chirinos"
+                className="w-full h-auto rounded-md shadow-md border border-base-300 object-contain"
+                style={{ aspectRatio: "2/3" }}
+              />
+            </div>
+          </div>
           <h1 className="card-title text-4xl font-bold tracking-tighter mb-4 mx-auto">
             hey, I'm esteban 👋
           </h1>
