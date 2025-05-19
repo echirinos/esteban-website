@@ -20,6 +20,38 @@ export default function ProjectsPage() {
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* True Rank Pickleball */}
+        <div className="card card-bordered bg-base-100 shadow-sm h-full">
+          <div className="card-body">
+            <figure className="mb-4" style={{ width: "80px", height: "80px" }}>
+              <Image
+                alt="True Rank Pickleball"
+                src="/images/TrueRankLogo.png"
+                width={80}
+                height={80}
+              />
+            </figure>
+            <h3 className="card-title text-xl font-semibold">
+              True Rank Pickleball
+            </h3>
+            <p className="mb-4">
+              A pickleball rating system that provides accurate,
+              category-specific ratings for Men's, Women's, and Mixed play
+              without advertisements. Built by me!
+            </p>
+            <div className="card-actions justify-start mt-auto">
+              <a
+                href="https://www.truerankpickleball.com/"
+                className="link link-primary"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Visit True Rank
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* Creator Tip Application */}
         <div className="card card-bordered bg-base-100 shadow-sm h-full">
           <div className="card-body">
