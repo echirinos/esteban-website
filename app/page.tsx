@@ -30,7 +30,6 @@ const fadeInUp = {
   visible: {
     opacity: 1,
     y: 0,
-    transition: { duration: 0.6, ease: "easeOut" },
   },
 };
 
@@ -38,9 +37,6 @@ const staggerContainer = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.15,
-    },
   },
 };
 
@@ -54,6 +50,7 @@ export default function Page() {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
+        transition={{ duration: 0.6, ease: "easeOut", staggerChildren: 0.15 }}
       >
         <div className="relative flex flex-col items-center">
           {/* Animated Text with Paint Splashes */}
