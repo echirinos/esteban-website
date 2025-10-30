@@ -1,8 +1,63 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Custom color scheme for cupcake theme */
+/* Crypto-inspired custom themes */
+:root {
+  /* Light mode (Red Candle) */
+  --crypto-grid: rgba(99, 102, 241, 0.03);
+  --crypto-grid-line: rgba(99, 102, 241, 0.08);
+  --crypto-accent-1: #6366f1;
+  --crypto-accent-2: #8b5cf6;
+  --crypto-accent-3: #06b6d4;
+  --crypto-glow: rgba(99, 102, 241, 0.2);
+}
+
+[data-theme="light"] {
+  --primary: #ef4444;
+  --primary-focus: #dc2626;
+  --primary-content: #ffffff;
+
+  --secondary: #6366f1;
+  --secondary-focus: #4f46e5;
+  --secondary-content: #ffffff;
+
+  --accent: #06b6d4;
+  --accent-focus: #0891b2;
+  --accent-content: #ffffff;
+
+  --base-100: #fafafa;
+  --base-200: #f4f4f5;
+  --base-300: #e4e4e7;
+  --base-content: #18181b;
+}
+
+[data-theme="dark"] {
+  --primary: #22c55e;
+  --primary-focus: #16a34a;
+  --primary-content: #ffffff;
+
+  --secondary: #8b5cf6;
+  --secondary-focus: #7c3aed;
+  --secondary-content: #ffffff;
+
+  --accent: #06b6d4;
+  --accent-focus: #0891b2;
+  --accent-content: #ffffff;
+
+  --base-100: #0a0a0a;
+  --base-200: #171717;
+  --base-300: #262626;
+  --base-content: #fafafa;
+
+  --crypto-grid: rgba(139, 92, 246, 0.05);
+  --crypto-grid-line: rgba(139, 92, 246, 0.1);
+  --crypto-glow: rgba(139, 92, 246, 0.3);
+}
+
+/* Custom color scheme for cupcake theme (fallback) */
 [data-theme="cupcake"] {
   --primary: #ef95ae;
   --primary-focus: #e67a98;
@@ -18,8 +73,8 @@
 }
 
 ::selection {
-  background-color: #ef95ae;
-  color: #fefefe;
+  background-color: var(--primary);
+  color: var(--primary-content);
 }
 
 :root {
@@ -49,6 +104,183 @@
 
 html {
   min-width: 360px;
+  scroll-behavior: smooth;
+}
+
+body {
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Crypto grid background pattern */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    linear-gradient(var(--crypto-grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--crypto-grid-line) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+  z-index: 0;
+  opacity: 0.5;
+}
+
+/* Animated gradient overlay */
+.crypto-gradient-overlay {
+  background: linear-gradient(135deg, 
+    var(--crypto-accent-1) 0%, 
+    var(--crypto-accent-2) 50%, 
+    var(--crypto-accent-3) 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 15s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glassmorphism effect */
+.glass-card {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="light"] .glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* Wave animation for hero text */
+@keyframes wave {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25% { transform: translateY(-5px) rotate(1deg); }
+  75% { transform: translateY(5px) rotate(-1deg); }
+}
+
+.wave-text {
+  display: inline-block;
+  animation: wave 3s ease-in-out infinite;
+}
+
+/* Floating animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+}
+
+.float-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+/* Glow effect */
+.glow-effect {
+  box-shadow: 0 0 20px var(--crypto-glow);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow-effect:hover {
+  box-shadow: 0 0 40px var(--crypto-glow);
+}
+
+/* 3D card tilt effect */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease;
+}
+
+.card-3d:hover {
+  transform: rotateY(5deg) rotateX(5deg) scale(1.02);
+}
+
+/* Pulse animation */
+@keyframes pulse-glow {
+  0%, 100% { 
+    box-shadow: 0 0 10px var(--crypto-glow);
+    transform: scale(1);
+  }
+  50% { 
+    box-shadow: 0 0 30px var(--crypto-glow);
+    transform: scale(1.05);
+  }
+}
+
+.pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Fade in up animation */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in-up {
+  animation: fadeInUp 0.6s ease-out forwards;
+}
+
+/* Slide in from left */
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s ease-out forwards;
+}
+
+/* Bounce in */
+@keyframes bounceIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.3);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  70% {
+    transform: scale(0.9);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.bounce-in {
+  animation: bounceIn 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+/* Hexagonal clip path for crypto aesthetic */
+.hex-clip {
+  clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+}
+
+/* Neon border effect */
+.neon-border {
+  position: relative;
+  border: 2px solid transparent;
+  background: linear-gradient(var(--base-100), var(--base-100)) padding-box,
+              linear-gradient(135deg, var(--primary), var(--secondary), var(--accent)) border-box;
 }
 
 .anchor:hover {
@@ -68,10 +300,19 @@ pre {
 
 /* Remove Safari input shadow on mobile */
 input[type="text"],
-input[type="email"] {
+input[type="email"],
+textarea {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
+}
+
+/* Enhanced input focus with glow */
+input:focus,
+textarea:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px var(--crypto-glow);
+  border-color: var(--primary);
 }
 
 table {
@@ -83,4 +324,9 @@ table {
 
 .title {
   text-wrap: balance;
+}
+
+/* Cursive font for hero */
+.cursive-text {
+  font-family: 'Pacifico', cursive;
 }
