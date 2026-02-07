@@ -43,7 +43,7 @@ export default function Page() {
       {/* ===== HERO SECTION ===== */}
       <motion.section
         id="hero"
-        className="min-h-[90vh] flex flex-col items-center justify-center relative py-20"
+        className="min-h-[85vh] flex flex-col items-center justify-center relative py-12 md:py-20"
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
@@ -71,7 +71,7 @@ export default function Page() {
 
         {/* One-liner bio */}
         <motion.p
-          className="text-lg md:text-xl text-center max-w-2xl mt-8 mb-10 text-base-content/70 leading-relaxed"
+          className="text-base md:text-xl text-center max-w-2xl mt-6 mb-8 px-2 text-base-content/70 leading-relaxed"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
@@ -84,9 +84,9 @@ export default function Page() {
 
         {/* Social proof - company logos */}
         <motion.div
-          className="flex flex-wrap items-center justify-center gap-6 md:gap-10 mb-10 opacity-60"
+          className="flex flex-wrap items-center justify-center gap-5 md:gap-10 mb-8 px-4"
           initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
+          animate={{ opacity: 0.7 }}
           transition={{ delay: 0.7, duration: 0.6 }}
         >
           {[
@@ -101,7 +101,7 @@ export default function Page() {
               key={company.name}
               src={company.logo}
               alt={company.name}
-              className="h-6 md:h-8 w-auto grayscale hover:grayscale-0 transition-all duration-300"
+              className="h-7 md:h-9 w-auto opacity-50 hover:opacity-100 transition-all duration-300"
             />
           ))}
         </motion.div>
