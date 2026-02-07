@@ -1,42 +1,33 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { useState } from "react";
 
 export function AnimatedHero() {
-  const text = "hey, I'm esteban";
-  const [isWritingComplete, setIsWritingComplete] = useState(false);
-
   return (
     <motion.div
-      className="relative"
+      className="relative text-center"
       initial="hidden"
       animate="visible"
-      onAnimationComplete={() => setIsWritingComplete(true)}
     >
-      <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-cursive text-center mb-8 relative z-10">
-        <motion.span className="inline-block">
-          {text.split("").map((char, index) => (
-            <motion.span
-              key={`${char}-${index}`}
-              className="inline-block"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{
-                opacity: { delay: index * 0.08, duration: 0.1 },
-              }}
-              onAnimationComplete={() => {
-                if (index === text.length - 1) {
-                  setIsWritingComplete(true);
-                }
-              }}
-            >
-              {char === " " ? "\u00A0" : char}
-            </motion.span>
-          ))}
-        </motion.span>
-      </h1>
+      {/* Name */}
+      <motion.h1
+        className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold tracking-tight mb-4"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        Esteban Chirinos
+      </motion.h1>
+
+      {/* Tagline */}
+      <motion.p
+        className="text-lg sm:text-xl md:text-2xl text-base-content/60 font-medium tracking-wide"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
+      >
+        Engineer &middot; Founder &middot; Builder
+      </motion.p>
     </motion.div>
   );
 }
-
