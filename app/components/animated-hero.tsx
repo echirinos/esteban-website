@@ -26,7 +26,7 @@ export function AnimatedHero() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3, duration: 0.6, ease: "easeOut" }}
       >
-        Engineer &middot; Founder &middot; Builder
+        Engineer &middot; Builder &middot; Maker
       </motion.p>
     </motion.div>
   );

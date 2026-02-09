@@ -2,7 +2,7 @@ import "./global.css";
 import type { Metadata } from "next";
 import { GeistSans } from "geist/font/sans";
 import { GeistMono } from "geist/font/mono";
-import { Navbar } from "./components/nav";
+import { NavbarWrapper } from "./components/navbar-wrapper";
 import { CandleThemeToggle } from "./components/candle-theme-toggle";
 import { ScrollIndicator } from "./components/scroll-indicator";
 import { Analytics } from "@vercel/analytics/react";
@@ -10,18 +10,18 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SandpackCSS } from "./blog/[slug]/sandpack";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://leerob.io"),
+  metadataBase: new URL("https://estebanchirinos.xyz"),
   title: {
-    default: "Esteban Chirinos - Engineer, Founder, Builder",
+    default: "Esteban Chirinos - Engineer at Coinbase",
     template: "%s | Esteban Chirinos",
   },
   description:
-    "Engineer and founder who builds products people use. Founded a startup (acquired). Previously at Coinbase, Google, Microsoft, JPMorgan.",
+    "Technical Services Engineer at Coinbase. I help developers build onchain. Previously at Google, Microsoft, OpenSea, Polygon, and JPMorgan.",
   openGraph: {
     title: "Esteban Chirinos",
     description:
-      "Engineer and founder who builds products people use. Founded a startup (acquired). Previously at Coinbase, Google, Microsoft, JPMorgan.",
-    url: "https://leerob.io",
+      "Technical Services Engineer at Coinbase. I help developers build onchain. Previously at Google, Microsoft, OpenSea, Polygon, and JPMorgan.",
+    url: "https://estebanchirinos.xyz",
     siteName: "Esteban Chirinos",
     locale: "en_US",
     type: "website",
@@ -41,10 +41,6 @@ export const metadata: Metadata = {
     title: "Esteban Chirinos",
     card: "summary_large_image",
   },
-  verification: {
-    google: "eZSdmzAXlLkKhNJzfgwDqWORghxnJ8qR9_CHdAh5-xw",
-    yandex: "14d2e73487fa6c71",
-  },
 };
 
 const cx = (...classes) => classes.filter(Boolean).join(" ");
@@ -54,8 +50,6 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const isHomePage = true;
-
   return (
     <html
       lang="en"
@@ -70,8 +64,8 @@ export default function RootLayout({
         <CandleThemeToggle />
 
         <main className="flex-auto min-w-0 flex flex-col px-4 md:px-8 lg:px-12 relative z-10">
-          {!isHomePage && <Navbar />}
-          {isHomePage && <ScrollIndicator />}
+          <NavbarWrapper />
+          <ScrollIndicator />
 
           {children}
           <Analytics />

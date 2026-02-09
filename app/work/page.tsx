@@ -1,17 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Work",
   description: "A summary of my work and contributions.",
 };
-
-async function Stars() {
-  let res = await fetch("https://api.github.com/repos/vercel/next.js");
-  let json = await res.json();
-  let count = Math.round(json.stargazers_count / 1000);
-  return `${count}k stars`;
-}
 
 export default function WorkPage() {
   return (
@@ -19,11 +11,9 @@ export default function WorkPage() {
       <h1 className="text-2xl font-medium tracking-tighter mb-8">my work</h1>
       <div className="space-y-8">
         <p className="mb-6 text-base-content">
-          I thrive on building innovative solutions and tackling diverse
-          projects. From leading the design and rollout of blockchain
-          intelligence tools to spearheading web3 solutions and managing cloud
-          migrations, my journey has been all about creating impactful
-          technology. Here's a summary of my work so far.
+          I've spent my career at the intersection of engineering and developer
+          experience — helping teams ship better products, faster. Here's the
+          full timeline.
         </p>
 
         <div className="card card-compact bg-base-200 shadow-lg">
@@ -40,68 +30,60 @@ export default function WorkPage() {
               Technical Services Engineer, March 2024 - Present
             </p>
             <p className="text-base-content mb-4">
-              As a Technical Services Engineer at Coinbase, I provide deep
-              technical support for the Coinbase Developer Platform (CDP),
-              collaborating closely with developers and enterprise customers. My
-              responsibilities include:
+              Deep technical support for the Coinbase Developer Platform (CDP),
+              working directly with developers and enterprise customers building
+              onchain.
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Leading the technical integration and onboarding of developers
-                onto CDP APIs and SDKs.
+                Lead technical onboarding for developers integrating CDP APIs
+                and SDKs.
               </li>
               <li>
-                Designing optimal, scalable integration architectures and
-                providing best practice guidance.
+                Design integration architectures and provide best-practice
+                guidance for scalable onchain applications.
               </li>
               <li>
-                Troubleshooting complex technical issues through log analysis,
-                code reviews (
+                Debug complex issues through log analysis, code review (
                 <span className="badge badge-primary font-mono text-xs">
                   TypeScript
                 </span>
-                /
-                <span className="badge badge-primary font-mono text-xs">
-                  Javascript
-                </span>
-                ,
+                ,{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   Python
-                </span>{" "}
-                primarily), and internal reproduction.
+                </span>
+                ), and internal reproduction.
               </li>
               <li>
-                Authoring and maintaining comprehensive technical documentation,
-                including runbooks, troubleshooting guides, and multi-language
+                Write and maintain technical docs, runbooks, and multi-language
                 code samples (
                 <span className="badge badge-primary font-mono text-xs">
                   TS/JS
                 </span>
-                ,
+                ,{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   Python
                 </span>
-                ,
+                ,{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   Java
                 </span>
-                ,
+                ,{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   C#
                 </span>
                 ).
               </li>
               <li>
-                Contributing to product improvements by analyzing developer
-                feedback and collaborating with
-                <span className="badge badge-ghost text-xs">Product</span>,
+                Feed developer pain points back to{" "}
+                <span className="badge badge-ghost text-xs">Product</span>,{" "}
                 <span className="badge badge-ghost text-xs">Engineering</span>,
-                and
-                <span className="badge badge-ghost text-xs">Sales</span> teams.
+                and{" "}
+                <span className="badge badge-ghost text-xs">Sales</span> to
+                improve the platform.
               </li>
               <li>
-                Participating in on-call rotations and supporting developers via
-                Discord and during hackathons.
+                On-call rotation, Discord support, and hackathon mentorship.
               </li>
             </ul>
           </div>
@@ -118,32 +100,27 @@ export default function WorkPage() {
               TRM Labs
             </h2>
             <p className="text-sm text-base-content/80 mb-2">
-              Staff Solutions Architect, June 2023 - Present
+              Staff Solutions Architect, June 2023 - February 2024
             </p>
             <p className="text-base-content mb-4">
-              Leading the tailored design and rollout of TRM Labs API, a leading
-              blockchain intelligence tool that provides financial institutions
-              and governments with the tools and data to fight crypto-based
+              Designed and rolled out TRM's API integrations for financial
+              institutions and government agencies fighting crypto-based
               financial crime.
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Steering the design and delivery of TRM API integration
-                solutions for 40+ projects, transforming client requirements
-                into tailored platform customizations, leading to a 30% uptick
-                in client success and satisfaction rates.
+                Delivered 40+ custom API integration solutions, translating
+                client requirements into platform configurations — 30% lift in
+                client satisfaction.
               </li>
               <li>
-                Championing 60+ high-impact technical client discovery sessions
-                to increase TRM's technology suite adoption by 25% and ensure a
-                high level of alignment rate between client visions and platform
-                capabilities.
+                Ran 60+ technical discovery sessions to drive product adoption
+                (25% increase) and align platform capabilities with client
+                needs.
               </li>
               <li>
-                Standardizing integration resources, launching 10+ advanced
-                dashboard tools and refining API documentation, raising the bar
-                for integration quality and leading to a 35% CSAT improvement in
-                client and internal feedback.
+                Built 10+ dashboard tools and improved API docs, raising
+                integration quality and CSAT scores by 35%.
               </li>
             </ul>
           </div>
@@ -164,43 +141,23 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Spearheaded cutting-edge web3 solutions for the Entertainment,
-                DeFi, and NFT sectors, significantly boosting client
-                satisfaction and retention rates. Delivered tailored solutions
-                that drove increased adoption and customer engagement.
+                Built and shipped web3 solutions for Entertainment, DeFi, and
+                NFT clients, driving adoption and retention.
               </li>
               <li>
-                Standardized the operational strategy for the solutions
-                engineering and support teams, comprising 12 members, enhancing
-                team efficiency and effectiveness in meeting customer needs and
-                interfacing with external teams.
+                Standardized operations for the 12-person solutions engineering
+                team, improving how we worked with external partners.
               </li>
               <li>
-                Developed and showcased Proof-of-Concept (POC) integrations
-                using{" "}
+                Built proof-of-concept integrations in{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   Next.js
                 </span>{" "}
-                and
+                and{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   JavaScript
-                </span>
-                , demonstrating to potential customers the ease and
-                effectiveness of integrating with Polygon's platform. This
-                initiative played a critical role in driving further adoption
-                and engagement with the platform.
-              </li>
-              <li>
-                Successfully recommended, architected, and delivered innovative
-                <span className="badge badge-accent text-xs">web3</span>{" "}
-                solutions, resulting in a measurable increase in customer
-                satisfaction and retention within the Entertainment, DeFi, and
-                NFT industries.
-              </li>
-              <li>
-                Played a pivotal role in driving Polygon integration by
-                developing comprehensive integration solutions, further
-                solidifying Polygon's position as a leading web3 platform.
+                </span>{" "}
+                to show prospects how easy it was to build on Polygon.
               </li>
             </ul>
           </div>
@@ -217,40 +174,29 @@ export default function WorkPage() {
               OpenSea
             </h2>
             <p className="text-sm text-base-content/80 mb-2">
-              Developer Relations Engineer and Product Manager Rotation, January
-              2022 - July 2022
+              Developer Relations Engineer, January 2022 - July 2022
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Spearheaded{" "}
-                <span className="badge badge-ghost text-xs">
-                  product management
-                </span>{" "}
-                for the developer community, owning comprehensive documentation,
-                robust sample code (
+                Owned developer-facing docs, sample code (
                 <span className="badge badge-primary font-mono text-xs">
                   Python
-                </span>{" "}
-                and
+                </span>
+                ,{" "}
                 <span className="badge badge-primary font-mono text-xs">
                   JS
                 </span>
-                ), and best practices. Effectively distilled actionable feedback
-                for product engineering and cross-functional teams, enhancing
-                overall product quality and user satisfaction.
+                ), and best practices. Funneled developer feedback back to
+                product engineering.
               </li>
               <li>
-                Directed the architecture of partner engineering strategy,
-                adeptly engaging and resolving technical issues with key
-                partners such as Consensys, Snap, Instagram, Coinbase, Yuga
-                Labs, Rarible, MoonPay, and Cool Cats. This initiative
-                culminated in a streamlined redesign of the partner relationship
-                management tracker, significantly improving team efficiency.
+                Managed partner engineering relationships with Consensys, Snap,
+                Instagram, Coinbase, Yuga Labs, Rarible, MoonPay, and Cool
+                Cats.
               </li>
               <li>
-                Oversaw level 2 developer support, expertly addressing complex
-                partner and developer queries, ensuring swift and accurate
-                solutions.
+                Handled L2 developer support — complex partner and developer
+                queries.
               </li>
             </ul>
             <p className="text-sm text-base-content/80 mb-2">
@@ -258,27 +204,22 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Orchestrated the strategic development of the
+                Prioritized 100+ developer feature requests for the{" "}
                 <span className="badge badge-secondary text-xs">
                   OpenSea API
                 </span>{" "}
-                and
+                and{" "}
                 <span className="badge badge-secondary text-xs">SDK</span>,
-                prioritizing over 100 developer feature requests. This effort
-                led to a substantial increase in NPS scores, a notable reduction
-                in support tickets, and higher adoption rates for the SDK/API.
+                improving NPS and cutting support tickets.
               </li>
               <li>
-                Implemented a highly efficient{" "}
+                Set up{" "}
                 <span className="badge badge-info text-xs">Zendesk</span>{" "}
-                automation system, processing over 400 cases per week and
-                significantly boosting developer NPS scores.
+                automation handling 400+ cases/week.
               </li>
               <li>
-                Drove the development and deployment of an API key distribution
-                tool, resulting in a remarkable 30-point NPS score increase and
-                establishing a consistent Service Level Agreement (SLA) for API
-                performance.
+                Built and shipped an API key distribution tool — 30-point NPS
+                increase.
               </li>
             </ul>
           </div>
@@ -299,24 +240,18 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Selected for Google's prestigious internal rotational Software
-                Engineering Bootcamp, an exclusive program with only 40 out of
-                500 candidates accepted. Shipped code that met Google's rigorous
-                engineering standards and completed rotations across various
-                teams.
+                Selected for Google's internal Software Engineering Bootcamp
+                (40 of 500 accepted). Shipped production code across multiple
+                team rotations.
               </li>
               <li>
-                Coached enterprise customers to architect and deploy critical
-                cloud solutions, ensuring optimal performance and alignment with
-                business objectives. Successfully managed multiple accounts,
-                contributing to a total of $217M in managed customer revenue.
+                Helped enterprise customers architect and deploy cloud
+                solutions. Managed accounts totaling $217M in customer revenue.
               </li>
               <li>
-                Led an AWS to GCP BigQuery/Dataproc migration for a new
-                customer, providing comprehensive support, technical guidance,
-                and project management. This initiative resulted in over $300K
-                revenue growth, with GCP spend increasing by more than 10% each
-                month.
+                Led an AWS → GCP BigQuery/Dataproc migration for a new
+                customer, driving $300K+ in revenue growth with 10%+ monthly
+                GCP spend increases.
               </li>
             </ul>
           </div>
@@ -337,19 +272,16 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Developed a telemetry monitoring application for the Microsoft
-                Azure Cloud Supply Chain using C#, .NET, Kusto Query Language
-                (KQL), PowerBI, Azure Data Factory, and other Azure services.
+                Built a telemetry monitoring app for Azure Cloud Supply Chain
+                using C#, .NET, KQL, PowerBI, and Azure Data Factory.
               </li>
               <li>
-                Created dashboards and analytics tools enabling the team to
-                monitor supply chain performance, identify bottlenecks, and
-                optimize resource allocation, enhancing overall efficiency.
+                Created dashboards to track supply chain performance, spot
+                bottlenecks, and optimize resource allocation.
               </li>
               <li>
-                Achieved a 30% improvement in the efficiency of the Azure
-                Machine Learning Supply Chain by developing and implementing
-                optimized telemetry solutions.
+                Improved Azure ML Supply Chain efficiency by 30% through
+                optimized telemetry.
               </li>
             </ul>
           </div>
@@ -370,21 +302,16 @@ export default function WorkPage() {
             </p>
             <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
               <li>
-                Engineered and deployed a web application using React, Spring
-                Boot, and PostgreSQL, streamlining the process for investment
-                bankers to manage and monitor deals, enhancing operational
-                efficiency.
+                Built a React + Spring Boot + PostgreSQL web app for investment
+                bankers to manage and track deals.
               </li>
               <li>
-                Collaborated closely with product managers and senior engineers
-                to gather requirements, design features, and implement
-                solutions, ensuring alignment with business goals and user
-                needs.
+                Worked with PMs and senior engineers on requirements, design,
+                and implementation.
               </li>
               <li>
-                Contributed to the development of RESTful APIs and database
-                schemas, focusing on scalability, reliability, and security best
-                practices, improving system robustness.
+                Built RESTful APIs and database schemas with a focus on
+                scalability and security.
               </li>
             </ul>
           </div>

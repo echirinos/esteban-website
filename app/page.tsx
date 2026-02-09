@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
@@ -76,10 +75,12 @@ export default function Page() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.5, duration: 0.6 }}
         >
-          I build products people use, scale engineering teams, and ship code.
-          Founded a startup that got{" "}
+          Technical Services Engineer at{" "}
+          <span className="text-primary font-semibold">Coinbase</span>,
+          helping developers build onchain. On nights and weekends, I build
+          my own products — one got{" "}
           <span className="text-primary font-semibold">acquired</span>.
-          Previously at Coinbase, Google, Microsoft, and JPMorgan.
+          Previously at Google, Microsoft, OpenSea, and JPMorgan.
         </motion.p>
 
         {/* Social proof - company logos */}
@@ -168,10 +169,10 @@ export default function Page() {
         <div className="max-w-4xl mx-auto">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
             {[
-              { metric: "1", label: "Startup Acquired" },
-              { metric: "2K+", label: "Monthly Users" },
               { metric: "7+", label: "Companies Shipped At" },
+              { metric: "2K+", label: "Monthly Users" },
               { metric: "10+", label: "Products Built" },
+              { metric: "1", label: "Side Project Acquired" },
             ].map((item) => (
               <motion.div key={item.label} variants={fadeInUp}>
                 <div className="text-3xl md:text-4xl font-bold text-primary mb-1">
@@ -206,7 +207,7 @@ export default function Page() {
             className="text-center text-base-content/60 mb-14 max-w-lg mx-auto"
             variants={fadeInUp}
           >
-            Products and companies I've founded, built, and scaled.
+            Side projects and products I've built on nights and weekends.
           </motion.p>
 
           {/* ACQUIRED - Featured */}
@@ -454,42 +455,54 @@ export default function Page() {
       >
         <div className="max-w-4xl mx-auto">
           <motion.h2
-            className="text-3xl md:text-4xl font-bold tracking-tight mb-12 text-center"
+            className="text-3xl md:text-4xl font-bold tracking-tight mb-4 text-center"
             variants={fadeInUp}
           >
             Tech Stack
           </motion.h2>
-
-          <motion.div
-            className="flex flex-wrap items-center justify-center gap-8 md:gap-12"
-            variants={staggerContainer}
+          <motion.p
+            className="text-center text-base-content/60 mb-12 max-w-lg mx-auto"
+            variants={fadeInUp}
           >
+            The tools I reach for every day.
+          </motion.p>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-3xl mx-auto">
             {[
-              { name: "Python", logo: "/images/python-logo.png" },
-              { name: "TypeScript", logo: "/images/typescript-logo.png" },
-              { name: "JavaScript", logo: "/images/javascript-logo.png" },
-              { name: "React", logo: "/images/react-logo.png" },
-              { name: "Node.js", logo: "/images/nodejs-logo.png" },
-              { name: "AWS", logo: "/images/aws-logo.png" },
-              { name: "GCP", logo: "/images/gcp-logo.png" },
-              { name: "Docker", logo: "/images/docker-logo.png" },
-            ].map((skill) => (
+              {
+                category: "Languages",
+                items: ["TypeScript", "Python", "JavaScript", "C#", "Java", "SQL"],
+              },
+              {
+                category: "Frameworks & Tools",
+                items: ["React", "Next.js", "Node.js", "Spring Boot", "Docker", "Git"],
+              },
+              {
+                category: "Platforms",
+                items: ["AWS", "GCP", "Vercel", "Coinbase CDP", "PostgreSQL", "Azure"],
+              },
+            ].map((group) => (
               <motion.div
-                key={skill.name}
+                key={group.category}
                 variants={fadeInUp}
-                className="flex flex-col items-center gap-2 group"
+                className="glass-card p-6 rounded-xl"
               >
-                <img
-                  src={skill.logo}
-                  alt={skill.name}
-                  className="h-12 w-auto object-contain opacity-70 group-hover:opacity-100 transition-opacity duration-300"
-                />
-                <span className="text-xs text-base-content/40 font-medium">
-                  {skill.name}
-                </span>
+                <h3 className="text-sm font-semibold text-primary mb-4 uppercase tracking-wider">
+                  {group.category}
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {group.items.map((item) => (
+                    <span
+                      key={item}
+                      className="badge badge-outline badge-sm font-mono text-base-content/70"
+                    >
+                      {item}
+                    </span>
+                  ))}
+                </div>
               </motion.div>
             ))}
-          </motion.div>
+          </div>
         </div>
       </motion.section>
 
