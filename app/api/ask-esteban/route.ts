@@ -27,13 +27,13 @@ type MoonshotResponse = {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
-export const maxDuration = 10;
+export const maxDuration = 30;
 
 const apiKey = process.env.KIMI_API_KEY || process.env.MOONSHOT_API_KEY;
 const apiBaseUrl =
   process.env.KIMI_API_BASE_URL || "https://api.moonshot.ai/v1";
 const model = process.env.KIMI_MODEL || "kimi-k2.6";
-const kimiTimeoutMs = 8_000;
+const kimiTimeoutMs = 25_000;
 const rateLimitWindowMs = 10 * 60 * 1000;
 const rateLimitMaxRequests = 12;
 
