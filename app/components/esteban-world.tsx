@@ -2,7 +2,7 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   Suspense,
   useEffect,
@@ -498,7 +498,13 @@ function usePointerParallax() {
   return pointer;
 }
 
-function CameraRig({ gogglesOn }: { gogglesOn: boolean }) {
+function CameraRig({
+  gogglesOn,
+  phase,
+}: {
+  gogglesOn: boolean;
+  phase: ExperiencePhase;
+}) {
   const { camera, pointer } = useThree();
   const targetPosition = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
@@ -507,15 +513,23 @@ function CameraRig({ gogglesOn }: { gogglesOn: boolean }) {
   useFrame((_state, delta) => {
     elapsed.current += delta;
     const drift = Math.sin(elapsed.current * 0.26) * 0.018;
+    const targetZ = phase === "transition" ? 3.82 : gogglesOn ? 4.03 : 4.18;
 
     targetPosition.set(
       pointer.x * 0.18,
       1.18 + pointer.y * 0.08 + drift,
-      gogglesOn ? 4.03 : 4.18
+      targetZ
     );
     targetLookAt.set(pointer.x * 0.32, 1.62 + pointer.y * 0.12, -8.2);
 
     camera.position.lerp(targetPosition, 0.045);
+
+    if (camera instanceof THREE.PerspectiveCamera) {
+      const targetFov = phase === "transition" ? 44 : 50;
+      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.04);
+      camera.updateProjectionMatrix();
+    }
+
     camera.lookAt(targetLookAt);
   });
 
@@ -556,8 +570,9 @@ function useDepthAlphaMask(kind: DepthMaskKind) {
     if (kind === "foreground") {
       gradient.addColorStop(0, "rgba(0,0,0,0)");
       gradient.addColorStop(0.52, "rgba(0,0,0,0)");
-      gradient.addColorStop(0.72, "rgba(255,255,255,0.58)");
-      gradient.addColorStop(1, "rgba(255,255,255,1)");
+      gradient.addColorStop(0.7, "rgba(255,255,255,0.26)");
+      gradient.addColorStop(0.88, "rgba(255,255,255,0.56)");
+      gradient.addColorStop(1, "rgba(255,255,255,0.32)");
     } else if (kind === "sky") {
       gradient.addColorStop(0, "rgba(255,255,255,0.82)");
       gradient.addColorStop(0.34, "rgba(255,255,255,0.34)");
@@ -583,6 +598,23 @@ function useDepthAlphaMask(kind: DepthMaskKind) {
     horizontalFade.addColorStop(1, "rgba(0,0,0,0)");
     context.fillStyle = horizontalFade;
     context.fillRect(0, 0, canvas.width, canvas.height);
+
+    if (kind === "foreground") {
+      const ovalFade = context.createRadialGradient(
+        canvas.width * 0.5,
+        canvas.height * 0.92,
+        canvas.width * 0.08,
+        canvas.width * 0.5,
+        canvas.height * 0.92,
+        canvas.width * 0.72
+      );
+      ovalFade.addColorStop(0, "rgba(255,255,255,0.96)");
+      ovalFade.addColorStop(0.56, "rgba(255,255,255,0.72)");
+      ovalFade.addColorStop(1, "rgba(0,0,0,0)");
+      context.fillStyle = ovalFade;
+      context.fillRect(0, 0, canvas.width, canvas.height);
+    }
+
     context.globalCompositeOperation = "source-over";
 
     const mask = new THREE.CanvasTexture(canvas);
@@ -792,20 +824,20 @@ function WorldDepthStage({
         mask="foreground"
         position={[basePosition[0], basePosition[1] - 0.06, -6.82]}
         scale={0.92}
-        opacity={gogglesOn ? 0.24 : 0.08}
+        opacity={gogglesOn ? 0.08 : 0.03}
         parallax={0.28}
       />
       <DepthRidge
         world={world}
-        position={[-1.2, -0.62, -4.9]}
-        opacity={gogglesOn ? 0.2 : 0.08}
+        position={[-1.2, -0.98, -4.9]}
+        opacity={gogglesOn ? 0.08 : 0.04}
         speed={0.42}
         width={9.4}
       />
       <DepthRidge
         world={world}
-        position={[1.1, -0.82, -3.9]}
-        opacity={gogglesOn ? 0.28 : 0.12}
+        position={[1.1, -1.18, -3.9]}
+        opacity={gogglesOn ? 0.12 : 0.06}
         speed={0.58}
         width={8.2}
       />
@@ -889,9 +921,11 @@ function Atmosphere({
 
 function WorldScene({
   gogglesOn,
+  phase,
   world,
 }: {
   gogglesOn: boolean;
+  phase: ExperiencePhase;
   world: WorldOption;
 }) {
   return (
@@ -902,7 +936,7 @@ function WorldScene({
       <directionalLight position={[4.5, 4.2, 2.8]} intensity={2.5} color={world.sun} />
       <directionalLight position={[-4.8, 2.8, -2.6]} intensity={0.72} color={world.fill} />
       <pointLight position={[2.9, 1.4, 1.8]} intensity={0.6} color={world.accent} distance={8} />
-      <CameraRig gogglesOn={gogglesOn} />
+      <CameraRig gogglesOn={gogglesOn} phase={phase} />
       <Suspense fallback={null}>
         <WorldDepthStage gogglesOn={gogglesOn} world={world} />
         <WorldBackdrop world={world} />
@@ -920,19 +954,46 @@ function LensFrame({ phase }: { phase: ExperiencePhase }) {
       {visible ? (
         <motion.div
           className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
+          initial={{ opacity: 0, filter: "blur(5px)" }}
+          animate={{ opacity: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.6 }}
+          transition={{ duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
           aria-hidden="true"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,244,220,0.08)_0%,rgba(255,244,220,0.02)_34%,rgba(9,7,5,0.08)_58%,rgba(0,0,0,0.72)_100%)]" />
-          <div className="absolute inset-x-[-8%] top-[-6.5rem] h-40 rounded-b-[50%] bg-black/70 blur-sm md:top-[-7.8rem] md:h-48" />
-          <div className="absolute inset-x-[-8%] bottom-[-6.2rem] h-40 rounded-t-[50%] bg-black/75 blur-sm md:bottom-[-7.8rem] md:h-48" />
-          <div className="absolute left-[-7rem] top-[-5%] h-[110%] w-48 rounded-r-[50%] bg-black/50 blur-md md:w-64" />
-          <div className="absolute right-[-7rem] top-[-5%] h-[110%] w-48 rounded-l-[50%] bg-black/50 blur-md md:w-64" />
-          <div className="absolute left-[8%] top-[9%] h-32 w-[46%] rotate-[-9deg] rounded-[999px] border border-white/15 bg-white/5 blur-[1px]" />
-          <div className="absolute right-[10%] top-[13%] h-24 w-[32%] rotate-[-11deg] rounded-[999px] border border-white/10 bg-white/5 blur-[1px]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,244,220,0.1)_0%,rgba(255,244,220,0.025)_34%,rgba(9,7,5,0.1)_58%,rgba(0,0,0,0.76)_100%)]" />
+          <div className="absolute inset-0 opacity-25 mix-blend-screen [background-image:linear-gradient(90deg,rgba(90,220,255,0.16),transparent_18%,transparent_82%,rgba(255,138,108,0.16)),linear-gradient(rgba(255,255,255,0.13)_1px,transparent_1px)] [background-size:100%_100%,100%_4px]" />
+          <motion.div
+            className="absolute inset-x-[-8%] top-[-6.5rem] h-40 rounded-b-[50%] bg-black/[0.78] blur-sm md:top-[-7.8rem] md:h-48"
+            initial={{ y: -22 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.div
+            className="absolute inset-x-[-8%] bottom-[-6.2rem] h-40 rounded-t-[50%] bg-black/[0.82] blur-sm md:bottom-[-7.8rem] md:h-48"
+            initial={{ y: 22 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
+          />
+          <div className="absolute left-[-7rem] top-[-5%] h-[110%] w-48 rounded-r-[50%] bg-black/[0.58] blur-md md:w-64" />
+          <div className="absolute right-[-7rem] top-[-5%] h-[110%] w-48 rounded-l-[50%] bg-black/[0.58] blur-md md:w-64" />
+          <motion.div
+            className="absolute left-[7%] top-[8%] h-36 w-[47%] rotate-[-9deg] rounded-[999px] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),rgba(255,255,255,0.02)_58%,transparent_72%)] blur-[1px]"
+            initial={{ opacity: 0, x: -18, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.12, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute right-[8%] top-[12%] h-28 w-[34%] rotate-[-11deg] rounded-[999px] border border-white/12 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_56%,transparent_76%)] blur-[1px]"
+            initial={{ opacity: 0, x: 18, y: 10 }}
+            animate={{ opacity: 1, x: 0, y: 0 }}
+            transition={{ duration: 0.9, delay: 0.18, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute left-[-18%] top-[14%] h-32 w-[52%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent)] blur-md mix-blend-screen"
+            initial={{ x: "-24vw", opacity: 0 }}
+            animate={{ x: ["-24vw", "52vw", "118vw"], opacity: [0, 0.8, 0] }}
+            transition={{ duration: 2.8, delay: 0.7, repeat: Infinity, repeatDelay: 4.6, ease: "easeInOut" }}
+          />
         </motion.div>
       ) : null}
     </AnimatePresence>
@@ -940,6 +1001,8 @@ function LensFrame({ phase }: { phase: ExperiencePhase }) {
 }
 
 function GoggleLift({ active }: { active: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <AnimatePresence>
       {active ? (
@@ -952,53 +1015,141 @@ function GoggleLift({ active }: { active: boolean }) {
           aria-hidden="true"
         >
           <motion.div
-            className="absolute inset-x-[-10%] bottom-[-7vh] mx-auto h-[70vh] max-h-[620px] min-h-[360px] w-[120vw] max-w-[1160px]"
-            initial={{ y: "60vh", scale: 0.92, opacity: 0.1 }}
-            animate={{
-              y: ["60vh", "12vh", "0vh"],
-              scale: [0.92, 1.02, 1],
-              opacity: [0.1, 1, 1],
-            }}
+            className="absolute inset-0 bg-black"
+            initial={{ opacity: 0 }}
+            animate={
+              reduceMotion
+                ? { opacity: [0, 0.54, 0] }
+                : { opacity: [0, 0.18, 0.76, 0.28, 0] }
+            }
+            transition={
+              reduceMotion
+                ? { duration: 0.7, ease: "easeInOut" }
+                : { duration: 1.9, times: [0, 0.32, 0.58, 0.76, 1], ease: "easeInOut" }
+            }
+          />
+          <motion.div
+            className="absolute inset-x-[-8%] top-[-18vh] h-[38vh] rounded-b-[50%] bg-black/[0.82] blur-[2px]"
+            initial={{ y: "-14vh" }}
+            animate={{ y: reduceMotion ? "-7vh" : ["-14vh", "-4vh", "-7vh"] }}
+            transition={{ duration: reduceMotion ? 0.6 : 1.32, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.div
+            className="absolute inset-x-[-8%] bottom-[-18vh] h-[38vh] rounded-t-[50%] bg-black/[0.86] blur-[2px]"
+            initial={{ y: "14vh" }}
+            animate={{ y: reduceMotion ? "7vh" : ["14vh", "4vh", "7vh"] }}
+            transition={{ duration: reduceMotion ? 0.6 : 1.32, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
+          />
+          <motion.div
+            className="absolute inset-x-[-10%] bottom-[-7vh] mx-auto h-[72vh] max-h-[650px] min-h-[370px] w-[122vw] max-w-[1180px]"
+            initial={{ y: "64vh", scale: 0.9, rotateX: 12, opacity: 0.1 }}
+            animate={
+              reduceMotion
+                ? { y: "2vh", scale: 1, rotateX: 0, opacity: 1 }
+                : {
+                    y: ["64vh", "13vh", "-1.5vh", "0vh"],
+                    scale: [0.9, 1.035, 0.992, 1],
+                    rotateX: [12, -2, 0, 0],
+                    opacity: [0.1, 1, 1, 1],
+                  }
+            }
             exit={{ y: "-10vh", opacity: 0 }}
-            transition={{ duration: 1.12, times: [0, 0.72, 1], ease: [0.16, 1, 0.3, 1] }}
+            transition={
+              reduceMotion
+                ? { duration: 0.6, ease: "easeOut" }
+                : { duration: 1.36, times: [0, 0.58, 0.82, 1], ease: [0.16, 1, 0.3, 1] }
+            }
+            style={{ transformStyle: "preserve-3d" }}
           >
             <motion.div
-              className="absolute inset-x-[2%] top-[-12%] h-[28%] rounded-b-[50%] bg-black/90 blur-[2px]"
+              className="absolute inset-x-[1%] top-[-12%] h-[29%] rounded-b-[50%] bg-[linear-gradient(180deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
               initial={{ opacity: 0, y: -40 }}
-              animate={{ opacity: [0, 0.7, 0.92], y: [-40, -8, 0] }}
-              transition={{ duration: 0.86, delay: 0.18, ease: "easeOut" }}
+              animate={{ opacity: [0, 0.7, 0.96], y: [-40, -8, 0] }}
+              transition={{ duration: 0.86, delay: 0.12, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute inset-x-[2%] bottom-[-8%] h-[28%] rounded-t-[50%] bg-black/92 blur-[2px]"
+              className="absolute inset-x-[1%] bottom-[-8%] h-[29%] rounded-t-[50%] bg-[linear-gradient(0deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_-24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
               initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: [0, 0.76, 0.95], y: [34, 8, 0] }}
-              transition={{ duration: 0.86, delay: 0.18, ease: "easeOut" }}
+              animate={{ opacity: [0, 0.76, 0.98], y: [34, 8, 0] }}
+              transition={{ duration: 0.86, delay: 0.12, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute left-[6%] top-[18%] h-[56%] w-[41%] rounded-[50%] border-[12px] border-black/88 bg-[radial-gradient(ellipse_at_center,rgba(228,246,255,0.2),rgba(255,255,255,0.06)_38%,rgba(0,0,0,0.16)_76%,rgba(0,0,0,0.48)_100%)] shadow-[inset_0_0_46px_rgba(255,255,255,0.16),0_24px_72px_rgba(0,0,0,0.5)] sm:border-[16px]"
-              initial={{ x: -86, rotate: -4, opacity: 0, scale: 0.82 }}
-              animate={{ x: 0, rotate: 0, opacity: [0, 0.95, 0.86], scale: [0.82, 1.04, 1] }}
-              transition={{ duration: 1.0, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute left-[5.5%] top-[16%] h-[60%] w-[42%] overflow-hidden rounded-[50%] border-[13px] border-black/[0.92] bg-[radial-gradient(ellipse_at_48%_42%,rgba(235,251,255,0.28),rgba(255,255,255,0.08)_34%,rgba(0,0,0,0.12)_68%,rgba(0,0,0,0.52)_100%)] shadow-[inset_0_0_54px_rgba(255,255,255,0.18),inset_0_-26px_44px_rgba(0,0,0,0.3),0_24px_72px_rgba(0,0,0,0.56)] sm:border-[17px]"
+              initial={{ x: -110, rotate: -7, opacity: 0, scale: 0.78 }}
+              animate={
+                reduceMotion
+                  ? { x: 0, rotate: 0, opacity: 0.9, scale: 1 }
+                  : {
+                      x: [-110, 8, -2, 0],
+                      rotate: [-7, 1.2, -0.4, 0],
+                      opacity: [0, 0.98, 0.9, 0.9],
+                      scale: [0.78, 1.055, 0.994, 1],
+                    }
+              }
+              transition={{ duration: reduceMotion ? 0.58 : 1.12, delay: 0.05, times: [0, 0.65, 0.86, 1], ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
+              <motion.div
+                className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
+                initial={{ x: "-30%" }}
+                animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
+                transition={{ duration: reduceMotion ? 0.5 : 1.06, delay: 0.38, ease: "easeInOut" }}
+              />
+            </motion.div>
+            <motion.div
+              className="absolute right-[5.5%] top-[16%] h-[60%] w-[42%] overflow-hidden rounded-[50%] border-[13px] border-black/[0.92] bg-[radial-gradient(ellipse_at_52%_42%,rgba(235,251,255,0.28),rgba(255,255,255,0.08)_34%,rgba(0,0,0,0.12)_68%,rgba(0,0,0,0.52)_100%)] shadow-[inset_0_0_54px_rgba(255,255,255,0.18),inset_0_-26px_44px_rgba(0,0,0,0.3),0_24px_72px_rgba(0,0,0,0.56)] sm:border-[17px]"
+              initial={{ x: 110, rotate: 7, opacity: 0, scale: 0.78 }}
+              animate={
+                reduceMotion
+                  ? { x: 0, rotate: 0, opacity: 0.9, scale: 1 }
+                  : {
+                      x: [110, -8, 2, 0],
+                      rotate: [7, -1.2, 0.4, 0],
+                      opacity: [0, 0.98, 0.9, 0.9],
+                      scale: [0.78, 1.055, 0.994, 1],
+                    }
+              }
+              transition={{ duration: reduceMotion ? 0.58 : 1.12, delay: 0.05, times: [0, 0.65, 0.86, 1], ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
+              <motion.div
+                className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
+                initial={{ x: "-30%" }}
+                animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
+                transition={{ duration: reduceMotion ? 0.5 : 1.06, delay: 0.42, ease: "easeInOut" }}
+              />
+            </motion.div>
+            <motion.div
+              className="absolute left-1/2 top-[38%] h-[19%] w-[16%] -translate-x-1/2 rounded-b-[52%] border-b-[16px] border-black/[0.92] shadow-[0_12px_36px_rgba(0,0,0,0.34)]"
+              initial={{ opacity: 0, y: 24, scale: 0.8 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.58, delay: 0.38, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute right-[6%] top-[18%] h-[56%] w-[41%] rounded-[50%] border-[12px] border-black/88 bg-[radial-gradient(ellipse_at_center,rgba(228,246,255,0.2),rgba(255,255,255,0.06)_38%,rgba(0,0,0,0.16)_76%,rgba(0,0,0,0.48)_100%)] shadow-[inset_0_0_46px_rgba(255,255,255,0.16),0_24px_72px_rgba(0,0,0,0.5)] sm:border-[16px]"
-              initial={{ x: 86, rotate: 4, opacity: 0, scale: 0.82 }}
-              animate={{ x: 0, rotate: 0, opacity: [0, 0.95, 0.86], scale: [0.82, 1.04, 1] }}
-              transition={{ duration: 1.0, delay: 0.08, ease: [0.16, 1, 0.3, 1] }}
-            />
-            <motion.div
-              className="absolute left-1/2 top-[42%] h-[14%] w-[15%] -translate-x-1/2 rounded-b-[50%] border-b-[14px] border-black/88"
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.52, delay: 0.42, ease: "easeOut" }}
+              className="absolute left-1/2 top-[46%] h-7 w-[10%] -translate-x-1/2 rounded-full bg-white/12 blur-md"
+              initial={{ opacity: 0, scaleX: 0.4 }}
+              animate={{ opacity: [0, 0.65, 0.18], scaleX: [0.4, 1.16, 1] }}
+              transition={{ duration: 0.72, delay: 0.7, ease: "easeOut" }}
             />
           </motion.div>
           <motion.div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08)_0%,rgba(0,0,0,0.1)_40%,rgba(0,0,0,0.88)_100%)]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12)_0%,rgba(0,0,0,0.12)_40%,rgba(0,0,0,0.9)_100%)]"
             initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0, 0.62, 0.18, 0] }}
+            animate={{ opacity: reduceMotion ? [0, 0.5, 0] : [0, 0, 0.68, 0.22, 0] }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 1.34, times: [0, 0.45, 0.64, 0.86, 1], ease: "easeInOut" }}
+            transition={{ duration: reduceMotion ? 0.7 : 1.55, times: [0, 0.44, 0.62, 0.84, 1], ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute left-[-26%] top-[18%] h-28 w-[64%] rotate-[-17deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(138,222,255,0.22),transparent)] blur-md mix-blend-screen"
+            initial={{ x: "-20vw", opacity: 0 }}
+            animate={{ x: reduceMotion ? "45vw" : ["-20vw", "48vw", "125vw"], opacity: reduceMotion ? [0, 0.45, 0] : [0, 1, 0] }}
+            transition={{ duration: reduceMotion ? 0.8 : 1.24, delay: 0.54, ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute inset-0 bg-white"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: reduceMotion ? [0, 0.24, 0] : [0, 0, 0.42, 0] }}
+            transition={{ duration: reduceMotion ? 0.6 : 1.35, times: [0, 0.66, 0.72, 1], ease: "easeOut" }}
           />
         </motion.div>
       ) : null}
@@ -1007,6 +1158,8 @@ function GoggleLift({ active }: { active: boolean }) {
 }
 
 function LensCalibration({ active }: { active: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <AnimatePresence>
       {active ? (
@@ -1019,40 +1172,71 @@ function LensCalibration({ active }: { active: boolean }) {
           aria-hidden="true"
         >
           <motion.div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_0%,rgba(229,246,255,0.08)_36%,rgba(0,0,0,0.46)_78%,rgba(0,0,0,0.86)_100%)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: [0, 0.82, 0.28, 0] }}
-            transition={{ duration: 1.18, times: [0, 0.42, 0.78, 1], ease: "easeInOut" }}
+            className="absolute inset-0 bg-black"
+            initial={{ opacity: 0, clipPath: "ellipse(95% 82% at 50% 50%)" }}
+            animate={
+              reduceMotion
+                ? {
+                    opacity: [0, 0.45, 0],
+                    clipPath: "ellipse(76% 64% at 50% 50%)",
+                  }
+                : {
+                    opacity: [0, 0.58, 0.66, 0],
+                    clipPath: [
+                      "ellipse(95% 82% at 50% 50%)",
+                      "ellipse(46% 38% at 50% 50%)",
+                      "ellipse(23% 18% at 50% 50%)",
+                      "ellipse(92% 76% at 50% 50%)",
+                    ],
+                  }
+            }
+            transition={
+              reduceMotion
+                ? { duration: 0.7, ease: "easeInOut" }
+                : { duration: 1.42, times: [0, 0.43, 0.58, 1], ease: [0.76, 0, 0.24, 1] }
+            }
           />
           <motion.div
-            className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(255,255,255,0.15)_1px,transparent_1px)] [background-size:100%_4px]"
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_0%,rgba(229,246,255,0.08)_36%,rgba(0,0,0,0.46)_78%,rgba(0,0,0,0.86)_100%)]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: reduceMotion ? [0, 0.5, 0] : [0, 0.82, 0.28, 0] }}
+            transition={{ duration: reduceMotion ? 0.7 : 1.18, times: reduceMotion ? [0, 0.5, 1] : [0, 0.42, 0.78, 1], ease: "easeInOut" }}
+          />
+          <motion.div
+            className="absolute inset-0 opacity-45 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(93,220,255,0.14),transparent_18%,transparent_82%,rgba(255,114,91,0.14))] [background-size:100%_4px,100%_100%]"
             initial={{ y: -26, opacity: 0 }}
-            animate={{ y: [-26, 14, 0], opacity: [0, 0.42, 0] }}
-            transition={{ duration: 0.94, delay: 0.28, ease: "easeOut" }}
+            animate={{ y: reduceMotion ? 0 : [-26, 14, 0], opacity: [0, 0.42, 0] }}
+            transition={{ duration: reduceMotion ? 0.62 : 0.94, delay: 0.28, ease: "easeOut" }}
           />
           <motion.div
             className="absolute left-0 right-0 top-1/2 h-16 -translate-y-1/2 bg-[linear-gradient(180deg,transparent,rgba(217,242,255,0.32),transparent)] blur-sm"
             initial={{ y: "-62vh", opacity: 0 }}
-            animate={{ y: ["-58vh", "6vh", "58vh"], opacity: [0, 0.92, 0] }}
-            transition={{ duration: 0.92, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
+            animate={{ y: reduceMotion ? "0vh" : ["-58vh", "6vh", "58vh"], opacity: [0, 0.92, 0] }}
+            transition={{ duration: reduceMotion ? 0.62 : 0.92, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
           />
           <motion.div
             className="absolute left-1/2 top-1/2 h-[52vh] w-[76vw] max-w-[790px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/18 shadow-[0_0_70px_rgba(200,230,255,0.18),inset_0_0_42px_rgba(255,255,255,0.08)]"
             initial={{ opacity: 0, scale: 0.72 }}
-            animate={{ opacity: [0, 0.62, 0], scale: [0.72, 1.02, 1.08] }}
-            transition={{ duration: 0.95, delay: 0.4, ease: "easeOut" }}
+            animate={{ opacity: [0, 0.62, 0], scale: reduceMotion ? [0.9, 1, 1.03] : [0.72, 1.02, 1.08] }}
+            transition={{ duration: reduceMotion ? 0.7 : 0.95, delay: 0.4, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[34vh] w-[58vw] max-w-[610px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-cyan-100/18 shadow-[0_0_90px_rgba(103,232,249,0.2)]"
+            initial={{ opacity: 0, scale: 0.55 }}
+            animate={{ opacity: [0, 0.74, 0], scale: reduceMotion ? [0.88, 1, 1.02] : [0.55, 1.1, 1.24] }}
+            transition={{ duration: reduceMotion ? 0.65 : 0.98, delay: 0.58, ease: "easeOut" }}
           />
           <motion.div
             className="absolute bottom-[14vh] left-1/2 h-1 w-40 -translate-x-1/2 overflow-hidden rounded-full border border-white/20 bg-white/10"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -2] }}
-            transition={{ duration: 0.98, delay: 0.4, times: [0, 0.25, 0.78, 1], ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.7 : 0.98, delay: 0.4, times: [0, 0.25, 0.78, 1], ease: "easeOut" }}
           >
             <motion.span
               className="block h-full bg-white/70"
               initial={{ width: "8%" }}
               animate={{ width: "100%" }}
-              transition={{ duration: 0.62, delay: 0.58, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.42 : 0.62, delay: 0.58, ease: "easeOut" }}
             />
           </motion.div>
         </motion.div>
@@ -1070,14 +1254,17 @@ function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
       exit={{ opacity: 0, y: 12 }}
       transition={{ duration: 0.7, ease: "easeOut" }}
     >
-      <button
+      <motion.button
         type="button"
         onClick={onClick}
         className="group rounded-full border border-white/25 bg-black/25 px-5 py-3 text-sm font-medium text-white/90 shadow-[0_16px_50px_rgba(0,0,0,0.26)] backdrop-blur-md transition hover:border-white/50 hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black"
+        whileHover={{ y: -2, scale: 1.025 }}
+        whileTap={{ y: 1, scale: 0.985 }}
+        transition={{ type: "spring", stiffness: 460, damping: 28 }}
       >
         <span className="mr-3 inline-block h-2 w-2 rounded-full bg-amber-200 shadow-[0_0_18px_rgba(255,222,151,0.82)] transition group-hover:scale-110" />
         Put on goggles.
-      </button>
+      </motion.button>
     </motion.div>
   );
 }
@@ -1289,23 +1476,28 @@ function TransitionStatus({ active }: { active: boolean }) {
     <AnimatePresence>
       {active ? (
         <motion.div
-          className="pointer-events-none absolute inset-x-0 bottom-[11vh] z-[55] flex justify-center px-6"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
+          className="pointer-events-none absolute inset-x-0 bottom-[10vh] z-[55] flex justify-center px-6"
+          initial={{ opacity: 0, y: 8, scale: 0.96 }}
+          animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6], scale: [0.96, 1, 1, 0.98] }}
           exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 0.2 }}
+          transition={{ duration: 1.5, times: [0, 0.18, 0.74, 1], ease: "easeOut" }}
           aria-hidden="true"
         >
-          <div className="rounded-full border border-white/16 bg-black/28 px-4 py-3 text-center text-white shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/58">
-              Calibrating optics
-            </p>
-            <div className="mt-3 h-1 w-40 overflow-hidden rounded-full border border-white/16 bg-white/8">
+          <div className="flex items-center gap-2 rounded-full border border-white/16 bg-black/24 px-3 py-2 text-white shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md">
+            {[0, 1, 2].map((index) => (
+              <motion.span
+                key={index}
+                className="h-1.5 w-1.5 rounded-full bg-white/55"
+                animate={{ opacity: [0.35, 1, 0.35], scale: [0.9, 1.18, 0.9] }}
+                transition={{ duration: 0.62, delay: index * 0.1, repeat: 2, ease: "easeInOut" }}
+              />
+            ))}
+            <div className="h-1 w-40 overflow-hidden rounded-full border border-white/16 bg-white/8">
               <motion.span
                 className="block h-full rounded-full bg-white/80"
                 initial={{ width: "10%" }}
-                animate={{ width: "100%" }}
-                transition={{ duration: 1.08, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ width: ["10%", "52%", "100%"] }}
+                transition={{ duration: 1.06, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
               />
             </div>
           </div>
@@ -1327,6 +1519,52 @@ function WorldChangeWash({ active }: { active: boolean }) {
           transition={{ duration: 0.58, ease: "easeInOut" }}
           aria-hidden="true"
         />
+      ) : null}
+    </AnimatePresence>
+  );
+}
+
+function ArrivalBloom({ active }: { active: boolean }) {
+  const reduceMotion = useReducedMotion();
+
+  return (
+    <AnimatePresence>
+      {active ? (
+        <motion.div
+          className="pointer-events-none absolute inset-0 z-[36] overflow-hidden"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: [0, 1, 0] }}
+          transition={{ duration: reduceMotion ? 0.72 : 1.28, times: [0, 0.24, 1], ease: "easeOut" }}
+          aria-hidden="true"
+        >
+          <motion.div
+            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.34)_0%,rgba(218,245,255,0.14)_24%,rgba(0,0,0,0)_66%)] mix-blend-screen"
+            initial={{ scale: 0.82, opacity: 0 }}
+            animate={{
+              scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.08, 1.18],
+              opacity: [0, 1, 0],
+            }}
+            transition={{ duration: reduceMotion ? 0.64 : 1.1, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute left-1/2 top-1/2 h-[54vh] w-[78vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/22 shadow-[0_0_110px_rgba(210,240,255,0.26),inset_0_0_60px_rgba(255,255,255,0.12)]"
+            initial={{ scale: 0.82, opacity: 0 }}
+            animate={{
+              scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.12, 1.22],
+              opacity: [0, 0.74, 0],
+            }}
+            transition={{ duration: reduceMotion ? 0.66 : 1.12, delay: 0.04, ease: "easeOut" }}
+          />
+          <motion.div
+            className="absolute left-[-28%] top-[20%] h-36 w-[70%] rotate-[-16deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(115,226,255,0.18),transparent)] blur-md mix-blend-screen"
+            initial={{ x: "-14vw", opacity: 0 }}
+            animate={{
+              x: reduceMotion ? "45vw" : ["-14vw", "48vw", "126vw"],
+              opacity: [0, 1, 0],
+            }}
+            transition={{ duration: reduceMotion ? 0.58 : 1.04, delay: 0.1, ease: "easeInOut" }}
+          />
+        </motion.div>
       ) : null}
     </AnimatePresence>
   );
@@ -1886,6 +2124,7 @@ export function EstebanWorld() {
   const [selectedWorldId, setSelectedWorldId] = useState<WorldId>("yosemite");
   const [worldWashActive, setWorldWashActive] = useState(false);
   const [worldPickerOpen, setWorldPickerOpen] = useState(false);
+  const reduceMotion = useReducedMotion();
   const pointer = usePointerParallax();
   const worldWashTimeout = useRef<number | null>(null);
   const worldImagePreloads = useRef<HTMLImageElement[]>([]);
@@ -1898,10 +2137,10 @@ export function EstebanWorld() {
 
     const timeout = window.setTimeout(() => {
       setPhase("inside");
-    }, 1620);
+    }, reduceMotion ? 760 : 2060);
 
     return () => window.clearTimeout(timeout);
-  }, [phase]);
+  }, [phase, reduceMotion]);
 
   useEffect(() => {
     const savedWorldId = window.localStorage.getItem("esteban-world");
@@ -1956,14 +2195,35 @@ export function EstebanWorld() {
 
   return (
     <section className="relative left-1/2 h-svh min-h-[620px] w-screen -translate-x-1/2 overflow-hidden bg-[#0c0a07]">
-      <Canvas
+      <motion.div
         className="absolute inset-0 z-0"
-        dpr={[1, 1.7]}
-        camera={{ position: [0, 1.18, 4.18], fov: 50, near: 0.1, far: 70 }}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        animate={
+          phase === "transition" && !reduceMotion
+            ? {
+                scale: [1, 1.035, 1.012],
+                filter: [
+                  "blur(0px) saturate(1) contrast(1)",
+                  "blur(10px) saturate(1.22) contrast(1.08)",
+                  "blur(1px) saturate(1.08) contrast(1.03)",
+                ],
+              }
+            : { scale: 1, filter: "blur(0px) saturate(1) contrast(1)" }
+        }
+        transition={
+          phase === "transition" && !reduceMotion
+            ? { duration: 1.72, times: [0, 0.56, 1], ease: [0.16, 1, 0.3, 1] }
+            : { duration: 0.86, ease: [0.16, 1, 0.3, 1] }
+        }
       >
-        <WorldScene gogglesOn={gogglesOn} world={selectedWorld} />
-      </Canvas>
+        <Canvas
+          className="h-full w-full"
+          dpr={[1, 1.7]}
+          camera={{ position: [0, 1.18, 4.18], fov: 50, near: 0.1, far: 70 }}
+          gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        >
+          <WorldScene gogglesOn={gogglesOn} phase={phase} world={selectedWorld} />
+        </Canvas>
+      </motion.div>
 
       <AmbientHud phase={phase} />
       <LensFrame phase={phase} />
@@ -1971,6 +2231,7 @@ export function EstebanWorld() {
       <GoggleLift active={phase === "transition"} />
       <LensCalibration active={phase === "transition"} />
       <TransitionStatus active={phase === "transition"} />
+      <ArrivalBloom active={phase === "inside"} />
       <WorldSelector
         selectedWorldId={selectedWorld.id}
         phase={phase}
