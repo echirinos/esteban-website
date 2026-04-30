@@ -10,7 +10,7 @@ import { contactChannels, roleFit } from "../lib/portfolio-data";
 export const metadata: Metadata = {
   title: "Contact",
   description:
-    "Contact Esteban Chirinos about applied AI, developer experience, technical success, and solutions engineering roles.",
+    "Contact Esteban Chirinos about applied AI, developer experience, technical product management, demo engineering, platform, and partner solutions roles.",
 };
 
 export default function ContactPage() {
@@ -21,7 +21,7 @@ export default function ContactPage() {
       <SurfaceCard className="mb-8">
         <PageIntro
           title="Contact Esteban"
-          description="Best for applied AI, developer experience, demo systems, customer-facing technical work, and partner solutions conversations."
+          description="Best for applied AI, developer experience, technical product management, demo systems, customer-facing technical work, and partner solutions conversations."
         />
       </SurfaceCard>
 

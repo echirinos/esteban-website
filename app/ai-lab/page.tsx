@@ -11,7 +11,7 @@ import { labTracks } from "../lib/portfolio-data";
 export const metadata: Metadata = {
   title: "AI Lab",
   description:
-    "Applied AI experiments, demo systems, and prototype patterns by Esteban Chirinos.",
+    "Applied AI product experiments, demo systems, and prototype patterns by Esteban Chirinos.",
 };
 
 const operatingPrinciples = [
@@ -27,7 +27,7 @@ export default function AILabPage() {
       <SurfaceCard className="mb-8">
         <PageIntro
           title="AI work that turns into usable product surfaces."
-          description="This is the applied layer behind the portfolio: prototype systems, agent workflows, demo architecture, and operator tooling where the output has to be persuasive, testable, and deployable."
+          description="This is the applied layer behind the portfolio: prototype systems, agent workflows, demo architecture, and operator tooling where the output has to be persuasive, testable, deployable, and useful for product decisions."
         />
       </SurfaceCard>
 

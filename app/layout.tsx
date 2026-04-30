@@ -12,15 +12,15 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://estebanchirinos.xyz"),
   title: {
     default:
-      "Esteban Chirinos - Applied AI, Developer Experience, Solutions Engineering",
+      "Esteban Chirinos - Applied AI, Developer Experience, Technical Product",
     template: "%s | Esteban Chirinos",
   },
   description:
-    "Technical Services Engineer at Coinbase focused on AI-ready demos, reference implementations, developer experience, API architecture, and customer deployments.",
+    "Senior Technical Solutions Engineer at Coinbase focused on AI-ready demos, developer experience, API architecture, product feedback loops, customer deployments, and platform adoption.",
   openGraph: {
     title: "Esteban Chirinos",
     description:
-      "Applied AI, Developer Experience, Technical Success, and Solutions Engineering work by Esteban Chirinos.",
+      "Applied AI, Developer Experience, Technical Product, and customer-facing platform work by Esteban Chirinos.",
     url: "https://estebanchirinos.xyz",
     siteName: "Esteban Chirinos",
     locale: "en_US",
@@ -40,7 +40,7 @@ export const metadata: Metadata = {
   twitter: {
     title: "Esteban Chirinos - Applied AI and Developer Experience",
     description:
-      "Demo apps, reference implementations, API architecture, and customer-facing technical work.",
+      "AI-ready demos, reference implementations, API architecture, product feedback loops, and customer-facing technical work.",
     card: "summary_large_image",
   },
 };

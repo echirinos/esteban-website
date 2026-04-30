@@ -3,6 +3,12 @@ export type Metric = {
   label: string;
 };
 
+export type EducationCredential = {
+  school: string;
+  credential: string;
+  emphasis: string;
+};
+
 export type WorkExperience = {
   name: string;
   logo: string;
@@ -32,34 +38,59 @@ export type LabTrack = {
 };
 
 export const portfolioMetrics: Metric[] = [
-  { value: "7+", label: "Companies shipped at" },
+  { value: "$20M", label: "Revenue impact supported" },
+  { value: "30+", label: "Strategic partner integrations" },
   { value: "2,000+", label: "Monthly demo users" },
-  { value: "40+", label: "Integration solutions delivered" },
-  { value: "1", label: "Founder project acquired" },
+  { value: "100+", label: "Developer insights translated" },
+  { value: "40+", label: "Customer solutions delivered" },
 ];
 
 export const roleFit = [
   "Applied AI Architect",
+  "Technical Product Manager",
   "Developer Experience",
   "Demo Engineering",
   "AI Deployment",
   "Partner Solutions",
 ];
 
+export const educationCredentials: EducationCredential[] = [
+  {
+    school: "Berkeley Haas",
+    credential: "MBA, expected 2028",
+    emphasis: "Product strategy, leadership, and go-to-market judgment.",
+  },
+  {
+    school: "Florida International University",
+    credential: "B.S. Computer Science, 2019",
+    emphasis: "Engineering foundation for platform, API, and AI product work.",
+  },
+];
+
+export const certificationHighlights = [
+  "GCP Professional Cloud Architect",
+  "AWS Solutions Architect",
+  "Azure Fundamentals",
+  "Hack Reactor Software Engineering Certificate",
+  "Certified Roofing Contractor",
+];
+
 export const workExperiences: WorkExperience[] = [
   {
     name: "Coinbase",
     logo: "/images/coinbase.svg",
-    role: "Technical Services Engineer",
-    period: "March 2024 - Present",
+    role: "Senior Technical Solutions Engineer",
+    period: "April 2024 - Present",
     url: "https://www.coinbase.com/developer-platform",
     summary:
-      "Technical onboarding and implementation support for Coinbase Developer Platform customers building with APIs, SDKs, wallets, payments, and onchain workflows.",
-    tags: ["CDP APIs", "SDKs", "Onchain apps"],
+      "Customer-facing platform work for Coinbase Developer Platform across Onramp, Embedded Wallets, Advanced Trade, x402, AgentKit, and CDP products, turning developer pain points into demos, onboarding systems, technical guidance, AI workflows, and product feedback.",
+    tags: ["Developer platform", "AI workflows", "Partner integrations"],
     impact: [
-      "Lead technical onboarding for developers and enterprise teams integrating CDP APIs and SDKs.",
-      "Design integration architectures, demo paths, and best-practice guidance for scalable onchain applications.",
-      "Write docs, runbooks, and reference implementations across TypeScript, Python, Java, and C#.",
+      "Led 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, supporting $20M in revenue impact.",
+      "Built AI-enabled workflows across Salesforce, Slack, developer docs, and support operations, helping reduce escalations by 30%.",
+      "Developed production-grade demos, reference implementations, and integration tooling across Onramp, x402, Embedded Wallets, AgentKit, and CDP Wallets, totaling 58,000+ lines of code.",
+      "Delivered 100+ developer documentation updates across API tutorials, SDK migrations, onboarding guides, and sample apps.",
+      "Translated 100+ weekly developer insights into product recommendations, including Apple Pay checkout optimization that reduced Onramp checkout time by 35%.",
     ],
     featured: true,
   },
@@ -70,12 +101,12 @@ export const workExperiences: WorkExperience[] = [
     period: "June 2023 - February 2024",
     url: "https://www.trmlabs.com/",
     summary:
-      "Designed and rolled out API integrations for financial institutions and government agencies, including custom solutions, discovery sessions, and dashboard tooling.",
-    tags: ["API integrations", "Discovery", "Dashboards"],
+      "Owned discovery-heavy solution design for regulated customers, connecting financial crime workflows, API capabilities, and product requirements through custom integrations and dashboard tooling.",
+    tags: ["Discovery", "API products", "Regulated customers"],
     impact: [
-      "Delivered 40+ custom API integration solutions for regulated customers.",
-      "Ran 60+ technical discovery sessions to align platform capabilities with client needs.",
-      "Built 10+ dashboard tools and improved reference patterns for stronger CSAT.",
+      "Delivered 40+ custom API integration solutions for regulated customers, increasing client satisfaction by 30%.",
+      "Ran 60+ technical discovery sessions, lifting TRM technology-suite adoption by 25%.",
+      "Built 10+ dashboard tools and converted field learnings into clearer reference patterns, improving client feedback by 35%.",
     ],
     featured: true,
   },
@@ -86,12 +117,12 @@ export const workExperiences: WorkExperience[] = [
     period: "August 2022 - February 2023",
     url: "https://polygon.technology/",
     summary:
-      "Built web3 proof-of-concepts, reference implementations, and partner solution designs across entertainment, DeFi, and NFT use cases.",
-    tags: ["POCs", "Web3", "Partner engineering"],
+      "Built partner proof-of-concepts and solution narratives that helped teams evaluate web3 product opportunities across entertainment, DeFi, and NFT use cases.",
+    tags: ["POCs", "Partner strategy", "Web3 products"],
     impact: [
-      "Built and shipped web3 solutions for entertainment, DeFi, and NFT clients.",
-      "Standardized operations for a 12-person solutions engineering team.",
-      "Created prospect and partner demos in Next.js and JavaScript.",
+      "Built and shipped web3 solutions across entertainment, DeFi, and NFT clients, impacting 15+ customers.",
+      "Streamlined team operations, reducing workflow delays by 40%.",
+      "Developed and showcased proof-of-concept integrations, increasing adoption by 20% and engagement by 35%.",
     ],
     featured: true,
   },
@@ -102,12 +133,12 @@ export const workExperiences: WorkExperience[] = [
     period: "January 2022 - July 2022",
     url: "https://opensea.io/",
     summary:
-      "Owned developer docs, sample code, partner engineering, API feedback loops, and support automation for marketplace developers.",
-    tags: ["Docs", "DevRel", "API feedback"],
+      "Worked across developer relations and product feedback for marketplace developers, owning docs, sample code, API request triage, partner engineering, and support automation.",
+    tags: ["API feedback", "Developer products", "Prioritization"],
     impact: [
       "Owned developer-facing docs, code samples, and partner engineering support.",
-      "Prioritized 100+ developer feature requests for the OpenSea API and SDK.",
-      "Built API key distribution and support automation systems that improved NPS.",
+      "Co-led API and SDK product strategy during a Product Manager rotation, prioritizing 100+ developer requests.",
+      "Improved support operations across 400 weekly cases through API key distribution and support automation systems.",
     ],
     featured: true,
   },
@@ -118,24 +149,25 @@ export const workExperiences: WorkExperience[] = [
     period: "October 2020 - January 2022",
     url: "https://about.google/",
     summary:
-      "Supported cloud architecture and customer success for strategic accounts, including migration planning, technical enablement, and account health.",
-    tags: ["Cloud", "GCP", "Customer success"],
+      "Supported cloud architecture and customer success for strategic accounts, connecting migration goals, technical enablement, and account health for enterprise users.",
+    tags: ["Cloud", "Enterprise revenue", "Customer success"],
     impact: [
-      "Supported enterprise customers across cloud architecture and migration planning.",
-      "Led an AWS to GCP BigQuery and Dataproc migration for a new customer.",
+      "Managed $217M in enterprise revenue while coaching customers to architect and deploy critical cloud solutions.",
+      "Led an AWS-to-GCP BigQuery and Dataproc migration that contributed $300K+ in revenue growth and 10%+ monthly GCP spend expansion.",
     ],
   },
   {
     name: "Microsoft",
     logo: "/images/Microsoft_logo.svg",
-    role: "Software Engineering Intern",
-    period: "May 2020 - August 2020",
+    role: "Technical Account Manager",
+    period: "July 2019 - October 2020",
     url: "https://www.microsoft.com/",
     summary:
-      "Built an Azure Cloud Supply Chain telemetry application to help internal teams monitor and reason about operational data.",
-    tags: ["Azure", "Telemetry", "Software engineering"],
+      "Managed enterprise accounts across Azure, Office, and Microsoft's enterprise suite while building internal tools and training for account teams.",
+    tags: ["Azure", "Enterprise accounts", "Internal tools"],
     impact: [
-      "Built telemetry dashboards to surface bottlenecks and improve supply chain visibility.",
+      "Managed 40+ enterprise accounts, contributing to 50% annual Azure and Office revenue growth.",
+      "Led Modern Workplace internal tooling and training for 40+ account managers and helped improve customer uptime by 30%.",
     ],
   },
   {
@@ -282,13 +314,16 @@ export const labTracks: LabTrack[] = [
 
 export const strengthAreas = [
   "Applied AI demos",
+  "Developer experience",
+  "Agentic workflows",
+  "LLM evaluation",
+  "Technical product strategy",
   "API architecture",
-  "Reference apps",
-  "Developer docs",
   "Technical discovery",
+  "Voice of customer",
   "Customer enablement",
-  "Solutions engineering",
-  "Product feedback loops",
+  "Partner solutions",
+  "Reference apps",
 ];
 
 export const techStack = [

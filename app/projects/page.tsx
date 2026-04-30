@@ -12,7 +12,7 @@ import { projectEntries } from "../lib/portfolio-data";
 export const metadata: Metadata = {
   title: "Projects",
   description:
-    "Demo apps, reference implementations, developer tutorials, and products by Esteban Chirinos.",
+    "Demo apps, reference implementations, developer tutorials, technical product work, and operator systems by Esteban Chirinos.",
 };
 
 const featuredProjects = projectEntries.filter((item) => item.highlighted);
@@ -24,7 +24,7 @@ export default function ProjectsPage() {
       <SurfaceCard className="mb-8">
         <PageIntro
           title="Projects with real users, operators, and outcomes."
-          description="The first projects here are the clearest proof for applied AI, developer experience, solutions, and technical success roles: reference apps, integration tools, tutorials, and products that made a platform easier to adopt."
+          description="The first projects here are the clearest proof for applied AI, developer experience, technical product, solutions, and platform roles: reference apps, integration tools, tutorials, and products that made a platform easier to adopt."
         />
       </SurfaceCard>
 

@@ -3,10 +3,10 @@ const { fontFamily } = require("tailwindcss/defaultTheme");
 
 export default {
   content: [
-    './app/**/*.{ts,tsx}',
+    './app/**/*.tsx',
     './content/**/*.mdx',
     './public/**/*.svg',
-    './components/**/*.{ts,tsx}',
+    './components/**/*.tsx',
   ],
   theme: {
     extend: {

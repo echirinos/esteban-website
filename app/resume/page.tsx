@@ -6,19 +6,29 @@ import {
   SurfaceCard,
   TagList,
 } from "../components/portfolio-ui";
-import { roleFit, strengthAreas, workExperiences } from "../lib/portfolio-data";
+import {
+  certificationHighlights,
+  educationCredentials,
+  roleFit,
+  strengthAreas,
+  workExperiences,
+} from "../lib/portfolio-data";
 
 export const metadata: Metadata = {
   title: "Resume",
   description:
-    "Resume summary for Esteban Chirinos, focused on applied AI, developer experience, and solutions engineering.",
+    "Resume summary for Esteban Chirinos, focused on applied AI, developer experience, technical product, demo engineering, and customer-facing platform work.",
 };
 
 const snapshot = [
-  "Technical Services Engineer at Coinbase Developer Platform",
+  "Senior Technical Solutions Engineer at Coinbase Developer Platform",
+  "30+ strategic partner integrations and $20M revenue impact supported",
+  "AI-enabled support workflows that helped reduce escalations by 30%",
   "Staff Solutions Architect experience at TRM Labs",
   "Developer Relations and Product experience at OpenSea",
-  "Solutions Engineering experience at Polygon Labs",
+  "Partner product and solutions experience at Polygon Labs",
+  "Enterprise cloud and account experience at Google and Microsoft",
+  "Berkeley Haas MBA and FIU Computer Science undergrad",
   "Founder and operator of software, automation, and local-business systems",
 ];
 
@@ -28,7 +38,7 @@ export default function ResumePage() {
       <SurfaceCard className="mb-8">
         <PageIntro
           title="The short recruiter version."
-          description="Best aligned with applied AI, developer experience, demo engineering, AI deployment, partner solutions, and customer-facing technical roles."
+          description="Best aligned with applied AI, developer experience, technical product management, demo engineering, AI deployment, partner solutions, and customer-facing platform roles."
         />
       </SurfaceCard>
 
@@ -44,9 +54,11 @@ export default function ResumePage() {
             ))}
           </div>
           <div className="mt-8 rounded-2xl border border-base-content/10 bg-base-200/45 p-4">
-            <p className="text-sm font-semibold text-base-content/78">Recent seats</p>
+            <p className="text-sm font-semibold text-base-content/78">
+              Experience timeline
+            </p>
             <div className="mt-4 space-y-3">
-              {workExperiences.slice(0, 4).map((company) => (
+              {workExperiences.map((company) => (
                 <div key={company.name} className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-medium">{company.name}</p>
@@ -63,6 +75,28 @@ export default function ResumePage() {
           <SurfaceCard>
             <h2 className="text-2xl font-semibold">Role fit</h2>
             <TagList items={roleFit} className="mt-5" />
+          </SurfaceCard>
+
+          <SurfaceCard>
+            <h2 className="text-2xl font-semibold">Education</h2>
+            <div className="mt-5 space-y-4">
+              {educationCredentials.map((item) => (
+                <div key={item.school}>
+                  <p className="text-sm font-semibold text-base-content/52">
+                    {item.school}
+                  </p>
+                  <p className="mt-1 font-medium">{item.credential}</p>
+                  <p className="mt-1 text-sm leading-relaxed text-base-content/62">
+                    {item.emphasis}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </SurfaceCard>
+
+          <SurfaceCard>
+            <h2 className="text-2xl font-semibold">Certifications</h2>
+            <TagList items={certificationHighlights} className="mt-5" />
           </SurfaceCard>
 
           <SurfaceCard>

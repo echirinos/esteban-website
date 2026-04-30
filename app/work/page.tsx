@@ -14,7 +14,7 @@ import { portfolioMetrics, roleFit, workExperiences } from "../lib/portfolio-dat
 export const metadata: Metadata = {
   title: "Work",
   description:
-    "Applied AI, developer experience, technical success, and solutions engineering work by Esteban Chirinos.",
+    "Applied AI, developer experience, technical product, platform, and customer-facing solutions work by Esteban Chirinos.",
 };
 
 const featuredWork = workExperiences.filter((item) => item.featured);
@@ -25,8 +25,8 @@ export default function WorkPage() {
     <PageShell>
       <SurfaceCard className="mb-8">
         <PageIntro
-          title="Applied AI, DevEx, and solutions work."
-          description="I’ve spent my career where technical products meet customers: developer platforms, API integrations, cloud architecture, product feedback loops, documentation, workshops, and demos that make complex systems easier to adopt."
+          title="Applied AI, DevEx, product, and solutions work."
+          description="I’ve spent my career where technical products meet customers: developer platforms, API integrations, cloud architecture, discovery calls, product feedback loops, documentation, workshops, and demos that make complex systems easier to adopt."
           aside={
             <div className="rounded-2xl border border-base-content/10 bg-base-100/70 p-4">
               <p className="text-sm font-semibold text-base-content/75">Best aligned with</p>
@@ -42,8 +42,8 @@ export default function WorkPage() {
 
       <section className="py-14">
         <SectionHeading
-          title="Recent work"
-          description="The strongest fit is customer-facing technical work where a platform, product, and developer workflow all need to become clearer at the same time."
+          title="Recent customer-facing work"
+          description="The strongest fit is work where a platform, customer problem, product decision, and developer workflow all need to become clearer at the same time."
         />
         <div className="grid gap-5 lg:grid-cols-2">
           {featuredWork.map((company) => (
@@ -95,7 +95,7 @@ export default function WorkPage() {
       <section className="py-4">
         <SectionHeading
           title="Earlier foundations"
-          description="Cloud, enterprise, and software engineering work that built the operating base for the current customer-facing platform role."
+          description="Cloud, enterprise, and software engineering work that built the operating base for customer-facing platform and product roles."
         />
         <div className="grid gap-4 md:grid-cols-3">
           {supportingWork.map((company) => (
@@ -125,11 +125,12 @@ export default function WorkPage() {
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">
-              Want the recruiter version?
+              Want the recruiter scan?
             </h2>
             <p className="mt-3 max-w-2xl text-base-content/68">
-              The modern portfolio condenses the same work into a faster scan,
-              while the resume page keeps the role-fit summary short.
+              The modern portfolio condenses the same work into applied AI,
+              DevEx, product, platform, education, and shipping signals, while
+              the resume page keeps the role-fit summary short.
             </p>
           </div>
           <div className="flex flex-wrap gap-3">

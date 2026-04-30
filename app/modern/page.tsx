@@ -11,6 +11,7 @@ import {
 } from "../components/portfolio-ui";
 import {
   contactChannels,
+  educationCredentials,
   portfolioMetrics,
   projectEntries,
   roleFit,
@@ -22,7 +23,7 @@ import {
 export const metadata: Metadata = {
   title: "Modern Portfolio",
   description:
-    "A polished portfolio homepage for Esteban Chirinos with profile, work history, shipped projects, technical strengths, and contact links.",
+    "A polished portfolio homepage for Esteban Chirinos across applied AI, developer experience, technical product work, shipped projects, and customer-facing platform work.",
 };
 
 const featuredWork = workExperiences.filter((item) => item.featured);
@@ -38,14 +39,15 @@ export default function ModernPortfolioPage() {
             Esteban Chirinos
           </h1>
           <p className="mt-6 max-w-2xl text-xl leading-relaxed text-base-content/74">
-            Technical Services Engineer at Coinbase building the demos,
-            reference implementations, docs, and onboarding systems that help
-            developers ship faster.
+            Senior Technical Solutions Engineer at Coinbase building the demos,
+            reference implementations, docs, onboarding systems, and product
+            feedback loops that help developers ship faster.
           </p>
           <p className="mt-5 max-w-2xl leading-relaxed text-base-content/64">
             Previously at TRM Labs, Polygon Labs, OpenSea, Google, Microsoft,
             and JPMorgan Chase across developer platforms, cloud, fintech,
-            partner solutions, and operator systems.
+            product feedback loops, partner solutions, and operator systems.
+            Backed by a Berkeley Haas MBA and FIU Computer Science undergrad.
           </p>
 
           <TagList items={roleFit} className="mt-7 max-w-2xl" />
@@ -63,24 +65,24 @@ export default function ModernPortfolioPage() {
           </div>
         </div>
 
-        <SurfaceCard className="relative overflow-hidden border-white/12 bg-[#0c141c] p-5 text-white shadow-[0_28px_90px_rgba(15,23,42,0.32)]">
+        <SurfaceCard className="relative overflow-hidden border-white/14 bg-[#081018] p-0 text-white shadow-[0_28px_90px_rgba(15,23,42,0.34)]">
           <Image
             alt=""
             src="/images/world-yosemite-immersive.png"
             fill
             priority
             sizes="(min-width: 1024px) 520px, 360px"
-            className="object-cover opacity-35"
+            className="object-cover opacity-45"
           />
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(7,12,18,0.2),rgba(7,12,18,0.88))]" />
-          <div className="relative min-h-[430px]">
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_78%_16%,rgba(255,255,255,0.12),transparent_12rem),linear-gradient(180deg,rgba(4,10,16,0.46),rgba(4,10,16,0.92))]" />
+          <div className="relative flex min-h-[520px] flex-col gap-6 p-5 sm:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/48">
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/68">
                   Modern portfolio
                 </p>
-                <p className="mt-2 max-w-56 text-2xl font-bold leading-tight">
-                  Applied AI, DevEx, and customer-facing engineering.
+                <p className="mt-3 max-w-64 text-3xl font-bold leading-[1.05] text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.42)]">
+                  Applied AI, DevEx, product, and demo engineering.
                 </p>
               </div>
               <Image
@@ -89,17 +91,17 @@ export default function ModernPortfolioPage() {
                 width={250}
                 height={245}
                 priority
-                className="h-24 w-24 rounded-2xl border border-white/20 object-cover shadow-2xl"
+                className="h-24 w-24 rounded-2xl border border-white/24 object-cover shadow-2xl sm:h-28 sm:w-28"
               />
             </div>
 
-            <div className="mt-8 rounded-[22px] border border-white/12 bg-white/8 p-4 backdrop-blur-md">
+            <div className="rounded-[22px] border border-white/18 bg-slate-950/62 p-4 shadow-[0_18px_48px_rgba(0,0,0,0.28)] backdrop-blur-md">
               <p className="text-sm font-semibold text-white/92">Best fit</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 {roleFit.map((role) => (
                   <span
                     key={role}
-                    className="rounded-full border border-white/16 bg-white/10 px-3 py-1 text-xs font-medium text-white/84"
+                    className="rounded-full border border-white/22 bg-white/12 px-3 py-1 text-xs font-medium text-white/92 shadow-[0_1px_0_rgba(255,255,255,0.08)_inset]"
                   >
                     {role}
                   </span>
@@ -107,20 +109,23 @@ export default function ModernPortfolioPage() {
               </div>
             </div>
 
-            <div className="absolute inset-x-0 bottom-0 space-y-4">
-              <div className="grid grid-cols-5 gap-2">
-                {featuredWork.slice(0, 5).map((company) => (
+            <div className="mt-auto space-y-4">
+              <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                {workExperiences.map((company) => (
                   <div
                     key={company.name}
-                    className="grid h-12 place-items-center rounded-xl border border-white/10 bg-white/92 p-2 shadow-sm"
+                    className="flex h-[4.75rem] flex-col items-center justify-center gap-1 rounded-2xl border border-white/80 bg-white p-3 shadow-[0_10px_30px_rgba(0,0,0,0.22)]"
                   >
                     <Image
                       alt={`${company.name} logo`}
                       src={company.logo}
-                      width={72}
-                      height={40}
-                      className="max-h-7 w-auto object-contain"
+                      width={96}
+                      height={56}
+                      className="max-h-9 w-auto max-w-full object-contain"
                     />
+                    <span className="text-center text-[10px] font-semibold leading-tight text-slate-700">
+                      {company.name}
+                    </span>
                   </div>
                 ))}
               </div>
@@ -128,10 +133,10 @@ export default function ModernPortfolioPage() {
                 {portfolioMetrics.slice(0, 3).map((metric) => (
                   <div
                     key={metric.label}
-                    className="rounded-2xl border border-white/10 bg-white/8 px-4 py-3"
+                    className="rounded-2xl border border-white/16 bg-slate-950/58 px-4 py-3 shadow-[0_12px_32px_rgba(0,0,0,0.2)] backdrop-blur"
                   >
-                    <p className="text-2xl font-bold">{metric.value}</p>
-                    <p className="mt-1 text-xs font-medium text-white/60">
+                    <p className="text-3xl font-bold text-white">{metric.value}</p>
+                    <p className="mt-1 text-xs font-semibold leading-snug text-white/76">
                       {metric.label}
                     </p>
                   </div>
@@ -149,7 +154,7 @@ export default function ModernPortfolioPage() {
       <section className="py-14">
         <SectionHeading
           title="Places I have worked"
-          description="Developer platforms, cloud, fintech, marketplaces, and financial services."
+          description="Developer platforms, cloud, fintech, marketplaces, financial services, and the customer signals that shape better products."
           action={<InlineLink href="/work">Full work history</InlineLink>}
         />
 
@@ -216,7 +221,7 @@ export default function ModernPortfolioPage() {
       <section className="py-14">
         <SectionHeading
           title="What I have built"
-          description="Reference apps, tutorials, founder products, and operator systems with real users and operators behind them."
+          description="Reference apps, tutorials, founder products, and operator systems where product judgment, user clarity, and shipping speed all mattered."
           action={<InlineLink href="/projects">View all projects</InlineLink>}
         />
 
@@ -267,13 +272,34 @@ export default function ModernPortfolioPage() {
           <h2 className="text-3xl font-bold tracking-tight">How I work</h2>
           <p className="mt-3 max-w-xl leading-relaxed text-base-content/66">
             I sit between product, engineering, customers, and go-to-market
-            teams. The output is usually a clearer demo, a better integration
-            path, a cleaner technical story, or a faster deployment.
+            teams. The output is usually a clearer product decision, a sharper
+            roadmap signal, a better integration path, a stronger demo, or a
+            faster path from customer need to shipped workflow.
           </p>
           <TagList items={strengthAreas} className="mt-6" />
         </SurfaceCard>
 
         <div className="grid gap-4 sm:grid-cols-2">
+          <SurfaceCard className="p-5 sm:col-span-2">
+            <p className="text-sm font-semibold">Product + technical training</p>
+            <div className="mt-4 grid gap-3 sm:grid-cols-2">
+              {educationCredentials.map((item) => (
+                <div
+                  key={item.school}
+                  className="rounded-2xl border border-base-content/10 bg-base-100/72 p-4"
+                >
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-base-content/42">
+                    {item.school}
+                  </p>
+                  <p className="mt-2 text-lg font-semibold">{item.credential}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-base-content/62">
+                    {item.emphasis}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </SurfaceCard>
+
           {contactChannels.map((channel) => (
             <SurfaceCard key={channel.label} className="p-5">
               <p className="text-sm font-semibold">{channel.label}</p>
@@ -319,9 +345,9 @@ export default function ModernPortfolioPage() {
               Building something technical?
             </h2>
             <p className="mt-3 max-w-2xl text-base-content/70">
-              I am open to applied AI, developer experience, partner
-              engineering, solutions architecture, and customer-facing platform
-              roles.
+              I am open to applied AI, developer experience, technical product
+              management, demo engineering, AI deployment, partner solutions,
+              and customer-facing platform roles.
             </p>
           </div>
           <div className="flex flex-wrap gap-3 md:justify-end">

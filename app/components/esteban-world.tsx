@@ -9,14 +9,24 @@ import {
   useMemo,
   useRef,
   useState,
+  type FormEvent,
   type ReactNode,
 } from "react";
 import * as THREE from "three";
 
 type ExperiencePhase = "outside" | "transition" | "inside";
-type IconKind = "folder" | "disk" | "lab" | "contact" | "document";
+type IconKind = "folder" | "disk" | "lab" | "contact" | "document" | "assistant";
 type PointerState = { x: number; y: number };
-type SectionId = "work" | "projects" | "ai-lab" | "contact" | "resume";
+type SectionId =
+  | "ask"
+  | "work"
+  | "projects"
+  | "ai-lab"
+  | "contact"
+  | "resume"
+  | "proof-points"
+  | "education"
+  | "ai-shipping";
 type WorldId =
   | "yosemite"
   | "coastal"
@@ -54,11 +64,15 @@ const portfolioItems: Array<{
   href: string;
   kind: IconKind;
 }> = [
-  { id: "work", label: "Work", href: "/work", kind: "folder" },
-  { id: "projects", label: "Projects", href: "/projects", kind: "folder" },
-  { id: "ai-lab", label: "AI Lab", href: "/ai-lab", kind: "lab" },
+  { id: "ask", label: "Ask Esteban", href: "#ask-esteban", kind: "assistant" },
+  { id: "work", label: "Platform Work", href: "/work", kind: "folder" },
+  { id: "projects", label: "Build Log", href: "/projects", kind: "folder" },
+  { id: "ai-lab", label: "AI Workbench", href: "/ai-lab", kind: "lab" },
+  { id: "resume", label: "Role Fit", href: "/resume", kind: "document" },
+  { id: "proof-points", label: "Receipts.txt", href: "#proof-points", kind: "document" },
+  { id: "education", label: "Credentials.txt", href: "#education", kind: "document" },
+  { id: "ai-shipping", label: "Shipping Notes.txt", href: "#ai-shipping", kind: "document" },
   { id: "contact", label: "Contact", href: "/contact", kind: "contact" },
-  { id: "resume", label: "Resume", href: "/resume", kind: "document" },
 ];
 
 const worldOptions: WorldOption[] = [
@@ -244,46 +258,217 @@ const featuredWorldIds: WorldId[] = ["yosemite", "biolume", "skyreef", "orbital"
 const workRows = [
   {
     title: "Coinbase",
-    meta: "Technical Services Engineer",
-    detail: "Developer Platform onboarding, integration architecture, docs, demos, and implementation support.",
+    meta: "Developer platform / AI workflows",
+    detail:
+      "Owns partner integrations and developer friction across Onramp, wallets, trading, x402, AgentKit, and CDP, then turns repeated questions into demos, docs, tools, and product recommendations.",
   },
   {
     title: "TRM Labs",
-    meta: "Staff Solutions Architect",
-    detail: "API integrations, technical discovery, dashboards, and customer rollout patterns.",
+    meta: "Regulated API products",
+    detail:
+      "Ran discovery with financial institutions and public-sector teams where the hard work was translating compliance workflows into clear API rollout paths.",
   },
   {
     title: "OpenSea + Polygon Labs",
-    meta: "DevRel, Product, Solutions",
-    detail: "Developer docs, sample code, partner engineering, and reference implementations.",
+    meta: "Developer marketplaces / partner POCs",
+    detail:
+      "Lived close to builders: API request triage, PM rotation work, marketplace docs, partner proof-of-concepts, and reference implementations for new onchain use cases.",
+  },
+  {
+    title: "Google + Microsoft",
+    meta: "Enterprise cloud / account engineering",
+    detail:
+      "Built the enterprise foundation: Google Cloud account architecture and migrations, Microsoft Azure and Office account work, and the customer-success muscle behind technical adoption.",
   },
 ];
 
 const projectRows = [
-  "Coinbase Onramp Demo App",
-  "Coinbase Onramp Asset Checker",
-  "NFT Deployment Reference Workflow",
-  "True Rank Pickleball",
-  "QuikBuild Innovations",
-  "Roofing operations automation",
+  {
+    title: "Coinbase Onramp Demo App",
+    detail: "2,000+ monthly developer users evaluating fiat-to-crypto flows before they integrate.",
+  },
+  {
+    title: "Onramp Asset Checker",
+    detail: "A preflight tool that makes asset, region, payment, and eligibility issues easier to debug.",
+  },
+  {
+    title: "x402 / AgentKit / CDP demos",
+    detail: "Reference paths for teams trying to understand what new Coinbase developer primitives can actually ship.",
+  },
+  {
+    title: "NFT Deployment Workflow",
+    detail: "A practical reference implementation for minting, deployment, and marketplace-adjacent use cases.",
+  },
+  {
+    title: "True Rank Pickleball",
+    detail: "A founder project turned acquired product, with ranking logic and local-market operations behind it.",
+  },
+  {
+    title: "Roofing ops automation",
+    detail: "Internal software for a real service business, built around estimates, follow-up, and operator speed.",
+  },
 ];
 
 const labRows = [
-  "AI demo architecture",
-  "Developer experience agents",
-  "Customer workflow automation",
-  "Local-first portfolio experiments",
+  {
+    label: "Current-model product fit",
+    detail: "Design flows around what the model reliably does today, not what a future model might solve.",
+  },
+  {
+    label: "Developer experience agents",
+    detail: "Use agents where they reduce integration ambiguity: setup, docs, debugging, migration, and support loops.",
+  },
+  {
+    label: "Customer workflow automation",
+    detail: "Move repeated Salesforce, Slack, docs, and support work into workflows that can be measured and improved.",
+  },
+  {
+    label: "Launchable prototypes",
+    detail: "Build demos as product probes: fast enough to test, polished enough to teach, concrete enough to sell.",
+  },
 ];
 
 const resumeRows = [
-  "Applied AI demos",
-  "API architecture",
-  "Reference apps",
-  "Developer docs",
-  "Technical discovery",
-  "Customer enablement",
-  "Solutions engineering",
-  "Product feedback loops",
+  {
+    label: "Applied AI Architect",
+    detail: "Can turn fuzzy AI use cases into working demos, workflow automations, and evaluation criteria.",
+  },
+  {
+    label: "Technical Product Manager",
+    detail: "Already converts weekly developer signal into product recommendations, prioritization, and launch feedback.",
+  },
+  {
+    label: "Developer Experience",
+    detail: "Has owned docs, SDK migration guidance, sample apps, onboarding paths, and developer support loops.",
+  },
+  {
+    label: "Demo Engineering",
+    detail: "Ships reference implementations that make complex APIs understandable before a sales or partner call.",
+  },
+  {
+    label: "Partner Solutions",
+    detail: "Has led partner integrations where technical architecture, customer context, and revenue impact all matter.",
+  },
+  {
+    label: "AI Deployment",
+    detail: "Comfortable connecting LLM workflows to real operations instead of keeping prototypes in a sandbox.",
+  },
+];
+
+const proofPointRows = [
+  {
+    value: "$20M",
+    label: "revenue impact supported",
+    detail: "Strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade.",
+  },
+  {
+    value: "30+",
+    label: "strategic partner integrations",
+    detail: "Coinbase partner launches across payments, wallets, trading, and developer-platform products.",
+  },
+  {
+    value: "30%",
+    label: "escalation reduction",
+    detail: "AI-enabled workflows across Salesforce, Slack, developer docs, and support operations.",
+  },
+  {
+    value: "2,000+",
+    label: "monthly demo users",
+    detail: "Coinbase Onramp demo app usage from developers evaluating fiat-to-crypto flows.",
+  },
+  {
+    value: "100+",
+    label: "developer insights translated",
+    detail: "Weekly developer signals converted into product recommendations and documentation improvements.",
+  },
+  {
+    value: "35%",
+    label: "checkout-time reduction",
+    detail: "Apple Pay optimization recommendation that reduced Onramp checkout time.",
+  },
+  {
+    value: "58k+",
+    label: "demo and tooling LOC",
+    detail: "Production-grade demos, reference implementations, and integration tooling across Coinbase developer products.",
+  },
+  {
+    value: "60+",
+    label: "technical discovery sessions",
+    detail: "TRM Labs customer discovery across financial institutions and public sector teams.",
+  },
+  {
+    value: "40+",
+    label: "custom API solutions delivered",
+    detail: "Regulated customer integrations, rollout paths, and implementation guidance.",
+  },
+  {
+    value: "10+",
+    label: "dashboard tools built",
+    detail: "Internal and customer-facing tools to make workflows easier to operate.",
+  },
+  {
+    value: "7+",
+    label: "companies shipped at",
+    detail: "Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.",
+  },
+];
+
+const educationRows = [
+  {
+    label: "Berkeley Haas",
+    value: "MBA, expected 2028",
+    detail: "The product and leadership layer: strategy, customer judgment, markets, and go-to-market execution.",
+  },
+  {
+    label: "Florida International University",
+    value: "B.S. Computer Science, 2019",
+    detail: "The engineering layer: enough CS depth to reason about APIs, platforms, cloud architecture, and AI systems.",
+  },
+  {
+    label: "Certifications",
+    value: "GCP PCA / AWS SA / Azure Fundamentals",
+    detail: "Cloud credentials plus Hack Reactor training, useful for technical discovery with engineering teams.",
+  },
+];
+
+const aiShippingRows = [
+  {
+    label: "Build for the model in front of you",
+    detail:
+      "The product work is finding the highest-reliability path through today's model strengths and weaknesses.",
+  },
+  {
+    label: "Shorten idea-to-user time",
+    detail:
+      "Use demos, previews, docs, and customer conversations to get a feature in front of users before the plan gets stale.",
+  },
+  {
+    label: "Taste matters more as code gets cheaper",
+    detail:
+      "The scarce judgment is deciding what should be built, what should be skipped, and what the first usable version should feel like.",
+  },
+  {
+    label: "Write down the failure modes",
+    detail:
+      "Good AI product work names the tasks that must work, the edge cases that break trust, and the checks that prove the workflow is improving.",
+  },
+];
+
+type AskMessage = {
+  role: "user" | "assistant";
+  content: string;
+  provider?: string;
+  sources?: string[];
+  setup?: string;
+};
+
+const askEstebanPrompts = [
+  "Why is Esteban a fit for AI product roles?",
+  "Summarize his Coinbase work.",
+  "What proof points should a recruiter know?",
+  "How technical is he?",
+  "What roles is he best aligned with?",
+  "Show me PM-relevant experience.",
 ];
 
 function usePointerParallax() {
@@ -872,25 +1057,25 @@ function WorldChangeWash({ active }: { active: boolean }) {
 
 function ClassicTitleBar({ children }: { children: ReactNode }) {
   return (
-    <div className="grid h-9 grid-cols-[96px_1fr_96px] items-center border-b border-black/70 bg-white/70 px-3 font-mono text-[11px] text-black sm:h-10 sm:px-4 sm:text-xs">
+    <div className="grid h-8 grid-cols-[78px_1fr_78px] items-center border-b-2 border-black bg-[#d8d8d8] px-2 font-mono text-[11px] text-black sm:grid-cols-[96px_1fr_96px] sm:px-3 sm:text-xs">
       <div className="flex items-center gap-2">
-        <span className="grid h-5 w-5 place-items-center border border-black bg-white text-[10px] leading-none shadow-[1px_1px_0_rgba(0,0,0,0.7)]">
+        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] text-[9px] leading-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
           x
         </span>
-        <span className="grid h-5 w-5 place-items-center border border-black bg-white text-[12px] leading-none shadow-[1px_1px_0_rgba(0,0,0,0.7)]">
+        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] text-[11px] leading-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
           -
         </span>
-        <span className="hidden h-5 w-5 border border-black bg-white shadow-[1px_1px_0_rgba(0,0,0,0.7)] sm:block" />
+        <span className="hidden h-4 w-4 border border-black bg-[#f2f2f2] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:block" />
       </div>
-      <div className="relative flex items-center justify-center font-bold">
-        <span className="absolute inset-x-2 top-1/2 h-px -translate-y-[5px] bg-black/25" />
-        <span className="absolute inset-x-2 top-1/2 h-px bg-black/25" />
-        <span className="absolute inset-x-2 top-1/2 h-px translate-y-[5px] bg-black/25" />
-        <span className="relative bg-white/80 px-3">{children}</span>
+      <div className="relative flex h-full items-center justify-center overflow-hidden font-bold">
+        <span className="absolute inset-x-1 top-1 bottom-1 [background-image:repeating-linear-gradient(0deg,rgba(0,0,0,0.34)_0_1px,transparent_1px_3px)]" />
+        <span className="relative max-w-full truncate bg-[#d8d8d8] px-3">
+          {children}
+        </span>
       </div>
       <div className="flex justify-end">
-        <span className="grid h-5 w-5 place-items-center border border-black bg-white shadow-[1px_1px_0_rgba(0,0,0,0.7)]">
-          <span className="h-2.5 w-2.5 border-y border-black" />
+        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
+          <span className="h-2 w-2 border-y border-black" />
         </span>
       </div>
     </div>
@@ -930,6 +1115,18 @@ function FinderIcon({ kind }: { kind: IconKind }) {
     );
   }
 
+  if (kind === "assistant") {
+    return (
+      <span className="relative mx-auto block h-12 w-14 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+        <span className="absolute inset-x-2 top-2 h-7 border-2 border-black bg-white" />
+        <span className="absolute bottom-2 left-5 h-3 w-3 border-b-2 border-l-2 border-black bg-white" />
+        <span className="absolute left-5 top-5 h-1.5 w-1.5 bg-black" />
+        <span className="absolute left-7 top-5 h-1.5 w-1.5 bg-black" />
+        <span className="absolute left-9 top-5 h-1.5 w-1.5 bg-black" />
+      </span>
+    );
+  }
+
   if (kind === "document") {
     return (
       <span className="relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
@@ -964,13 +1161,13 @@ function FinderItem({
     <button
       type="button"
       onClick={onOpen}
-      className={`group grid min-h-[82px] place-items-center rounded-md border px-1.5 py-2.5 text-center transition hover:border-black/50 hover:bg-white/50 focus:outline-none focus:ring-2 focus:ring-black/70 sm:min-h-[94px] sm:px-2 sm:py-3 ${
-        active ? "border-black/60 bg-white/55" : "border-transparent"
+      className={`group grid min-h-[86px] place-items-center border px-1.5 py-2.5 text-center transition hover:border-black hover:bg-[#efefef] focus:outline-none focus:ring-2 focus:ring-black/70 sm:min-h-[98px] sm:px-2 sm:py-3 ${
+        active ? "border-black bg-white" : "border-transparent"
       }`}
       aria-label={`Open ${label} in Esteban OS`}
     >
       <FinderIcon kind={kind} />
-      <span className="mt-2 max-w-20 font-mono text-[11px] font-semibold leading-none text-black sm:mt-3 sm:max-w-24 sm:text-sm">
+      <span className="mt-2 max-w-24 font-mono text-[11px] font-semibold leading-tight text-black sm:mt-3 sm:max-w-28 sm:text-[13px]">
         {label}
       </span>
       <span className="mt-1 h-px w-8 bg-black/0 transition group-hover:bg-black/70" />
@@ -986,8 +1183,17 @@ function FinderDesktop({
   onOpen: (section: SectionId) => void;
 }) {
   return (
-    <div className="h-[min(46svh,360px)] overflow-y-auto bg-[#ecece0]/40 px-4 py-6 shadow-[inset_0_1px_26px_rgba(255,255,255,0.28)] sm:h-auto sm:min-h-[286px] sm:px-10 sm:py-11">
-      <div className="grid grid-cols-3 gap-x-1 gap-y-3 sm:grid-cols-5 sm:gap-x-3 sm:gap-y-5">
+    <div className="h-[min(48svh,390px)] overflow-y-auto bg-[#c4c4c4] px-4 py-5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-auto sm:min-h-[326px] sm:px-8 sm:py-8">
+      <div className="mb-4 flex items-center justify-between border border-black bg-[#eeeeee] px-2 py-1 font-mono text-[10px] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
+        <span>Macintosh HD: Esteban Field Notes</span>
+        <span>{portfolioItems.length} items</span>
+      </div>
+      <p className="mb-4 max-w-2xl border border-black bg-[#f7f7f7] px-3 py-2 font-mono text-xs font-bold leading-relaxed shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.32)]">
+        Ask a direct question, or open the files I would use in an interview:
+        shipped systems, proof points, role fit, credentials, and AI-native
+        product notes.
+      </p>
+      <div className="grid grid-cols-3 gap-x-1 gap-y-3 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-5 md:grid-cols-6">
         {portfolioItems.map((item) => (
           <FinderItem
             key={item.href}
@@ -1012,12 +1218,12 @@ function SectionShell({
   onBack: () => void;
 }) {
   return (
-    <div className="h-[min(46svh,360px)] overflow-y-auto bg-[#ecece0]/45 px-4 py-4 font-mono text-black shadow-[inset_0_1px_26px_rgba(255,255,255,0.3)] sm:h-[min(67svh,470px)] sm:px-6 sm:py-5">
-      <div className="mb-4 flex items-center justify-between gap-3 border-b border-black/40 pb-3">
+    <div className="h-[min(48svh,390px)] overflow-y-auto bg-[#c4c4c4] px-4 py-4 font-mono text-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-[min(67svh,500px)] sm:px-5 sm:py-5">
+      <div className="mb-4 flex items-center justify-between gap-3 border border-black bg-[#e9e9e9] px-2 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
         <button
           type="button"
           onClick={onBack}
-          className="border border-black bg-white px-2 py-1 text-[10px] font-bold shadow-[1px_1px_0_rgba(0,0,0,0.7)] transition active:translate-x-px active:translate-y-px active:shadow-none"
+          className="border border-black bg-[#f7f7f7] px-2 py-1 text-[10px] font-bold shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,1px_1px_0_rgba(0,0,0,0.5)] transition active:translate-x-px active:translate-y-px active:shadow-none"
         >
           Desktop
         </button>
@@ -1038,21 +1244,210 @@ function SectionShell({
   );
 }
 
+function AskEstebanView() {
+  const [messages, setMessages] = useState<AskMessage[]>([
+    {
+      role: "assistant",
+      content:
+        "Ask me what a recruiter or hiring manager would want to know: role fit, Coinbase work, product judgment, technical depth, proof points, or education.",
+      sources: ["Role Fit", "Receipts.txt"],
+    },
+  ]);
+  const [input, setInput] = useState("");
+  const [isPending, setIsPending] = useState(false);
+  const messageListRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    messageListRef.current?.scrollTo({
+      top: messageListRef.current.scrollHeight,
+      behavior: "smooth",
+    });
+  }, [messages, isPending]);
+
+  const submitQuestion = async (question: string) => {
+    const trimmedQuestion = question.trim();
+    if (!trimmedQuestion || isPending) return;
+
+    const nextMessages: AskMessage[] = [
+      ...messages,
+      { role: "user", content: trimmedQuestion },
+    ];
+
+    setMessages(nextMessages);
+    setInput("");
+    setIsPending(true);
+
+    try {
+      const response = await fetch("/api/ask-esteban", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          messages: nextMessages.map(({ role, content }) => ({
+            role,
+            content,
+          })),
+        }),
+      });
+
+      const data = (await response.json()) as {
+        answer?: string;
+        error?: string;
+        provider?: string;
+        sources?: string[];
+        setup?: string;
+      };
+
+      if (!response.ok || !data.answer) {
+        throw new Error(data.error || "Ask Esteban is unavailable.");
+      }
+
+      const answer = data.answer;
+
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          role: "assistant",
+          content: answer,
+          provider: data.provider,
+          sources: data.sources,
+          setup: data.setup,
+        },
+      ]);
+    } catch (error) {
+      setMessages((currentMessages) => [
+        ...currentMessages,
+        {
+          role: "assistant",
+          content:
+            error instanceof Error
+              ? error.message
+              : "Ask Esteban could not answer right now.",
+        },
+      ]);
+    } finally {
+      setIsPending(false);
+    }
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    void submitQuestion(input);
+  };
+
+  return (
+    <div className="space-y-3">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
+          Ask Esteban OS
+        </p>
+        <h3 className="mt-1 max-w-2xl text-lg font-black leading-tight sm:text-xl">
+          Skip the browsing. Ask for the signal directly.
+        </h3>
+      </div>
+      <p className="max-w-2xl text-xs leading-relaxed text-black/75">
+        A grounded assistant for questions about Esteban's work, proof points,
+        role fit, education, and technical depth.
+      </p>
+
+      <div className="grid gap-3 lg:grid-cols-[0.78fr_1.22fr]">
+        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
+          {askEstebanPrompts.map((prompt) => (
+            <button
+              key={prompt}
+              type="button"
+              onClick={() => void submitQuestion(prompt)}
+              className="border border-black bg-[#f7f7f7] px-3 py-2 text-left text-xs font-black leading-snug shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] transition hover:bg-black hover:text-white disabled:opacity-50"
+              disabled={isPending}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+
+        <div className="space-y-2">
+          <div
+            ref={messageListRef}
+            className="max-h-[152px] space-y-2 overflow-y-auto border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
+          >
+            {messages.map((message, index) => (
+              <article
+                key={`${message.role}-${index}`}
+                className={`border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)] ${
+                  message.role === "user"
+                    ? "ml-auto max-w-[86%] bg-black text-white"
+                    : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
+                }`}
+              >
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
+                  {message.role === "user" ? "You" : "Ask Esteban"}
+                  {message.provider ? ` / ${message.provider}` : ""}
+                </p>
+                <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
+                  {message.content}
+                </p>
+                {message.sources?.length ? (
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
+                    Sources: {message.sources.join(", ")}
+                  </p>
+                ) : null}
+                {message.setup ? (
+                  <p className="mt-2 border-t border-black/20 pt-2 text-[10px] leading-relaxed opacity-70">
+                    {message.setup}
+                  </p>
+                ) : null}
+              </article>
+            ))}
+            {isPending ? (
+              <article className="mr-auto max-w-[92%] border border-black bg-[#f7f7f7] p-2 text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]">
+                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
+                  Ask Esteban
+                </p>
+                <p className="mt-2 text-xs font-bold">Thinking...</p>
+              </article>
+            ) : null}
+          </div>
+
+          <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">
+            <label className="sr-only" htmlFor="ask-esteban-input">
+              Ask Esteban a question
+            </label>
+            <input
+              id="ask-esteban-input"
+              value={input}
+              onChange={(event) => setInput(event.target.value)}
+              placeholder="Ask about Coinbase, PM fit, technical depth..."
+              className="min-h-10 flex-1 border border-black bg-white px-3 py-2 text-sm font-bold outline-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] placeholder:text-black/40 focus:ring-2 focus:ring-black"
+              maxLength={500}
+            />
+            <button
+              type="submit"
+              disabled={isPending || input.trim().length === 0}
+              className="border border-black bg-black px-4 py-2 text-sm font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
+            >
+              Send
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function WorkView() {
   return (
     <div className="space-y-4">
       <div>
         <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Applied AI / DevEx / Solutions
+          Field notes
         </p>
         <h3 className="mt-1 max-w-2xl text-xl font-black leading-tight sm:text-2xl">
-          Technical products meeting real customers.
+          Where developer friction becomes product signal.
         </h3>
       </div>
       <p className="max-w-2xl text-sm leading-relaxed text-black/75">
-        Esteban works across developer platforms, API integrations, technical
-        discovery, customer onboarding, product feedback loops, and demos that
-        make complex systems easier to adopt.
+        The thread across these roles is being close enough to customers to see
+        what breaks, technical enough to fix the path, and product-minded enough
+        to turn patterns into roadmap evidence.
       </p>
       <div className="grid gap-3">
         {workRows.map((row) => (
@@ -1076,22 +1471,27 @@ function ProjectsView() {
     <div className="space-y-4">
       <div>
         <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Shipped systems
+          Build log
         </p>
         <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
-          Demo apps, developer tools, and operator products.
+          Projects that make a technical decision easier.
         </h3>
       </div>
-      <div className="grid gap-2 sm:grid-cols-2">
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         {projectRows.map((project, index) => (
           <div
-            key={project}
-            className="flex items-center gap-3 border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]"
+            key={project.title}
+            className="flex gap-3 border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]"
           >
             <span className="grid h-7 w-7 shrink-0 place-items-center border border-black bg-white text-[10px] font-black">
               {String(index + 1).padStart(2, "0")}
             </span>
-            <p className="text-sm font-bold leading-tight">{project}</p>
+            <div>
+              <p className="text-sm font-black leading-tight">{project.title}</p>
+              <p className="mt-1 text-xs leading-relaxed text-black/68">
+                {project.detail}
+              </p>
+            </div>
           </div>
         ))}
       </div>
@@ -1104,20 +1504,24 @@ function AILabView() {
     <div className="space-y-4">
       <div>
         <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Experiments
+          Workbench
         </p>
         <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
-          AI as a practical product surface.
+          AI work that has to survive contact with users.
         </h3>
       </div>
       <p className="max-w-2xl text-sm leading-relaxed text-black/75">
-        A focused lab for agent workflows, demo systems, prototype patterns,
-        and developer experience tools that move from idea to usable interface.
+        The interesting part is not making a flashy prototype. It is finding the
+        narrow path where the model, workflow, UI, and user expectation all line
+        up well enough to ship.
       </p>
       <div className="grid gap-2 sm:grid-cols-2">
         {labRows.map((item) => (
-          <div key={item} className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]">
-            <p className="text-sm font-black">{item}</p>
+          <div key={item.label} className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]">
+            <p className="text-sm font-black">{item.label}</p>
+            <p className="mt-1 text-xs leading-relaxed text-black/68">
+              {item.detail}
+            </p>
             <div className="mt-3 h-2 border border-black bg-white">
               <div className="h-full w-2/3 bg-black" />
             </div>
@@ -1133,16 +1537,16 @@ function ContactView() {
     <div className="space-y-4">
       <div>
         <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Contact
+          Open channel
         </p>
         <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
-          Talk Applied AI, DevEx, demos, or solutions work.
+          Useful conversations start with a concrete workflow.
         </h3>
       </div>
       <p className="max-w-2xl text-sm leading-relaxed text-black/75">
-        For recruiter and collaboration conversations, Esteban is most aligned
-        with Applied AI Architect, Developer Experience, Demo Experience, AI
-        Deployment, Partner Solutions, and Solutions Engineering roles.
+        The strongest fit is a team that needs someone to sit between users,
+        engineering, product, and go-to-market, then turn technical ambiguity
+        into shipped work.
       </p>
       <div className="grid gap-3 sm:grid-cols-3">
         {[
@@ -1170,18 +1574,118 @@ function ResumeView() {
     <div className="space-y-4">
       <div>
         <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Snapshot
+          Role fit
         </p>
         <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
-          Recruiter-friendly signal without leaving the goggles.
+          The overlapping roles I can credibly play.
         </h3>
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {resumeRows.map((strength) => (
-          <div key={strength} className="flex items-center gap-2 border border-black/55 bg-white/55 px-3 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.35)]">
+          <div key={strength.label} className="flex gap-2 border border-black/55 bg-white/55 px-3 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.35)]">
             <span className="h-2 w-2 shrink-0 bg-black" />
-            <span className="text-sm font-bold">{strength}</span>
+            <span>
+              <span className="block text-sm font-black">{strength.label}</span>
+              <span className="mt-1 block text-xs leading-relaxed text-black/68">
+                {strength.detail}
+              </span>
+            </span>
           </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function ProofPointsView() {
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
+          Receipts
+        </p>
+        <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
+          Numbers that explain the shape of the work.
+        </h3>
+      </div>
+      <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+        {proofPointRows.map((row) => (
+          <article
+            key={row.label}
+            className="border border-black bg-[#f7f7f7] p-3 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)]"
+          >
+            <p className="font-mono text-2xl font-black leading-none">{row.value}</p>
+            <p className="mt-1 text-[11px] font-black uppercase tracking-[0.12em]">
+              {row.label}
+            </p>
+            <p className="mt-2 text-xs leading-relaxed text-black/72">
+              {row.detail}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EducationView() {
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
+          Credentials
+        </p>
+        <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
+          Product training on top of engineering depth.
+        </h3>
+      </div>
+      <div className="grid gap-3">
+        {educationRows.map((row) => (
+          <article
+            key={row.label}
+            className="border border-black bg-[#f7f7f7] p-3 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)]"
+          >
+            <p className="text-[11px] font-black uppercase tracking-[0.14em] text-black/58">
+              {row.label}
+            </p>
+            <p className="mt-1 text-lg font-black">{row.value}</p>
+            <p className="mt-2 text-xs leading-relaxed text-black/72">
+              {row.detail}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function AIShippingView() {
+  return (
+    <div className="space-y-4">
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
+          Shipping notes
+        </p>
+        <h3 className="mt-1 text-xl font-black leading-tight sm:text-2xl">
+          How I think about AI-native product work.
+        </h3>
+      </div>
+      <div className="grid gap-2">
+        {aiShippingRows.map((row, index) => (
+          <article
+            key={row.label}
+            className="flex gap-3 border border-black bg-[#f7f7f7] p-3 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)]"
+          >
+            <span className="grid h-7 w-7 shrink-0 place-items-center border border-black bg-white text-[10px] font-black">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div>
+              <p className="text-sm font-black">{row.label}</p>
+              <p className="mt-1 text-xs leading-relaxed text-black/72">
+                {row.detail}
+              </p>
+            </div>
+          </article>
         ))}
       </div>
     </div>
@@ -1201,11 +1705,15 @@ function SectionView({
 
   return (
     <SectionShell section={section} onBack={onBack}>
+      {activeSection === "ask" ? <AskEstebanView /> : null}
       {activeSection === "work" ? <WorkView /> : null}
       {activeSection === "projects" ? <ProjectsView /> : null}
       {activeSection === "ai-lab" ? <AILabView /> : null}
       {activeSection === "contact" ? <ContactView /> : null}
       {activeSection === "resume" ? <ResumeView /> : null}
+      {activeSection === "proof-points" ? <ProofPointsView /> : null}
+      {activeSection === "education" ? <EducationView /> : null}
+      {activeSection === "ai-shipping" ? <AIShippingView /> : null}
     </SectionShell>
   );
 }
@@ -1225,20 +1733,24 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
     >
       <div className="pointer-events-auto">
         <div
-          className="relative w-[min(94vw,860px)] max-h-[76svh] overflow-hidden rounded-[18px] border border-white/40 bg-white/25 text-black shadow-[0_34px_120px_rgba(18,12,7,0.32),inset_0_1px_0_rgba(255,255,255,0.42)] backdrop-blur-xl sm:max-h-none"
+          className="relative w-[min(94vw,900px)] max-h-[78svh] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] sm:max-h-none"
           style={{ transform }}
         >
-          <div className="absolute inset-0 rounded-[18px] bg-[radial-gradient(circle_at_22%_12%,rgba(255,255,255,0.62),transparent_24%),linear-gradient(135deg,rgba(255,255,255,0.38),rgba(255,255,255,0.08)_48%,rgba(255,214,154,0.2))]" />
+          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
           <div className="relative">
-            <ClassicTitleBar>{activeItem?.label ?? "Esteban OS"}</ClassicTitleBar>
-            <div className="border-b border-black/60 bg-white/40 px-3 py-1.5 font-mono text-[10px] text-black sm:px-4">
-              <span className="font-bold">Finder</span>
+            <ClassicTitleBar>{activeItem?.label ?? "Esteban OS 8"}</ClassicTitleBar>
+            <div className="flex items-center gap-3 border-b-2 border-black bg-[#efefef] px-3 py-1.5 font-mono text-[10px] text-black shadow-[0_1px_0_#ffffff_inset] sm:px-4">
+              <span className="font-black">Mac OS 8 Finder</span>
+              <span className="hidden font-bold sm:inline">File</span>
+              <span className="hidden font-bold sm:inline">Edit</span>
+              <span className="hidden font-bold sm:inline">View</span>
+              <span className="hidden font-bold sm:inline">Special</span>
               {portfolioItems.map((item) => (
                 <button
                   key={item.id}
                   type="button"
                   onClick={() => setActiveSection(item.id)}
-                  className={`ml-4 hover:underline ${activeSection === item.id ? "font-bold underline" : ""}`}
+                  className={`hidden whitespace-nowrap hover:underline xl:inline ${activeSection === item.id ? "font-bold underline" : ""}`}
                 >
                   {item.label}
                 </button>
@@ -1255,9 +1767,9 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
                 onOpen={setActiveSection}
               />
             )}
-            <div className="flex items-center justify-between border-t border-black/50 bg-white/50 px-3 py-2 font-mono text-[9px] text-black/75 sm:px-4 sm:text-[10px]">
-              <span>{activeSection ? "1 window open" : "5 items"}</span>
-              <span>{activeItem?.href ?? "Applied AI / DevEx / Solutions"}</span>
+            <div className="flex items-center justify-between border-t-2 border-black bg-[#d8d8d8] px-3 py-2 font-mono text-[9px] text-black/75 shadow-[0_1px_0_#ffffff_inset] sm:px-4 sm:text-[10px]">
+              <span>{activeSection ? "1 window open" : `${portfolioItems.length} items`}</span>
+              <span>{activeItem?.href ?? "Ask questions, scan proof, inspect shipped systems"}</span>
             </div>
           </div>
         </div>
