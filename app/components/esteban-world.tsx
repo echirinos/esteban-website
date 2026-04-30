@@ -540,6 +540,280 @@ function WorldBackdrop({ world }: { world: WorldOption }) {
   );
 }
 
+type DepthMaskKind = "foreground" | "sky" | "center";
+
+function useDepthAlphaMask(kind: DepthMaskKind) {
+  const texture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    canvas.width = 512;
+    canvas.height = 512;
+
+    const context = canvas.getContext("2d");
+    if (!context) return null;
+
+    const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
+
+    if (kind === "foreground") {
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(0.52, "rgba(0,0,0,0)");
+      gradient.addColorStop(0.72, "rgba(255,255,255,0.58)");
+      gradient.addColorStop(1, "rgba(255,255,255,1)");
+    } else if (kind === "sky") {
+      gradient.addColorStop(0, "rgba(255,255,255,0.82)");
+      gradient.addColorStop(0.34, "rgba(255,255,255,0.34)");
+      gradient.addColorStop(0.58, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+    } else {
+      gradient.addColorStop(0, "rgba(0,0,0,0)");
+      gradient.addColorStop(0.28, "rgba(255,255,255,0.16)");
+      gradient.addColorStop(0.58, "rgba(255,255,255,0.58)");
+      gradient.addColorStop(0.84, "rgba(0,0,0,0)");
+      gradient.addColorStop(1, "rgba(0,0,0,0)");
+    }
+
+    context.fillStyle = gradient;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = "destination-in";
+
+    const horizontalFade = context.createLinearGradient(0, 0, canvas.width, 0);
+    horizontalFade.addColorStop(0, "rgba(0,0,0,0)");
+    horizontalFade.addColorStop(0.12, "rgba(255,255,255,0.82)");
+    horizontalFade.addColorStop(0.5, "rgba(255,255,255,1)");
+    horizontalFade.addColorStop(0.88, "rgba(255,255,255,0.82)");
+    horizontalFade.addColorStop(1, "rgba(0,0,0,0)");
+    context.fillStyle = horizontalFade;
+    context.fillRect(0, 0, canvas.width, canvas.height);
+    context.globalCompositeOperation = "source-over";
+
+    const mask = new THREE.CanvasTexture(canvas);
+    mask.needsUpdate = true;
+    return mask;
+  }, [kind]);
+
+  useEffect(() => {
+    return () => {
+      texture?.dispose();
+    };
+  }, [texture]);
+
+  return texture;
+}
+
+function DepthImageLayer({
+  world,
+  mask,
+  position,
+  scale,
+  opacity,
+  parallax,
+}: {
+  world: WorldOption;
+  mask: DepthMaskKind;
+  position: [number, number, number];
+  scale: number;
+  opacity: number;
+  parallax: number;
+}) {
+  const texture = useTexture(world.image);
+  const alphaMap = useDepthAlphaMask(mask);
+  const mesh = useRef<THREE.Mesh>(null);
+  const { pointer } = useThree();
+  const elapsed = useRef(0);
+
+  useEffect(() => {
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 8;
+  }, [texture]);
+
+  useFrame((_state, delta) => {
+    elapsed.current += delta;
+    if (!mesh.current) return;
+
+    mesh.current.position.x =
+      position[0] + pointer.x * parallax + Math.sin(elapsed.current * 0.18) * 0.015;
+    mesh.current.position.y =
+      position[1] + pointer.y * parallax * 0.45 + Math.cos(elapsed.current * 0.22) * 0.012;
+  });
+
+  if (!alphaMap) return null;
+
+  return (
+    <mesh ref={mesh} position={position}>
+      <planeGeometry args={[24 * scale, 13.5 * scale]} />
+      <meshBasicMaterial
+        map={texture}
+        alphaMap={alphaMap}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+        depthTest={false}
+        fog={false}
+        toneMapped={false}
+      />
+    </mesh>
+  );
+}
+
+function DepthRidge({
+  world,
+  position,
+  opacity,
+  speed,
+  width,
+}: {
+  world: WorldOption;
+  position: [number, number, number];
+  opacity: number;
+  speed: number;
+  width: number;
+}) {
+  const mesh = useRef<THREE.Mesh>(null);
+  const { pointer } = useThree();
+  const shape = useMemo(() => {
+    const ridge = new THREE.Shape();
+    ridge.moveTo(-width / 2, -1.15);
+    ridge.lineTo(-width / 2, -0.18);
+    ridge.bezierCurveTo(-width * 0.32, 0.15, -width * 0.22, -0.42, -width * 0.08, -0.06);
+    ridge.bezierCurveTo(width * 0.08, 0.36, width * 0.2, -0.34, width * 0.36, -0.05);
+    ridge.bezierCurveTo(width * 0.46, 0.08, width * 0.5, -0.12, width / 2, -0.02);
+    ridge.lineTo(width / 2, -1.15);
+    ridge.lineTo(-width / 2, -1.15);
+    return ridge;
+  }, [width]);
+
+  const geometry = useMemo(() => new THREE.ShapeGeometry(shape, 36), [shape]);
+
+  useEffect(() => {
+    return () => {
+      geometry.dispose();
+    };
+  }, [geometry]);
+
+  useFrame((state) => {
+    if (!mesh.current) return;
+    mesh.current.position.x = position[0] + pointer.x * speed;
+    mesh.current.position.y =
+      position[1] + pointer.y * speed * 0.18 + Math.sin(state.clock.elapsedTime * 0.16) * 0.012;
+  });
+
+  return (
+    <mesh ref={mesh} geometry={geometry} position={position}>
+      <meshBasicMaterial
+        color={world.background}
+        transparent
+        opacity={opacity}
+        depthWrite={false}
+        depthTest={false}
+        fog={false}
+      />
+    </mesh>
+  );
+}
+
+function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: boolean }) {
+  const points = useRef<THREE.Points>(null);
+  const { pointer } = useThree();
+  const positions = useMemo(() => {
+    const values: number[] = [];
+
+    for (let index = 0; index < 78; index += 1) {
+      const row = index % 13;
+      const column = Math.floor(index / 13);
+      const x = (row - 6) * 0.72 + Math.sin(index * 1.9) * 0.18;
+      const y = 0.22 + column * 0.42 + Math.cos(index * 1.4) * 0.16;
+      const z = -3.6 - (index % 6) * 0.62;
+      values.push(x, y, z);
+    }
+
+    return new Float32Array(values);
+  }, []);
+
+  useFrame((state) => {
+    if (!points.current) return;
+    points.current.position.x = pointer.x * 0.42;
+    points.current.position.y = pointer.y * 0.12 + Math.sin(state.clock.elapsedTime * 0.24) * 0.025;
+    points.current.rotation.z = pointer.x * 0.012;
+  });
+
+  return (
+    <points ref={points}>
+      <bufferGeometry>
+        <bufferAttribute
+          attach="attributes-position"
+          args={[positions, 3]}
+          count={positions.length / 3}
+          itemSize={3}
+        />
+      </bufferGeometry>
+      <pointsMaterial
+        color={world.accent}
+        transparent
+        opacity={gogglesOn ? 0.34 : 0.14}
+        size={0.035}
+        sizeAttenuation
+        depthWrite={false}
+        depthTest={false}
+      />
+    </points>
+  );
+}
+
+function WorldDepthStage({
+  gogglesOn,
+  world,
+}: {
+  gogglesOn: boolean;
+  world: WorldOption;
+}) {
+  const { size } = useThree();
+  const portrait = size.width < size.height;
+  const basePosition = portrait ? world.portraitPosition : world.desktopPosition;
+
+  return (
+    <>
+      <DepthImageLayer
+        world={world}
+        mask="sky"
+        position={[basePosition[0] - 0.06, basePosition[1] + 0.04, -10.15]}
+        scale={1.08}
+        opacity={gogglesOn ? 0.16 : 0.08}
+        parallax={-0.1}
+      />
+      <DepthImageLayer
+        world={world}
+        mask="center"
+        position={[basePosition[0] + 0.08, basePosition[1] + 0.02, -8.05]}
+        scale={0.98}
+        opacity={gogglesOn ? 0.14 : 0.06}
+        parallax={0.16}
+      />
+      <DepthImageLayer
+        world={world}
+        mask="foreground"
+        position={[basePosition[0], basePosition[1] - 0.06, -6.82]}
+        scale={0.92}
+        opacity={gogglesOn ? 0.24 : 0.08}
+        parallax={0.28}
+      />
+      <DepthRidge
+        world={world}
+        position={[-1.2, -0.62, -4.9]}
+        opacity={gogglesOn ? 0.2 : 0.08}
+        speed={0.42}
+        width={9.4}
+      />
+      <DepthRidge
+        world={world}
+        position={[1.1, -0.82, -3.9]}
+        opacity={gogglesOn ? 0.28 : 0.12}
+        speed={0.58}
+        width={8.2}
+      />
+      <DepthParticles world={world} gogglesOn={gogglesOn} />
+    </>
+  );
+}
+
 function HazeRibbon({
   position,
   rotation,
@@ -630,6 +904,7 @@ function WorldScene({
       <pointLight position={[2.9, 1.4, 1.8]} intensity={0.6} color={world.accent} distance={8} />
       <CameraRig gogglesOn={gogglesOn} />
       <Suspense fallback={null}>
+        <WorldDepthStage gogglesOn={gogglesOn} world={world} />
         <WorldBackdrop world={world} />
       </Suspense>
       <Atmosphere gogglesOn={gogglesOn} world={world} />
@@ -840,14 +1115,14 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
 
   return (
     <motion.nav
-      className="absolute inset-x-4 bottom-4 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
+      className="pointer-events-none absolute inset-x-4 bottom-4 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.46, delay: 0.08, ease: "easeOut" }}
       aria-label="Goggles navigation"
     >
-      <div className="flex w-full max-w-[32rem] items-center gap-1.5 overflow-x-auto rounded-[22px] border border-white/18 bg-black/24 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none">
+      <div className="pointer-events-auto flex w-full max-w-[32rem] items-center gap-1.5 overflow-x-auto rounded-[22px] border border-white/18 bg-black/24 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none">
         <a
           href="/"
           className="mr-1 hidden shrink-0 items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-xs font-semibold text-white/86 transition hover:border-white/35 hover:bg-white/16 lg:flex"
@@ -905,13 +1180,20 @@ function WorldSelector({
     >
       <div className="rounded-[22px] border border-white/20 bg-black/24 p-2.5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
         <div className="flex items-center justify-between gap-3 px-1">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
-              World
-            </p>
-            <p className="mt-1 truncate text-sm font-semibold text-white/84">
-              {selectedWorld.name}
-            </p>
+          <div className="flex min-w-0 items-center gap-3">
+            <span
+              className="h-10 w-14 shrink-0 rounded-lg border border-white/18 bg-cover bg-center shadow-[inset_0_0_18px_rgba(0,0,0,0.28)]"
+              style={{ backgroundImage: `url(${selectedWorld.image})` }}
+              aria-hidden="true"
+            />
+            <div className="min-w-0">
+              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
+                World
+              </p>
+              <p className="mt-1 truncate text-sm font-semibold text-white/84">
+                {selectedWorld.name}
+              </p>
+            </div>
           </div>
           <button
             type="button"
@@ -930,13 +1212,18 @@ function WorldSelector({
                 key={world.id}
                 type="button"
                 onClick={() => onSelect(world.id)}
-                className={`rounded-full border px-3 py-1.5 text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
+                className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
                   active
                     ? "border-white/65 bg-white/22 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
                     : "border-white/12 bg-black/18 text-white/68 hover:border-white/35 hover:bg-white/10 hover:text-white"
                 }`}
                 aria-pressed={active}
               >
+                <span
+                  className="h-5 w-7 rounded-full border border-white/16 bg-cover bg-center shadow-[inset_0_0_10px_rgba(0,0,0,0.35)]"
+                  style={{ backgroundImage: `url(${world.image})` }}
+                  aria-hidden="true"
+                />
                 <span className="block text-[11px] font-semibold leading-none">
                   {world.shortName}
                 </span>
@@ -966,18 +1253,25 @@ function WorldSelector({
                     key={world.id}
                     type="button"
                     onClick={() => onSelect(world.id)}
-                    className={`rounded-md border px-2.5 py-2 text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
+                    className={`overflow-hidden rounded-md border text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
                       active
                         ? "border-white/65 bg-white/22 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
                         : "border-white/12 bg-black/18 text-white/68 hover:border-white/35 hover:bg-white/10 hover:text-white"
                     }`}
                     aria-pressed={active}
                   >
-                    <span className="block text-xs font-semibold leading-none">
-                      {world.shortName}
-                    </span>
-                    <span className="mt-1 block text-[10px] leading-none text-white/48">
-                      {world.description}
+                    <span
+                      className="block h-14 bg-cover bg-center"
+                      style={{ backgroundImage: `url(${world.image})` }}
+                      aria-hidden="true"
+                    />
+                    <span className="block px-2.5 py-2">
+                      <span className="block text-xs font-semibold leading-none">
+                        {world.shortName}
+                      </span>
+                      <span className="mt-1 block text-[10px] leading-none text-white/48">
+                        {world.description}
+                      </span>
                     </span>
                   </button>
                 );
@@ -1141,20 +1435,24 @@ function FinderItem({
   onOpen: () => void;
 }) {
   return (
-    <button
+    <motion.button
       type="button"
       onClick={onOpen}
       className={`group grid min-h-[86px] place-items-center border px-1.5 py-2.5 text-center transition hover:border-black hover:bg-[#efefef] focus:outline-none focus:ring-2 focus:ring-black/70 sm:min-h-[98px] sm:px-2 sm:py-3 ${
         active ? "border-black bg-white" : "border-transparent"
       }`}
       aria-label={`Open ${label} in Esteban OS`}
+      whileHover={{ y: -4, rotateX: 5, rotateY: -4 }}
+      whileTap={{ y: 1, scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+      style={{ transformStyle: "preserve-3d" }}
     >
       <FinderIcon kind={kind} />
       <span className="mt-2 max-w-24 font-mono text-[11px] font-semibold leading-tight text-black sm:mt-3 sm:max-w-28 sm:text-[13px]">
         {label}
       </span>
       <span className="mt-1 h-px w-8 bg-black/0 transition group-hover:bg-black/70" />
-    </button>
+    </motion.button>
   );
 }
 
@@ -1528,7 +1826,7 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
       <div className="pointer-events-auto">
         <div
           className="relative w-[min(94vw,900px)] max-h-[78svh] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] sm:max-h-none"
-          style={{ transform }}
+          style={{ transform, transformStyle: "preserve-3d" }}
         >
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
           <div className="relative">
