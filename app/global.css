@@ -4,50 +4,50 @@
 
 /* Clean, refined themes */
 :root {
-  --accent-1: #6366f1;
-  --accent-2: #8b5cf6;
-  --accent-3: #06b6d4;
-  --subtle-glow: rgba(99, 102, 241, 0.15);
+  --accent-1: #0f766e;
+  --accent-2: #1d4ed8;
+  --accent-3: #c56a14;
+  --subtle-glow: rgba(15, 118, 110, 0.14);
 }
 
 [data-theme="light"] {
-  --primary: #6366f1;
-  --primary-focus: #4f46e5;
+  --primary: #0f766e;
+  --primary-focus: #115e59;
   --primary-content: #ffffff;
 
-  --secondary: #8b5cf6;
-  --secondary-focus: #7c3aed;
+  --secondary: #1d4ed8;
+  --secondary-focus: #1e40af;
   --secondary-content: #ffffff;
 
-  --accent: #06b6d4;
-  --accent-focus: #0891b2;
+  --accent: #c56a14;
+  --accent-focus: #9a4f08;
   --accent-content: #ffffff;
 
-  --base-100: #fafafa;
-  --base-200: #f4f4f5;
-  --base-300: #e4e4e7;
-  --base-content: #18181b;
+  --base-100: #f7fafc;
+  --base-200: #edf2f7;
+  --base-300: #d5dee8;
+  --base-content: #13202b;
 }
 
 [data-theme="dark"] {
-  --primary: #818cf8;
-  --primary-focus: #6366f1;
+  --primary: #5eead4;
+  --primary-focus: #2dd4bf;
   --primary-content: #ffffff;
 
-  --secondary: #a78bfa;
-  --secondary-focus: #8b5cf6;
+  --secondary: #93c5fd;
+  --secondary-focus: #60a5fa;
   --secondary-content: #ffffff;
 
-  --accent: #22d3ee;
-  --accent-focus: #06b6d4;
+  --accent: #fdba74;
+  --accent-focus: #fb923c;
   --accent-content: #ffffff;
 
-  --base-100: #09090b;
-  --base-200: #18181b;
-  --base-300: #27272a;
-  --base-content: #fafafa;
+  --base-100: #081018;
+  --base-200: #101a24;
+  --base-300: #1c2a38;
+  --base-content: #eef4f8;
 
-  --subtle-glow: rgba(129, 140, 248, 0.15);
+  --subtle-glow: rgba(94, 234, 212, 0.16);
 }
 
 /* Cupcake fallback */
@@ -103,6 +103,10 @@ html {
 body {
   position: relative;
   overflow-x: hidden;
+  background:
+    radial-gradient(circle at 14% 0%, rgba(15, 118, 110, 0.08), transparent 26rem),
+    radial-gradient(circle at 85% 18%, rgba(197, 106, 20, 0.05), transparent 24rem),
+    linear-gradient(180deg, var(--base-100), var(--base-100));
 }
 
 /* Subtle dot pattern background */
@@ -117,7 +121,7 @@ body::before {
   background-size: 32px 32px;
   pointer-events: none;
   z-index: 0;
-  opacity: 0.3;
+  opacity: 0.12;
 }
 
 /* Glassmorphism - refined */

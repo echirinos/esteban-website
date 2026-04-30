@@ -1,322 +1,147 @@
 import type { Metadata } from "next";
+import Image from "next/image";
+import Link from "next/link";
+import {
+  MetricStrip,
+  PageIntro,
+  PageShell,
+  SectionHeading,
+  SurfaceCard,
+  TagList,
+} from "../components/portfolio-ui";
+import { portfolioMetrics, roleFit, workExperiences } from "../lib/portfolio-data";
 
 export const metadata: Metadata = {
   title: "Work",
-  description: "A summary of my work and contributions.",
+  description:
+    "Applied AI, developer experience, technical success, and solutions engineering work by Esteban Chirinos.",
 };
+
+const featuredWork = workExperiences.filter((item) => item.featured);
+const supportingWork = workExperiences.filter((item) => !item.featured);
 
 export default function WorkPage() {
   return (
-    <section>
-      <h1 className="text-2xl font-medium tracking-tighter mb-8">my work</h1>
-      <div className="space-y-8">
-        <p className="mb-6 text-base-content">
-          I've spent my career at the intersection of engineering and developer
-          experience — helping teams ship better products, faster. Here's the
-          full timeline.
-        </p>
+    <PageShell>
+      <SurfaceCard className="mb-8">
+        <PageIntro
+          title="Applied AI, DevEx, and solutions work."
+          description="I’ve spent my career where technical products meet customers: developer platforms, API integrations, cloud architecture, product feedback loops, documentation, workshops, and demos that make complex systems easier to adopt."
+          aside={
+            <div className="rounded-2xl border border-base-content/10 bg-base-100/70 p-4">
+              <p className="text-sm font-semibold text-base-content/75">Best aligned with</p>
+              <TagList items={roleFit} className="mt-3 max-w-xs" />
+            </div>
+          }
+        />
+      </SurfaceCard>
 
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="Coinbase logomark"
-                src="/images/coinbase.svg"
-                className="mr-2 h-5 w-5"
-              />
-              Coinbase
+      <section className="py-4">
+        <MetricStrip items={portfolioMetrics} />
+      </section>
+
+      <section className="py-14">
+        <SectionHeading
+          title="Recent work"
+          description="The strongest fit is customer-facing technical work where a platform, product, and developer workflow all need to become clearer at the same time."
+        />
+        <div className="grid gap-5 lg:grid-cols-2">
+          {featuredWork.map((company) => (
+            <SurfaceCard key={company.name}>
+              <div className="flex items-start gap-4">
+                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-2xl border border-base-content/10 bg-base-200/70 p-3">
+                  <Image
+                    alt={`${company.name} logo`}
+                    src={company.logo}
+                    width={72}
+                    height={72}
+                    className="max-h-11 w-auto object-contain"
+                  />
+                </div>
+                <div>
+                  <h2 className="text-2xl font-semibold">{company.name}</h2>
+                  <p className="mt-1 text-sm text-base-content/58">
+                    {company.role} • {company.period}
+                  </p>
+                </div>
+              </div>
+              <p className="mt-5 leading-relaxed text-base-content/68">
+                {company.summary}
+              </p>
+              <TagList items={company.tags} className="mt-5" />
+              <div className="mt-5 space-y-3">
+                {company.impact.map((item) => (
+                  <div key={item} className="flex gap-3 text-sm text-base-content/72">
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                    <span>{item}</span>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-6">
+                <a
+                  href={company.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm font-semibold text-primary transition hover:text-base-content"
+                >
+                  Visit {company.name}
+                </a>
+              </div>
+            </SurfaceCard>
+          ))}
+        </div>
+      </section>
+
+      <section className="py-4">
+        <SectionHeading
+          title="Earlier foundations"
+          description="Cloud, enterprise, and software engineering work that built the operating base for the current customer-facing platform role."
+        />
+        <div className="grid gap-4 md:grid-cols-3">
+          {supportingWork.map((company) => (
+            <SurfaceCard key={company.name} className="p-5">
+              <div className="mb-4 grid h-14 w-14 place-items-center rounded-2xl border border-base-content/10 bg-base-200/70 p-3">
+                <Image
+                  alt={`${company.name} logo`}
+                  src={company.logo}
+                  width={72}
+                  height={72}
+                  className="max-h-9 w-auto object-contain"
+                />
+              </div>
+              <h3 className="text-lg font-semibold">{company.name}</h3>
+              <p className="mt-1 text-sm text-base-content/58">
+                {company.role} • {company.period}
+              </p>
+              <p className="mt-3 text-sm leading-relaxed text-base-content/66">
+                {company.summary}
+              </p>
+            </SurfaceCard>
+          ))}
+        </div>
+      </section>
+
+      <SurfaceCard className="mt-12 bg-[linear-gradient(135deg,rgba(15,118,110,0.08),rgba(191,219,254,0.38),rgba(255,255,255,0.92))]">
+        <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
+          <div>
+            <h2 className="text-2xl font-bold tracking-tight">
+              Want the recruiter version?
             </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Technical Services Engineer, March 2024 - Present
+            <p className="mt-3 max-w-2xl text-base-content/68">
+              The modern portfolio condenses the same work into a faster scan,
+              while the resume page keeps the role-fit summary short.
             </p>
-            <p className="text-base-content mb-4">
-              Deep technical support for the Coinbase Developer Platform (CDP),
-              working directly with developers and enterprise customers building
-              onchain.
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Lead technical onboarding for developers integrating CDP APIs
-                and SDKs.
-              </li>
-              <li>
-                Design integration architectures and provide best-practice
-                guidance for scalable onchain applications.
-              </li>
-              <li>
-                Debug complex issues through log analysis, code review (
-                <span className="badge badge-primary font-mono text-xs">
-                  TypeScript
-                </span>
-                ,{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  Python
-                </span>
-                ), and internal reproduction.
-              </li>
-              <li>
-                Write and maintain technical docs, runbooks, and multi-language
-                code samples (
-                <span className="badge badge-primary font-mono text-xs">
-                  TS/JS
-                </span>
-                ,{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  Python
-                </span>
-                ,{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  Java
-                </span>
-                ,{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  C#
-                </span>
-                ).
-              </li>
-              <li>
-                Feed developer pain points back to{" "}
-                <span className="badge badge-ghost text-xs">Product</span>,{" "}
-                <span className="badge badge-ghost text-xs">Engineering</span>,
-                and{" "}
-                <span className="badge badge-ghost text-xs">Sales</span> to
-                improve the platform.
-              </li>
-              <li>
-                On-call rotation, Discord support, and hackathon mentorship.
-              </li>
-            </ul>
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link href="/modern" className="btn btn-primary">
+              Modern portfolio
+            </Link>
+            <Link href="/resume" className="btn btn-outline">
+              Resume
+            </Link>
           </div>
         </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="TRM Labs logomark"
-                src="/images/Trm-Labs.svg"
-                className="mr-2 h-5 w-5"
-              />
-              TRM Labs
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Staff Solutions Architect, June 2023 - February 2024
-            </p>
-            <p className="text-base-content mb-4">
-              Designed and rolled out TRM's API integrations for financial
-              institutions and government agencies fighting crypto-based
-              financial crime.
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Delivered 40+ custom API integration solutions, translating
-                client requirements into platform configurations — 30% lift in
-                client satisfaction.
-              </li>
-              <li>
-                Ran 60+ technical discovery sessions to drive product adoption
-                (25% increase) and align platform capabilities with client
-                needs.
-              </li>
-              <li>
-                Built 10+ dashboard tools and improved API docs, raising
-                integration quality and CSAT scores by 35%.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="Polygon logomark"
-                src="/images/polygon-matic-icon.svg"
-                className="mr-2 h-5 w-5"
-              />
-              Polygon Labs
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Solutions Engineer, August 2022 - February 2023
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Built and shipped web3 solutions for Entertainment, DeFi, and
-                NFT clients, driving adoption and retention.
-              </li>
-              <li>
-                Standardized operations for the 12-person solutions engineering
-                team, improving how we worked with external partners.
-              </li>
-              <li>
-                Built proof-of-concept integrations in{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  Next.js
-                </span>{" "}
-                and{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  JavaScript
-                </span>{" "}
-                to show prospects how easy it was to build on Polygon.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="OpenSea logomark"
-                src="/images/opensea.svg"
-                className="mr-2 h-5 w-5"
-              />
-              OpenSea
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Developer Relations Engineer, January 2022 - July 2022
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Owned developer-facing docs, sample code (
-                <span className="badge badge-primary font-mono text-xs">
-                  Python
-                </span>
-                ,{" "}
-                <span className="badge badge-primary font-mono text-xs">
-                  JS
-                </span>
-                ), and best practices. Funneled developer feedback back to
-                product engineering.
-              </li>
-              <li>
-                Managed partner engineering relationships with Consensys, Snap,
-                Instagram, Coinbase, Yuga Labs, Rarible, MoonPay, and Cool
-                Cats.
-              </li>
-              <li>
-                Handled L2 developer support — complex partner and developer
-                queries.
-              </li>
-            </ul>
-            <p className="text-sm text-base-content/80 mb-2">
-              Product Manager (Trial), March 2022 - July 2022
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Prioritized 100+ developer feature requests for the{" "}
-                <span className="badge badge-secondary text-xs">
-                  OpenSea API
-                </span>{" "}
-                and{" "}
-                <span className="badge badge-secondary text-xs">SDK</span>,
-                improving NPS and cutting support tickets.
-              </li>
-              <li>
-                Set up{" "}
-                <span className="badge badge-info text-xs">Zendesk</span>{" "}
-                automation handling 400+ cases/week.
-              </li>
-              <li>
-                Built and shipped an API key distribution tool — 30-point NPS
-                increase.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="Google logomark"
-                src="/images/google-icon.svg"
-                className="mr-2 h-5 w-5"
-              />
-              Google
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Technical Account Manager, October 2020 - January 2022
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Selected for Google's internal Software Engineering Bootcamp
-                (40 of 500 accepted). Shipped production code across multiple
-                team rotations.
-              </li>
-              <li>
-                Helped enterprise customers architect and deploy cloud
-                solutions. Managed accounts totaling $217M in customer revenue.
-              </li>
-              <li>
-                Led an AWS → GCP BigQuery/Dataproc migration for a new
-                customer, driving $300K+ in revenue growth with 10%+ monthly
-                GCP spend increases.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="Microsoft logomark"
-                src="/images/Microsoft_logo.svg"
-                className="mr-2 h-5 w-5"
-              />
-              Microsoft
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Software Engineer Intern, May 2020 - August 2020
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Built a telemetry monitoring app for Azure Cloud Supply Chain
-                using C#, .NET, KQL, PowerBI, and Azure Data Factory.
-              </li>
-              <li>
-                Created dashboards to track supply chain performance, spot
-                bottlenecks, and optimize resource allocation.
-              </li>
-              <li>
-                Improved Azure ML Supply Chain efficiency by 30% through
-                optimized telemetry.
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div className="card card-compact bg-base-200 shadow-lg">
-          <div className="card-body">
-            <h2 className="card-title flex items-center">
-              <img
-                alt="JPMorgan Chase logomark"
-                src="/images/J_P_Morgan_Logo_2008.svg"
-                className="mr-2 h-5 w-5"
-              />
-              JPMorgan Chase & Co.
-            </h2>
-            <p className="text-sm text-base-content/80 mb-2">
-              Software Engineer Intern, May 2019 - August 2019
-            </p>
-            <ul className="text-base-content list-disc pl-5 space-y-2 mb-4">
-              <li>
-                Built a React + Spring Boot + PostgreSQL web app for investment
-                bankers to manage and track deals.
-              </li>
-              <li>
-                Worked with PMs and senior engineers on requirements, design,
-                and implementation.
-              </li>
-              <li>
-                Built RESTful APIs and database schemas with a focus on
-                scalability and security.
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
+      </SurfaceCard>
+    </PageShell>
   );
 }

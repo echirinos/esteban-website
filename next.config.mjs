@@ -5,8 +5,10 @@ export const sql = postgres(process.env.POSTGRES_URL, {
 });
 
 const nextConfig = {
+  turbopack: {
+    root: process.cwd(),
+  },
   experimental: {
-    ppr: true,
     useLightningcss: true,
   },
   async redirects() {

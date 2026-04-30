@@ -1,192 +1,155 @@
 "use client";
 
-import React, { useState } from "react";
+import { useActionState, useEffect, useRef, useState, type FormEvent } from "react";
+import { useFormStatus } from "react-dom";
+import { sendContactMessage } from "../db/actions";
 
-export default function ContactForm() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-  const [status, setStatus] = useState<{
-    type: "success" | "error" | "loading" | null;
-    message: string;
-  }>({
-    type: null,
-    message: "",
-  });
+type FormState = {
+  status: "idle" | "success" | "error";
+  message: string;
+};
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+const initialState: FormState = {
+  status: "idle",
+  message: "",
+};
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+type ContactFormProps = {
+  deliveryMode: "server" | "mailto";
+};
 
-    // Form validation
-    if (!formData.name || !formData.email || !formData.message) {
-      setStatus({
-        type: "error",
-        message: "Please fill out all fields",
+function SubmitButton({ deliveryMode }: ContactFormProps) {
+  const { pending } = useFormStatus();
+  const label =
+    deliveryMode === "mailto"
+      ? "Open email draft"
+      : pending
+        ? "Sending..."
+        : "Send message";
+
+  return (
+    <button type="submit" className="btn btn-primary" disabled={pending}>
+      {label}
+    </button>
+  );
+}
+
+export default function ContactForm({ deliveryMode }: ContactFormProps) {
+  const formRef = useRef<HTMLFormElement>(null);
+  const [serverState, formAction] = useActionState(sendContactMessage, initialState);
+  const [clientState, setClientState] = useState(initialState);
+  const state = deliveryMode === "server" ? serverState : clientState;
+
+  useEffect(() => {
+    if (deliveryMode === "server" && serverState.status === "success") {
+      formRef.current?.reset();
+    }
+  }, [deliveryMode, serverState.status]);
+
+  const handleMailtoSubmit = (event: FormEvent<HTMLFormElement>) => {
+    if (deliveryMode !== "mailto") return;
+
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const name = formData.get("name")?.toString().trim() || "";
+    const email = formData.get("email")?.toString().trim() || "";
+    const message = formData.get("message")?.toString().trim() || "";
+
+    if (!name || !email || !message) {
+      setClientState({
+        status: "error",
+        message: "Please complete all fields before opening the draft.",
       });
       return;
     }
 
-    setStatus({
-      type: "loading",
-      message: "Sending your message...",
-    });
-
-    try {
-      // Using Formspree to handle form submission - replace YOUR_FORM_ID with the actual ID after creating a form
-      const response = await fetch("https://formspree.io/f/echi@hey.com", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(email)) {
+      setClientState({
+        status: "error",
+        message: "Please use a valid email address.",
       });
-
-      if (!response.ok) {
-        throw new Error("Failed to send message");
-      }
-
-      // Success
-      setStatus({
-        type: "success",
-        message: "Message sent successfully! I'll get back to you soon.",
-      });
-
-      // Reset form
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
-    } catch (error) {
-      setStatus({
-        type: "error",
-        message:
-          error instanceof Error
-            ? error.message
-            : "Something went wrong. Please try again.",
-      });
+      return;
     }
+
+    const subject = `Portfolio inquiry from ${name}`;
+    const body = [
+      `Name: ${name}`,
+      `Email: ${email}`,
+      "",
+      message,
+    ].join("\n");
+
+    window.location.href = `mailto:echi@hey.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setClientState({
+      status: "success",
+      message: "Your email app opened with a draft message to Esteban.",
+    });
   };
 
   return (
-    <>
-      {status.type === "success" ? (
-        <div className="alert alert-success mb-6">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{status.message}</span>
+    <form
+      ref={formRef}
+      action={deliveryMode === "server" ? formAction : undefined}
+      onSubmit={handleMailtoSubmit}
+      className="space-y-5"
+    >
+      {state.status !== "idle" ? (
+        <div
+          className={`rounded-2xl border px-4 py-3 text-sm ${
+            state.status === "success"
+              ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+              : "border-rose-200 bg-rose-50 text-rose-900"
+          }`}
+        >
+          {state.message}
         </div>
       ) : null}
 
-      {status.type === "error" ? (
-        <div className="alert alert-error mb-6">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="stroke-current shrink-0 h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{status.message}</span>
-        </div>
-      ) : null}
-
-      <form
-        action="https://formspree.io/f/echi@hey.com"
-        method="POST"
-        onSubmit={handleSubmit}
-      >
-        <div className="form-control mb-4">
-          <label className="label" htmlFor="name">
-            <span className="label-text">Your Name</span>
-          </label>
+      <div className="grid gap-5 md:grid-cols-2">
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-base-content/72">Name</span>
           <input
             type="text"
-            id="name"
             name="name"
-            value={formData.name}
-            onChange={handleChange}
             placeholder="Jane Doe"
-            className="input input-bordered w-full"
+            className="input input-bordered h-12 rounded-2xl border-base-content/12 bg-base-100/85"
             required
-            disabled={status.type === "loading"}
           />
-        </div>
+        </label>
 
-        <div className="form-control mb-4">
-          <label className="label" htmlFor="email">
-            <span className="label-text">Your Email</span>
-          </label>
+        <label className="grid gap-2">
+          <span className="text-sm font-medium text-base-content/72">Email</span>
           <input
             type="email"
-            id="email"
             name="email"
-            value={formData.email}
-            onChange={handleChange}
-            placeholder="jane.doe@example.com"
-            className="input input-bordered w-full"
+            placeholder="jane@company.com"
+            className="input input-bordered h-12 rounded-2xl border-base-content/12 bg-base-100/85"
             required
-            disabled={status.type === "loading"}
           />
-        </div>
+        </label>
+      </div>
 
-        <div className="form-control mb-4">
-          <label className="label" htmlFor="message">
-            <span className="label-text">Message</span>
-          </label>
-          <textarea
-            id="message"
-            name="message"
-            value={formData.message}
-            onChange={handleChange}
-            className="textarea textarea-bordered h-24 w-full"
-            placeholder="Your message here..."
-            required
-            disabled={status.type === "loading"}
-          ></textarea>
-        </div>
+      <label className="grid gap-2">
+        <span className="text-sm font-medium text-base-content/72">Message</span>
+        <textarea
+          name="message"
+          rows={7}
+          placeholder="What are you hiring for, building, or exploring?"
+          className="textarea textarea-bordered rounded-2xl border-base-content/12 bg-base-100/85"
+          required
+        />
+      </label>
 
-        <div className="form-control mt-6">
-          <button
-            type="submit"
-            className={`btn btn-primary ${
-              status.type === "loading" ? "loading" : ""
-            }`}
-            disabled={status.type === "loading"}
-          >
-            {status.type === "loading" ? "Sending..." : "Send Message"}
-          </button>
-        </div>
-      </form>
-    </>
+      <div className="flex items-center justify-between gap-4">
+        <p className="max-w-md text-sm leading-relaxed text-base-content/55">
+          {deliveryMode === "mailto"
+            ? "For recruiting, consulting, technical demos, or platform work."
+            : "For recruiting, consulting, technical demos, or platform work."}
+        </p>
+        <SubmitButton deliveryMode={deliveryMode} />
+      </div>
+    </form>
   );
 }

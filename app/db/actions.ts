@@ -80,3 +80,82 @@ export async function deleteGuestbookEntries(selectedEntries: string[]) {
   revalidatePath('/admin');
   revalidatePath('/guestbook');
 }
+
+type ContactFormState = {
+  status: 'idle' | 'success' | 'error';
+  message: string;
+};
+
+function escapeHtml(value: string) {
+  return value
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#39;');
+}
+
+export async function sendContactMessage(
+  _prevState: ContactFormState,
+  formData: FormData
+): Promise<ContactFormState> {
+  noStore();
+
+  const name = formData.get('name')?.toString().trim() || '';
+  const email = formData.get('email')?.toString().trim() || '';
+  const message = formData.get('message')?.toString().trim() || '';
+
+  if (!name || !email || !message) {
+    return {
+      status: 'error',
+      message: 'Please complete all fields before sending.',
+    };
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    return {
+      status: 'error',
+      message: 'Please use a valid email address.',
+    };
+  }
+
+  if (!process.env.RESEND_SECRET) {
+    return {
+      status: 'error',
+      message: 'Contact email is not configured on this deployment yet.',
+    };
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${process.env.RESEND_SECRET}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      from: 'guestbook@estebanchirinos.xyz',
+      to: 'echi@hey.com',
+      reply_to: email,
+      subject: `Portfolio inquiry from ${name}`,
+      html: `
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <p><strong>Message:</strong></p>
+        <p>${escapeHtml(message).replaceAll('\n', '<br />')}</p>
+      `,
+    }),
+  });
+
+  if (!response.ok) {
+    return {
+      status: 'error',
+      message: 'Message could not be sent right now. Please try again shortly.',
+    };
+  }
+
+  return {
+    status: 'success',
+    message: 'Message sent. Esteban will get back to you soon.',
+  };
+}
