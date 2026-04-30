@@ -9,10 +9,10 @@ import {
   useMemo,
   useRef,
   useState,
-  type FormEvent,
   type ReactNode,
 } from "react";
 import * as THREE from "three";
+import { AskEstebanChat } from "./ask-esteban-chat";
 
 type ExperiencePhase = "outside" | "transition" | "inside";
 type IconKind = "folder" | "disk" | "lab" | "contact" | "document" | "assistant";
@@ -452,23 +452,6 @@ const aiShippingRows = [
     detail:
       "Good AI product work names the tasks that must work, the edge cases that break trust, and the checks that prove the workflow is improving.",
   },
-];
-
-type AskMessage = {
-  role: "user" | "assistant";
-  content: string;
-  provider?: string;
-  sources?: string[];
-  setup?: string;
-};
-
-const askEstebanPrompts = [
-  "Why is Esteban a fit for AI product roles?",
-  "Summarize his Coinbase work.",
-  "What proof points should a recruiter know?",
-  "How technical is he?",
-  "What roles is he best aligned with?",
-  "Show me PM-relevant experience.",
 ];
 
 function usePointerParallax() {
@@ -1244,195 +1227,6 @@ function SectionShell({
   );
 }
 
-function AskEstebanView() {
-  const [messages, setMessages] = useState<AskMessage[]>([
-    {
-      role: "assistant",
-      content:
-        "Ask me what a recruiter or hiring manager would want to know: role fit, Coinbase work, product judgment, technical depth, proof points, or education.",
-      sources: ["Role Fit", "Receipts.txt"],
-    },
-  ]);
-  const [input, setInput] = useState("");
-  const [isPending, setIsPending] = useState(false);
-  const messageListRef = useRef<HTMLDivElement | null>(null);
-
-  useEffect(() => {
-    messageListRef.current?.scrollTo({
-      top: messageListRef.current.scrollHeight,
-      behavior: "smooth",
-    });
-  }, [messages, isPending]);
-
-  const submitQuestion = async (question: string) => {
-    const trimmedQuestion = question.trim();
-    if (!trimmedQuestion || isPending) return;
-
-    const nextMessages: AskMessage[] = [
-      ...messages,
-      { role: "user", content: trimmedQuestion },
-    ];
-
-    setMessages(nextMessages);
-    setInput("");
-    setIsPending(true);
-
-    try {
-      const response = await fetch("/api/ask-esteban", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          messages: nextMessages.map(({ role, content }) => ({
-            role,
-            content,
-          })),
-        }),
-      });
-
-      const data = (await response.json()) as {
-        answer?: string;
-        error?: string;
-        provider?: string;
-        sources?: string[];
-        setup?: string;
-      };
-
-      if (!response.ok || !data.answer) {
-        throw new Error(data.error || "Ask Esteban is unavailable.");
-      }
-
-      const answer = data.answer;
-
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        {
-          role: "assistant",
-          content: answer,
-          provider: data.provider,
-          sources: data.sources,
-          setup: data.setup,
-        },
-      ]);
-    } catch (error) {
-      setMessages((currentMessages) => [
-        ...currentMessages,
-        {
-          role: "assistant",
-          content:
-            error instanceof Error
-              ? error.message
-              : "Ask Esteban could not answer right now.",
-        },
-      ]);
-    } finally {
-      setIsPending(false);
-    }
-  };
-
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    void submitQuestion(input);
-  };
-
-  return (
-    <div className="space-y-3">
-      <div>
-        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
-          Ask Esteban OS
-        </p>
-        <h3 className="mt-1 max-w-2xl text-lg font-black leading-tight sm:text-xl">
-          Skip the browsing. Ask for the signal directly.
-        </h3>
-      </div>
-      <p className="max-w-2xl text-xs leading-relaxed text-black/75">
-        A grounded assistant for questions about Esteban's work, proof points,
-        role fit, education, and technical depth.
-      </p>
-
-      <div className="grid gap-3 lg:grid-cols-[0.78fr_1.22fr]">
-        <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-1">
-          {askEstebanPrompts.map((prompt) => (
-            <button
-              key={prompt}
-              type="button"
-              onClick={() => void submitQuestion(prompt)}
-              className="border border-black bg-[#f7f7f7] px-3 py-2 text-left text-xs font-black leading-snug shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] transition hover:bg-black hover:text-white disabled:opacity-50"
-              disabled={isPending}
-            >
-              {prompt}
-            </button>
-          ))}
-        </div>
-
-        <div className="space-y-2">
-          <div
-            ref={messageListRef}
-            className="max-h-[152px] space-y-2 overflow-y-auto border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
-          >
-            {messages.map((message, index) => (
-              <article
-                key={`${message.role}-${index}`}
-                className={`border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)] ${
-                  message.role === "user"
-                    ? "ml-auto max-w-[86%] bg-black text-white"
-                    : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
-                }`}
-              >
-                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  {message.role === "user" ? "You" : "Ask Esteban"}
-                  {message.provider ? ` / ${message.provider}` : ""}
-                </p>
-                <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
-                  {message.content}
-                </p>
-                {message.sources?.length ? (
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
-                    Sources: {message.sources.join(", ")}
-                  </p>
-                ) : null}
-                {message.setup ? (
-                  <p className="mt-2 border-t border-black/20 pt-2 text-[10px] leading-relaxed opacity-70">
-                    {message.setup}
-                  </p>
-                ) : null}
-              </article>
-            ))}
-            {isPending ? (
-              <article className="mr-auto max-w-[92%] border border-black bg-[#f7f7f7] p-2 text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]">
-                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  Ask Esteban
-                </p>
-                <p className="mt-2 text-xs font-bold">Thinking...</p>
-              </article>
-            ) : null}
-          </div>
-
-          <form onSubmit={handleSubmit} className="flex flex-col gap-2 sm:flex-row">
-            <label className="sr-only" htmlFor="ask-esteban-input">
-              Ask Esteban a question
-            </label>
-            <input
-              id="ask-esteban-input"
-              value={input}
-              onChange={(event) => setInput(event.target.value)}
-              placeholder="Ask about Coinbase, PM fit, technical depth..."
-              className="min-h-10 flex-1 border border-black bg-white px-3 py-2 text-sm font-bold outline-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] placeholder:text-black/40 focus:ring-2 focus:ring-black"
-              maxLength={500}
-            />
-            <button
-              type="submit"
-              disabled={isPending || input.trim().length === 0}
-              className="border border-black bg-black px-4 py-2 text-sm font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] transition hover:bg-white hover:text-black disabled:cursor-not-allowed disabled:opacity-50"
-            >
-              Send
-            </button>
-          </form>
-        </div>
-      </div>
-    </div>
-  );
-}
-
 function WorkView() {
   return (
     <div className="space-y-4">
@@ -1705,7 +1499,7 @@ function SectionView({
 
   return (
     <SectionShell section={section} onBack={onBack}>
-      {activeSection === "ask" ? <AskEstebanView /> : null}
+      {activeSection === "ask" ? <AskEstebanChat /> : null}
       {activeSection === "work" ? <WorkView /> : null}
       {activeSection === "projects" ? <ProjectsView /> : null}
       {activeSection === "ai-lab" ? <AILabView /> : null}

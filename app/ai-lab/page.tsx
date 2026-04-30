@@ -6,6 +6,7 @@ import {
   SurfaceCard,
   TagList,
 } from "../components/portfolio-ui";
+import { AskEstebanChat } from "../components/ask-esteban-chat";
 import { labTracks } from "../lib/portfolio-data";
 
 export const metadata: Metadata = {
@@ -30,6 +31,14 @@ export default function AILabPage() {
           description="This is the applied layer behind the portfolio: prototype systems, agent workflows, demo architecture, and operator tooling where the output has to be persuasive, testable, deployable, and useful for product decisions."
         />
       </SurfaceCard>
+
+      <section className="py-8">
+        <SectionHeading
+          title="Ask Esteban OS"
+          description="A Kimi-powered assistant grounded on the same portfolio, resume, proof points, and role-fit material that appears across the site."
+        />
+        <AskEstebanChat variant="lab" />
+      </section>
 
       <section className="py-8">
         <SectionHeading

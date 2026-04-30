@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import {
   certificationHighlights,
-  contactChannels,
   educationCredentials,
   portfolioMetrics,
   projectEntries,
@@ -28,11 +27,13 @@ type MoonshotResponse = {
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
+export const maxDuration = 10;
 
 const apiKey = process.env.KIMI_API_KEY || process.env.MOONSHOT_API_KEY;
 const apiBaseUrl =
   process.env.KIMI_API_BASE_URL || "https://api.moonshot.ai/v1";
 const model = process.env.KIMI_MODEL || "kimi-k2.6";
+const kimiTimeoutMs = 8_000;
 const rateLimitWindowMs = 10 * 60 * 1000;
 const rateLimitMaxRequests = 12;
 
@@ -63,18 +64,17 @@ const estebanContext = [
   `Education: ${educationCredentials.map((item) => `${item.school}: ${item.credential} (${item.emphasis})`).join("; ")}.`,
   `Certifications: ${certificationHighlights.join(", ")}.`,
   `Tech stack: ${techStack.map((item) => item.name).join(", ")}.`,
-  `Contact channels: ${contactChannels.map((item) => `${item.label}: ${item.href}`).join("; ")}.`,
   "Work experience:",
   ...workExperiences.flatMap((work) => [
     `- ${work.name}: ${work.role}, ${work.period}. ${work.summary}`,
-    `  Impact: ${work.impact.join(" ")}`,
+    `  Impact: ${work.impact.slice(0, work.featured ? 5 : 2).join(" ")}`,
     `  Tags: ${work.tags.join(", ")}.`,
   ]),
-  "Projects:",
+  "Highlighted projects:",
   ...projectEntries.map(
     (project) =>
       `- ${project.name}: ${project.description} Category: ${project.category}. Tags: ${project.tags.join(", ")}.${project.href ? ` URL: ${project.href}.` : ""}`
-  ),
+  ).slice(0, 7),
 ].join("\n");
 
 const sourceMap = [
@@ -284,8 +284,12 @@ function localAnswer(question: string) {
     return "Esteban is a Senior Technical Solutions Engineer at Coinbase Developer Platform. The strongest proof points are 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, $20M in supported revenue impact, 58,000+ lines of demo and integration tooling, and AI-enabled workflows that helped reduce escalations by 30%.";
   }
 
+  if (normalized.includes("hire") && (normalized.includes("pm") || normalized.includes("product"))) {
+    return "Yes, for a technical PM, AI platform PM, or developer-product PM role where the team needs someone who can stay close to users and still reason technically. Esteban has PM-relevant proof points: 100+ weekly developer insights translated into product recommendations at Coinbase, 100+ API/SDK requests prioritized during an OpenSea PM rotation, and customer-facing platform work that turns ambiguity into demos, docs, and adoption paths.";
+  }
+
   if (normalized.includes("pm") || normalized.includes("product")) {
-    return "For product roles, Esteban's strongest angle is technical product judgment from customer-facing platform work: translating 100+ weekly developer insights into product recommendations, prioritizing 100+ API/SDK requests during an OpenSea PM rotation, and using demos/docs as fast feedback loops for developer adoption.";
+    return "For product roles, Esteban's strongest angle is technical product judgment from customer-facing platform work: translating 100+ weekly developer insights into product recommendations, prioritizing 100+ API/SDK requests during an OpenSea PM rotation, and using demos/docs as fast feedback loops for developer adoption. He is not only positioning for PM; PM is one credible lane alongside applied AI, DevEx, partner solutions, and customer-facing platform work.";
   }
 
   if (normalized.includes("technical") || normalized.includes("engineer")) {
@@ -301,6 +305,15 @@ function localAnswer(question: string) {
   }
 
   return "Esteban is strongest at the intersection of applied AI, developer experience, technical product, demo engineering, partner solutions, and customer-facing platform work. The quick proof: Senior Technical Solutions Engineer at Coinbase, $20M revenue impact supported, 30+ strategic partner integrations, 100+ developer insights translated, and experience across Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.";
+}
+
+function localFallbackResponse(question: string, setup: string) {
+  return NextResponse.json({
+    answer: localAnswer(question),
+    provider: "local-fallback",
+    sources: pickSources(question),
+    setup,
+  });
 }
 
 export async function POST(request: Request) {
@@ -378,6 +391,14 @@ export async function POST(request: Request) {
 
   let response: Response;
 
+  const kimiMessages = messages
+    .filter(
+      (message) =>
+        message.role === "user" ||
+        !message.content.startsWith("Ask me what a recruiter or hiring manager")
+    )
+    .slice(-6);
+
   try {
     response = await fetch(`${apiBaseUrl}/chat/completions`, {
       method: "POST",
@@ -389,30 +410,30 @@ export async function POST(request: Request) {
         model,
         messages: [
           { role: "system", content: systemPrompt },
-          ...messages,
+          ...kimiMessages,
         ],
-        max_tokens: 420,
+        max_tokens: 320,
+        temperature: 0.6,
         thinking: { type: "disabled" },
       }),
-      signal: AbortSignal.timeout(60_000),
+      signal: AbortSignal.timeout(kimiTimeoutMs),
     });
-  } catch {
-    return NextResponse.json(
-      {
-        error:
-          "Ask Esteban could not reach Kimi right now. Please try again shortly.",
-      },
-      { status: 502 }
+  } catch (error) {
+    const setup =
+      error instanceof Error && /timeout/i.test(error.name)
+        ? "Kimi took too long to respond, so Ask Esteban used the local portfolio fallback instead."
+        : "Kimi was unavailable, so Ask Esteban used the local portfolio fallback instead.";
+
+    return localFallbackResponse(
+      lastUserMessage.content,
+      setup
     );
   }
 
   if (!response.ok) {
-    return NextResponse.json(
-      {
-        error:
-          "Ask Esteban could not reach Kimi right now. Please try again shortly.",
-      },
-      { status: 502 }
+    return localFallbackResponse(
+      lastUserMessage.content,
+      "Kimi was unavailable, so Ask Esteban used the local portfolio fallback instead."
     );
   }
 
@@ -421,17 +442,17 @@ export async function POST(request: Request) {
   try {
     data = (await response.json()) as MoonshotResponse;
   } catch {
-    return NextResponse.json(
-      { error: "Kimi returned an unreadable response." },
-      { status: 502 }
+    return localFallbackResponse(
+      lastUserMessage.content,
+      "Kimi returned an unreadable response, so Ask Esteban used the local portfolio fallback instead."
     );
   }
   const answer = data.choices?.[0]?.message?.content?.trim();
 
   if (!answer) {
-    return NextResponse.json(
-      { error: "Kimi returned an empty answer." },
-      { status: 502 }
+    return localFallbackResponse(
+      lastUserMessage.content,
+      "Kimi returned an empty answer, so Ask Esteban used the local portfolio fallback instead."
     );
   }
 
