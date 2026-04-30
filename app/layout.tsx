@@ -17,6 +17,13 @@ export const metadata: Metadata = {
   },
   description:
     "Senior Technical Solutions Engineer at Coinbase focused on AI-ready demos, developer experience, API architecture, product feedback loops, customer deployments, and platform adoption.",
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "64x64" },
+      { url: "/icon.png", type: "image/png", sizes: "1024x1024" },
+    ],
+    apple: [{ url: "/apple-icon.png", type: "image/png", sizes: "180x180" }],
+  },
   openGraph: {
     title: "Esteban Chirinos",
     description:
@@ -25,6 +32,14 @@ export const metadata: Metadata = {
     siteName: "Esteban Chirinos",
     locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/opengraph-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Esteban Chirinos E logo",
+      },
+    ],
   },
   robots: {
     index: true,
@@ -42,6 +57,7 @@ export const metadata: Metadata = {
     description:
       "AI-ready demos, reference implementations, API architecture, product feedback loops, and customer-facing technical work.",
     card: "summary_large_image",
+    images: ["/twitter-image.jpg"],
   },
 };
 
