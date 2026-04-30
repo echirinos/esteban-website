@@ -307,12 +307,11 @@ function localAnswer(question: string) {
   return "Esteban is strongest at the intersection of applied AI, developer experience, technical product, demo engineering, partner solutions, and customer-facing platform work. The quick proof: Senior Technical Solutions Engineer at Coinbase, $20M revenue impact supported, 30+ strategic partner integrations, 100+ developer insights translated, and experience across Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.";
 }
 
-function localFallbackResponse(question: string, setup: string) {
+function localFallbackResponse(question: string) {
   return NextResponse.json({
     answer: localAnswer(question),
-    provider: "local-fallback",
+    provider: "portfolio-index",
     sources: pickSources(question),
-    setup,
   });
 }
 
@@ -418,23 +417,12 @@ export async function POST(request: Request) {
       }),
       signal: AbortSignal.timeout(kimiTimeoutMs),
     });
-  } catch (error) {
-    const setup =
-      error instanceof Error && /timeout/i.test(error.name)
-        ? "Kimi took too long to respond, so Ask Esteban used the local portfolio fallback instead."
-        : "Kimi was unavailable, so Ask Esteban used the local portfolio fallback instead.";
-
-    return localFallbackResponse(
-      lastUserMessage.content,
-      setup
-    );
+  } catch {
+    return localFallbackResponse(lastUserMessage.content);
   }
 
   if (!response.ok) {
-    return localFallbackResponse(
-      lastUserMessage.content,
-      "Kimi was unavailable, so Ask Esteban used the local portfolio fallback instead."
-    );
+    return localFallbackResponse(lastUserMessage.content);
   }
 
   let data: MoonshotResponse;
@@ -442,18 +430,12 @@ export async function POST(request: Request) {
   try {
     data = (await response.json()) as MoonshotResponse;
   } catch {
-    return localFallbackResponse(
-      lastUserMessage.content,
-      "Kimi returned an unreadable response, so Ask Esteban used the local portfolio fallback instead."
-    );
+    return localFallbackResponse(lastUserMessage.content);
   }
   const answer = data.choices?.[0]?.message?.content?.trim();
 
   if (!answer) {
-    return localFallbackResponse(
-      lastUserMessage.content,
-      "Kimi returned an empty answer, so Ask Esteban used the local portfolio fallback instead."
-    );
+    return localFallbackResponse(lastUserMessage.content);
   }
 
   return NextResponse.json({
