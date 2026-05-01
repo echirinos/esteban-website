@@ -160,7 +160,7 @@ export function AskEstebanChat({
   return (
     <div
       className={cx(
-        "space-y-3",
+        isLab ? "space-y-3" : "space-y-2 sm:space-y-3",
         isLab &&
           "rounded-lg border border-base-content/12 bg-base-100/90 p-5 shadow-[0_18px_55px_rgba(15,23,42,0.08)] md:p-6",
         className
@@ -179,7 +179,7 @@ export function AskEstebanChat({
           <h3
             className={cx(
               "mt-1 max-w-2xl font-black leading-tight",
-              isLab ? "text-2xl text-base-content md:text-3xl" : "text-lg sm:text-xl"
+              isLab ? "text-2xl text-base-content md:text-3xl" : "text-base sm:text-xl"
             )}
           >
             {isLab
@@ -203,15 +203,24 @@ export function AskEstebanChat({
       <p
         className={cx(
           "max-w-2xl leading-relaxed",
-          isLab ? "text-sm text-base-content/68" : "text-xs text-black/75"
+          isLab
+            ? "text-sm text-base-content/68"
+            : "hidden text-xs text-black/75 sm:block"
         )}
       >
         A grounded assistant for questions about Esteban's work, proof points,
         role fit, education, and technical depth.
       </p>
 
-      <div className={cx("grid gap-3", isLab ? "lg:grid-cols-[0.72fr_1.28fr]" : "lg:grid-cols-[0.78fr_1.22fr]")}>
-        <div className={cx("grid gap-2", isLab ? "sm:grid-cols-2" : "sm:grid-cols-2 lg:grid-cols-1")}>
+      <div className={cx("grid gap-2 sm:gap-3", isLab ? "lg:grid-cols-[0.72fr_1.28fr]" : "lg:grid-cols-[0.78fr_1.22fr]")}>
+        <div
+          className={cx(
+            "grid gap-2",
+            isLab
+              ? "sm:grid-cols-2"
+              : "order-2 sm:grid-cols-2 lg:order-none lg:grid-cols-1"
+          )}
+        >
           {askEstebanPrompts.map((prompt) => (
             <button
               key={prompt}
@@ -230,14 +239,14 @@ export function AskEstebanChat({
           ))}
         </div>
 
-        <div className="space-y-2">
+        <div className={cx("space-y-2", !isLab && "order-1 lg:order-none")}>
           <div
             ref={messageListRef}
             className={cx(
               "space-y-2 overflow-y-auto",
               isLab
                 ? "max-h-[360px] rounded-md border border-base-content/12 bg-base-200/35 p-3"
-                : "max-h-[152px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
+                : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
             )}
           >
             {messages.map((message, index) => (

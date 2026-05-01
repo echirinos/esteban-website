@@ -1302,14 +1302,14 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
 
   return (
     <motion.nav
-      className="pointer-events-none absolute inset-x-4 bottom-4 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
+      className="pointer-events-none absolute bottom-3 left-16 right-2.5 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.46, delay: 0.08, ease: "easeOut" }}
       aria-label="Goggles navigation"
     >
-      <div className="pointer-events-auto flex w-full max-w-[32rem] items-center gap-1.5 overflow-x-auto rounded-[22px] border border-white/18 bg-black/24 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none">
+      <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-[18px] border border-white/18 bg-black/32 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1.5 md:rounded-[22px] md:bg-black/24 md:p-2">
         <a
           href="/"
           className="mr-1 hidden shrink-0 items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-xs font-semibold text-white/86 transition hover:border-white/35 hover:bg-white/16 lg:flex"
@@ -1325,7 +1325,7 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
             href={item.href}
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}
-            className="shrink-0 rounded-full border border-white/10 bg-black/16 px-3 py-2 text-[11px] font-semibold text-white/72 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:text-xs"
+            className="shrink-0 rounded-full border border-white/10 bg-black/16 px-1.5 py-2 text-[9px] font-semibold leading-none text-white/78 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:px-2 sm:text-xs md:px-3"
           >
             {item.label}
           </a>
@@ -1358,18 +1358,18 @@ function WorldSelector({
 
   return (
     <motion.div
-      className="absolute bottom-20 left-4 right-4 z-30 md:bottom-auto md:left-6 md:right-auto md:top-6 md:w-[19rem]"
+      className="absolute left-3 right-3 top-3 z-30 md:left-6 md:right-auto md:top-6 md:w-[19rem]"
       initial={{ opacity: 0, y: -10 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -10 }}
       transition={{ duration: 0.46, ease: "easeOut" }}
       aria-label="World selector"
     >
-      <div className="rounded-[22px] border border-white/20 bg-black/24 p-2.5 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl">
-        <div className="flex items-center justify-between gap-3 px-1">
-          <div className="flex min-w-0 items-center gap-3">
+      <div className="rounded-[18px] border border-white/20 bg-black/32 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/24 md:p-2.5">
+        <div className="flex items-center justify-between gap-2 px-0.5 md:gap-3 md:px-1">
+          <div className="flex min-w-0 items-center gap-2.5 md:gap-3">
             <span
-              className="h-10 w-14 shrink-0 rounded-lg border border-white/18 bg-cover bg-center shadow-[inset_0_0_18px_rgba(0,0,0,0.28)]"
+              className="h-9 w-12 shrink-0 rounded-lg border border-white/18 bg-cover bg-center shadow-[inset_0_0_18px_rgba(0,0,0,0.28)] md:h-10 md:w-14"
               style={{ backgroundImage: `url(${selectedWorld.image})` }}
               aria-hidden="true"
             />
@@ -1385,7 +1385,7 @@ function WorldSelector({
           <button
             type="button"
             onClick={onTogglePicker}
-            className="rounded-full border border-white/12 bg-black/16 px-3 py-2 text-[11px] font-semibold text-white/72 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+            className="shrink-0 rounded-full border border-white/12 bg-black/18 px-3 py-2 text-[11px] font-semibold text-white/78 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
           >
             {pickerOpen ? "Done" : "Change"}
           </button>
@@ -1422,7 +1422,7 @@ function WorldSelector({
       <AnimatePresence>
         {pickerOpen ? (
           <motion.div
-            className="absolute bottom-[calc(100%+0.5rem)] left-0 right-0 rounded-[22px] border border-white/18 bg-black/30 p-3 text-white shadow-[0_22px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl md:bottom-auto md:top-[calc(100%+0.5rem)]"
+            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[56svh] overflow-y-auto rounded-[18px] border border-white/18 bg-black/40 p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/30 md:p-3"
             initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
@@ -1572,8 +1572,8 @@ function ArrivalBloom({ active }: { active: boolean }) {
 
 function ClassicTitleBar({ children }: { children: ReactNode }) {
   return (
-    <div className="grid h-8 grid-cols-[78px_1fr_78px] items-center border-b-2 border-black bg-[#d8d8d8] px-2 font-mono text-[11px] text-black sm:grid-cols-[96px_1fr_96px] sm:px-3 sm:text-xs">
-      <div className="flex items-center gap-2">
+    <div className="grid h-8 grid-cols-[56px_1fr_32px] items-center border-b-2 border-black bg-[#d8d8d8] px-1.5 font-mono text-[11px] text-black sm:grid-cols-[96px_1fr_96px] sm:px-3 sm:text-xs">
+      <div className="flex items-center gap-1.5 sm:gap-2">
         <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] text-[9px] leading-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
           x
         </span>
@@ -1600,7 +1600,7 @@ function ClassicTitleBar({ children }: { children: ReactNode }) {
 function FinderIcon({ kind }: { kind: IconKind }) {
   if (kind === "disk") {
     return (
-      <span className="relative mx-auto block h-12 w-12 border-2 border-black bg-[#f7f7ef] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+      <span className="finder-icon relative mx-auto block h-12 w-12 border-2 border-black bg-[#f7f7ef] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         <span className="absolute left-2 top-1.5 h-4 w-7 border border-black bg-black" />
         <span className="absolute left-3 top-7 h-2 w-6 border border-black bg-white" />
       </span>
@@ -1609,7 +1609,7 @@ function FinderIcon({ kind }: { kind: IconKind }) {
 
   if (kind === "lab") {
     return (
-      <span className="relative mx-auto block h-12 w-12 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+      <span className="finder-icon relative mx-auto block h-12 w-12 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         <span className="absolute left-2 top-2 h-4 w-7 border border-black bg-white" />
         <span className="absolute left-3 top-6 h-1.5 w-2 bg-black" />
         <span className="absolute left-6 top-6 h-1.5 w-2 bg-black" />
@@ -1620,7 +1620,7 @@ function FinderIcon({ kind }: { kind: IconKind }) {
 
   if (kind === "contact") {
     return (
-      <span className="relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+      <span className="finder-icon relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         {[0, 1, 2, 3].map((index) => (
           <span key={index} className="absolute -left-1 h-1.5 w-2 border border-black bg-white" style={{ top: 7 + index * 8 }} />
         ))}
@@ -1632,7 +1632,7 @@ function FinderIcon({ kind }: { kind: IconKind }) {
 
   if (kind === "assistant") {
     return (
-      <span className="relative mx-auto block h-12 w-14 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+      <span className="finder-icon relative mx-auto block h-12 w-14 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         <span className="absolute inset-x-2 top-2 h-7 border-2 border-black bg-white" />
         <span className="absolute bottom-2 left-5 h-3 w-3 border-b-2 border-l-2 border-black bg-white" />
         <span className="absolute left-5 top-5 h-1.5 w-1.5 bg-black" />
@@ -1644,7 +1644,7 @@ function FinderIcon({ kind }: { kind: IconKind }) {
 
   if (kind === "document") {
     return (
-      <span className="relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+      <span className="finder-icon relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         <span className="absolute right-[-2px] top-[-2px] h-4 w-4 border-b-2 border-l-2 border-black bg-white" />
         {[0, 1, 2, 3].map((index) => (
           <span key={index} className="absolute left-2 h-px w-5 bg-black" style={{ top: 19 + index * 6 }} />
@@ -1654,7 +1654,7 @@ function FinderIcon({ kind }: { kind: IconKind }) {
   }
 
   return (
-    <span className="relative mx-auto block h-12 w-14 border-2 border-black bg-[#f2f2e8] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
+    <span className="finder-icon relative mx-auto block h-12 w-14 border-2 border-black bg-[#f2f2e8] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
       <span className="absolute left-[-2px] top-[-8px] h-3 w-7 border-2 border-b-0 border-black bg-[#f2f2e8]" />
       <span className="absolute inset-x-2 bottom-2 h-5 border border-black bg-white/70" />
     </span>
@@ -1676,7 +1676,7 @@ function FinderItem({
     <motion.button
       type="button"
       onClick={onOpen}
-      className={`group grid min-h-[86px] place-items-center border px-1.5 py-2.5 text-center transition hover:border-black hover:bg-[#efefef] focus:outline-none focus:ring-2 focus:ring-black/70 sm:min-h-[98px] sm:px-2 sm:py-3 ${
+      className={`group grid min-h-[74px] place-items-center border px-1 py-1.5 text-center transition hover:border-black hover:bg-[#efefef] focus:outline-none focus:ring-2 focus:ring-black/70 [&_.finder-icon]:origin-bottom [&_.finder-icon]:scale-[0.82] sm:min-h-[98px] sm:px-2 sm:py-3 sm:[&_.finder-icon]:scale-100 ${
         active ? "border-black bg-white" : "border-transparent"
       }`}
       aria-label={`Open ${label} in Esteban OS`}
@@ -1686,10 +1686,10 @@ function FinderItem({
       style={{ transformStyle: "preserve-3d" }}
     >
       <FinderIcon kind={kind} />
-      <span className="mt-2 max-w-24 font-mono text-[11px] font-semibold leading-tight text-black sm:mt-3 sm:max-w-28 sm:text-[13px]">
+      <span className="mt-1 max-w-20 font-mono text-[10px] font-semibold leading-tight text-black sm:mt-3 sm:max-w-28 sm:text-[13px]">
         {label}
       </span>
-      <span className="mt-1 h-px w-8 bg-black/0 transition group-hover:bg-black/70" />
+      <span className="mt-0.5 h-px w-8 bg-black/0 transition group-hover:bg-black/70 sm:mt-1" />
     </motion.button>
   );
 }
@@ -1702,17 +1702,22 @@ function FinderDesktop({
   onOpen: (section: SectionId) => void;
 }) {
   return (
-    <div className="h-[min(48svh,390px)] overflow-y-auto bg-[#c4c4c4] px-4 py-5 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-auto sm:min-h-[326px] sm:px-8 sm:py-8">
-      <div className="mb-4 flex items-center justify-between border border-black bg-[#eeeeee] px-2 py-1 font-mono text-[10px] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
+    <div className="h-[min(56svh,440px)] overflow-y-auto bg-[#c4c4c4] px-3 py-3 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-auto sm:min-h-[326px] sm:px-8 sm:py-8">
+      <div className="mb-3 flex items-center justify-between gap-2 border border-black bg-[#eeeeee] px-2 py-1 font-mono text-[9px] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:mb-4 sm:text-[10px]">
         <span>Macintosh HD: Esteban Field Notes</span>
         <span>{portfolioItems.length} items</span>
       </div>
-      <p className="mb-4 max-w-2xl border border-black bg-[#f7f7f7] px-3 py-2 font-mono text-xs font-bold leading-relaxed shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.32)]">
-        Ask a direct question, or open the files I would use in an interview:
-        shipped systems, proof points, role fit, credentials, and AI-native
-        product notes.
+      <p className="mb-3 max-w-2xl border border-black bg-[#f7f7f7] px-3 py-2 font-mono text-[11px] font-bold leading-relaxed shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.32)] sm:mb-4 sm:text-xs">
+        <span className="sm:hidden">
+          Ask a question, or open proof points, role fit, credentials, and AI notes.
+        </span>
+        <span className="hidden sm:inline">
+          Ask a direct question, or open the files I would use in an interview:
+          shipped systems, proof points, role fit, credentials, and AI-native
+          product notes.
+        </span>
       </p>
-      <div className="grid grid-cols-3 gap-x-1 gap-y-3 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-5 md:grid-cols-6">
+      <div className="grid grid-cols-3 gap-x-1 gap-y-1.5 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-5 md:grid-cols-6">
         {portfolioItems.map((item) => (
           <FinderItem
             key={item.href}
@@ -1737,8 +1742,8 @@ function SectionShell({
   onBack: () => void;
 }) {
   return (
-    <div className="h-[min(48svh,390px)] overflow-y-auto bg-[#c4c4c4] px-4 py-4 font-mono text-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-[min(67svh,500px)] sm:px-5 sm:py-5">
-      <div className="mb-4 flex items-center justify-between gap-3 border border-black bg-[#e9e9e9] px-2 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
+    <div className="h-[min(56svh,440px)] overflow-y-auto bg-[#c4c4c4] px-3 py-3 font-mono text-black shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-[min(67svh,500px)] sm:px-5 sm:py-5">
+      <div className="mb-3 flex items-center justify-between gap-2 border border-black bg-[#e9e9e9] px-2 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:mb-4 sm:gap-3">
         <button
           type="button"
           onClick={onBack}
@@ -1746,13 +1751,15 @@ function SectionShell({
         >
           Desktop
         </button>
-        <div className="flex min-w-0 items-center gap-2 text-right">
-          <FinderIcon kind={section.kind} />
+        <div className="flex min-w-0 items-center gap-1.5 text-right sm:gap-2">
+          <span className="hidden sm:block">
+            <FinderIcon kind={section.kind} />
+          </span>
           <div className="min-w-0">
             <p className="truncate text-[10px] uppercase tracking-[0.18em] text-black/60">
               Esteban OS
             </p>
-            <h2 className="truncate text-base font-black sm:text-lg">
+            <h2 className="truncate text-sm font-black sm:text-lg">
               {section.label}
             </h2>
           </div>
@@ -2055,21 +2062,21 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
 
   return (
     <motion.div
-      className="pointer-events-none absolute inset-0 z-20 grid place-items-center px-4 pb-32 pt-20 md:px-8 md:py-12"
+      className="pointer-events-none absolute inset-0 z-20 flex items-start justify-center px-2 pb-[4.75rem] pt-[5.9rem] sm:px-4 sm:pb-20 sm:pt-24 md:grid md:place-items-center md:px-8 md:py-12"
       initial={{ opacity: 0, scale: 0.94, y: 26, filter: "blur(16px)" }}
       animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
       exit={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
       transition={{ duration: 0.86, ease: [0.16, 1, 0.3, 1] }}
     >
-      <div className="pointer-events-auto">
+      <div className="pointer-events-auto w-full sm:w-auto">
         <div
-          className="relative w-[min(94vw,900px)] max-h-[78svh] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] sm:max-h-none"
+          className="relative w-full max-h-[calc(100svh-10.65rem)] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[3px_3px_0_rgba(0,0,0,0.45),0_24px_90px_rgba(18,12,7,0.34)] sm:w-[min(94vw,900px)] sm:max-h-[78svh] sm:shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] md:max-h-none"
           style={{ transform, transformStyle: "preserve-3d" }}
         >
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
           <div className="relative">
             <ClassicTitleBar>{activeItem?.label ?? "Esteban OS 8"}</ClassicTitleBar>
-            <div className="flex items-center gap-3 border-b-2 border-black bg-[#efefef] px-3 py-1.5 font-mono text-[10px] text-black shadow-[0_1px_0_#ffffff_inset] sm:px-4">
+            <div className="flex items-center gap-2 border-b-2 border-black bg-[#efefef] px-2 py-1.5 font-mono text-[10px] text-black shadow-[0_1px_0_#ffffff_inset] sm:gap-3 sm:px-4">
               <span className="font-black">Mac OS 8 Finder</span>
               <span className="hidden font-bold sm:inline">File</span>
               <span className="hidden font-bold sm:inline">Edit</span>
@@ -2097,9 +2104,11 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
                 onOpen={setActiveSection}
               />
             )}
-            <div className="flex items-center justify-between border-t-2 border-black bg-[#d8d8d8] px-3 py-2 font-mono text-[9px] text-black/75 shadow-[0_1px_0_#ffffff_inset] sm:px-4 sm:text-[10px]">
+            <div className="flex items-center justify-between gap-3 border-t-2 border-black bg-[#d8d8d8] px-3 py-2 font-mono text-[9px] text-black/75 shadow-[0_1px_0_#ffffff_inset] sm:px-4 sm:text-[10px]">
               <span>{activeSection ? "1 window open" : `${portfolioItems.length} items`}</span>
-              <span>{activeItem?.href ?? "Ask questions, scan proof, inspect shipped systems"}</span>
+              <span className="hidden min-w-0 truncate sm:block">
+                {activeItem?.href ?? "Ask questions, scan proof, inspect shipped systems"}
+              </span>
             </div>
           </div>
         </div>
