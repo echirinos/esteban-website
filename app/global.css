@@ -10,7 +10,20 @@
   --subtle-glow: rgba(15, 118, 110, 0.14);
 }
 
-[data-theme="light"] {
+:is(:root:has(input.theme-controller[value="light"]:checked), [data-theme="light"]) {
+  --color-primary: #0f766e;
+  --color-primary-content: #ffffff;
+  --color-secondary: #1d4ed8;
+  --color-secondary-content: #ffffff;
+  --color-accent: #c56a14;
+  --color-accent-content: #ffffff;
+  --color-base-100: #f7fafc;
+  --color-base-200: #edf2f7;
+  --color-base-300: #d5dee8;
+  --color-base-content: #13202b;
+  --color-neutral: #13202b;
+  --color-neutral-content: #f7fafc;
+
   --primary: #0f766e;
   --primary-focus: #115e59;
   --primary-content: #ffffff;
@@ -29,18 +42,31 @@
   --base-content: #13202b;
 }
 
-[data-theme="dark"] {
+:is(:root:has(input.theme-controller[value="dark"]:checked), [data-theme="dark"]) {
+  --color-primary: #5eead4;
+  --color-primary-content: #052e2b;
+  --color-secondary: #93c5fd;
+  --color-secondary-content: #0b1f3a;
+  --color-accent: #fdba74;
+  --color-accent-content: #3b1d05;
+  --color-base-100: #081018;
+  --color-base-200: #101a24;
+  --color-base-300: #1c2a38;
+  --color-base-content: #eef4f8;
+  --color-neutral: #eef4f8;
+  --color-neutral-content: #081018;
+
   --primary: #5eead4;
   --primary-focus: #2dd4bf;
-  --primary-content: #ffffff;
+  --primary-content: #052e2b;
 
   --secondary: #93c5fd;
   --secondary-focus: #60a5fa;
-  --secondary-content: #ffffff;
+  --secondary-content: #0b1f3a;
 
   --accent: #fdba74;
   --accent-focus: #fb923c;
-  --accent-content: #ffffff;
+  --accent-content: #3b1d05;
 
   --base-100: #081018;
   --base-200: #101a24;
@@ -51,14 +77,21 @@
 }
 
 /* Cupcake fallback */
-[data-theme="cupcake"] {
+:is(:root:has(input.theme-controller[value="cupcake"]:checked), [data-theme="cupcake"]) {
+  --color-primary: #ef95ae;
+  --color-primary-content: #ffffff;
+  --color-secondary: #6cc8d1;
+  --color-secondary-content: #153f45;
+  --color-accent: #f9d72f;
+  --color-accent-content: #1f2937;
+
   --primary: #ef95ae;
   --primary-focus: #e67a98;
   --primary-content: #ffffff;
 
   --secondary: #6cc8d1;
   --secondary-focus: #5abbc5;
-  --secondary-content: #ffffff;
+  --secondary-content: #153f45;
 
   --accent: #f9d72f;
   --accent-focus: #f8d10c;
@@ -136,6 +169,21 @@ body::before {
 [data-theme="light"] .glass-card {
   background: rgba(255, 255, 255, 0.6);
   border: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.btn.btn-primary {
+  color: var(--color-primary-content);
+  --tw-prose-links: var(--color-primary-content);
+}
+
+.btn.btn-secondary {
+  color: var(--color-secondary-content);
+  --tw-prose-links: var(--color-secondary-content);
+}
+
+.btn.btn-accent {
+  color: var(--color-accent-content);
+  --tw-prose-links: var(--color-accent-content);
 }
 
 /* Glow effect - subtle */
