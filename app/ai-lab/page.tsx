@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import {
-  PageIntro,
   PageShell,
   SectionHeading,
   SurfaceCard,
@@ -22,22 +21,59 @@ const operatingPrinciples = [
   "Prefer workflows a customer team could actually use next week.",
 ];
 
+const chatSignals = [
+  {
+    title: "Recruiter-ready answers",
+    description: "Role fit, proof points, education, and experience without hunting through every route.",
+  },
+  {
+    title: "Product signal first",
+    description: "Ask about judgment, systems thinking, AI workflows, and how the work translates into teams.",
+  },
+  {
+    title: "Grounded portfolio context",
+    description: "Responses pull from the same proof points, resume material, and project context used on the site.",
+  },
+];
+
 export default function AILabPage() {
   return (
-    <PageShell>
-      <SurfaceCard className="mb-8">
-        <PageIntro
-          title="AI work that turns into usable product surfaces."
-          description="This is the applied layer behind the portfolio: prototype systems, agent workflows, demo architecture, and operator tooling where the output has to be persuasive, testable, deployable, and useful for product decisions."
-        />
-      </SurfaceCard>
+    <PageShell className="space-y-10">
+      <section className="py-4">
+        <div className="mb-5 max-w-4xl">
+          <h1 className="text-4xl font-bold leading-[0.95] tracking-tight md:text-6xl">
+            Ask Esteban OS
+          </h1>
+          <p className="mt-4 max-w-3xl text-base leading-relaxed text-base-content/68 md:mt-5 md:text-lg">
+            Ask about Coinbase work, AI product fit, technical depth, product
+            judgment, or what a hiring team should know first.
+          </p>
+        </div>
 
-      <section className="py-8">
-        <SectionHeading
-          title="Ask Esteban OS"
-          description="A Kimi-powered assistant grounded on the same portfolio, resume, proof points, and role-fit material that appears across the site."
-        />
-        <AskEstebanChat variant="lab" />
+        <div className="grid gap-5 lg:min-h-[calc(100svh-16rem)] lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
+          <AskEstebanChat
+            variant="lab"
+            className="lg:min-h-full"
+          />
+
+          <div className="flex flex-col justify-between rounded-[28px] border border-base-content/10 bg-base-100/86 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-8">
+            <div className="space-y-3">
+              {chatSignals.map((signal) => (
+                <div
+                  key={signal.title}
+                  className="border-t border-base-content/10 pt-3 first:border-t-0 first:pt-0"
+                >
+                  <h2 className="text-sm font-bold text-base-content">
+                    {signal.title}
+                  </h2>
+                  <p className="mt-1 text-sm leading-relaxed text-base-content/62">
+                    {signal.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
       </section>
 
       <section className="py-8">

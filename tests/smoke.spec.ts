@@ -22,6 +22,42 @@ test('legacy modern route redirects to canonical homepage', async ({ page }) => 
   await expect(page).toHaveURL('/');
 });
 
+test('ai lab leads with a working portfolio chat UI', async ({ page }) => {
+  await page.route('/api/ask-esteban', async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({
+        answer: 'Esteban has AI product proof points, Coinbase experience, and technical depth.',
+        provider: 'smoke',
+        sources: ['Smoke test'],
+      }),
+    });
+  });
+
+  await page.goto('/ai-lab');
+
+  await expect(
+    page.getByRole('heading', { name: 'Ask Esteban OS', level: 1 })
+  ).toBeVisible();
+  await expect(page.getByText('Live portfolio chat', { exact: true })).toBeVisible();
+
+  const input = page.getByRole('textbox', { name: 'Ask Esteban a question' });
+
+  await expect(input).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Ask' })).toBeVisible();
+
+  await input.fill('What AI product proof points matter?');
+  await page.getByRole('button', { name: 'Ask' }).click();
+
+  await expect(page.getByText('What AI product proof points matter?')).toBeVisible();
+  await expect(
+    page.getByText(
+      'Esteban has AI product proof points, Coinbase experience, and technical depth.'
+    )
+  ).toBeVisible();
+});
+
 test('immersive goggles route remains available', async ({ page }) => {
   await page.goto('/goggles');
 
