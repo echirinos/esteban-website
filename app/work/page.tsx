@@ -134,8 +134,8 @@ export default function WorkPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/modern" className="btn btn-primary">
-              Modern portfolio
+            <Link href="/" className="btn btn-primary">
+              Portfolio
             </Link>
             <Link href="/resume" className="btn btn-outline">
               Resume

@@ -4,9 +4,11 @@ import { usePathname } from "next/navigation";
 
 export function FooterWrapper() {
   const pathname = usePathname();
-  const isHome = !pathname || pathname.replace(/\/$/, "") === "";
+  const normalizedPathname = pathname?.replace(/\/$/, "") ?? "";
+  const isHome = normalizedPathname === "";
+  const isImmersiveRoute = normalizedPathname === "/goggles";
 
-  if (isHome) {
+  if (isHome || isImmersiveRoute) {
     return null;
   }
 

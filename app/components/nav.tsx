@@ -4,8 +4,8 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-  { href: "/", name: "Goggles" },
-  { href: "/modern", name: "Modern" },
+  { href: "/", name: "Home" },
+  { href: "/goggles", name: "Goggles" },
   { href: "/work", name: "Work" },
   { href: "/projects", name: "Projects" },
   { href: "/ai-lab", name: "AI Lab" },
@@ -76,7 +76,7 @@ export function Navbar() {
             </ul>
           </div>
           <Link
-            href="/modern"
+            href="/"
             className="rounded-full px-3 py-2 text-sm font-bold tracking-tight text-base-content hover:bg-base-200/80"
           >
             Esteban Chirinos

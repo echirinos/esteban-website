@@ -1,9 +1,3 @@
-import postgres from 'postgres';
-
-export const sql = postgres(process.env.POSTGRES_URL, {
-  ssl: 'allow',
-});
-
 const nextConfig = {
   turbopack: {
     root: process.cwd(),
@@ -12,20 +6,38 @@ const nextConfig = {
     useLightningcss: true,
   },
   async redirects() {
+    const staticRedirects = [
+      {
+        source: '/modern',
+        destination: '/',
+        permanent: true,
+      },
+    ];
+
     if (!process.env.POSTGRES_URL) {
-      return [];
+      return staticRedirects;
     }
+
+    const { default: postgres } = await import('postgres');
+    const sql = postgres(process.env.POSTGRES_URL, {
+      ssl: 'allow',
+    });
 
     let redirects = await sql`
       SELECT source, destination, permanent
       FROM redirects;
     `;
 
-    return redirects.map(({ source, destination, permanent }) => ({
-      source,
-      destination,
-      permanent: !!permanent,
-    }));
+    await sql.end();
+
+    return [
+      ...staticRedirects,
+      ...redirects.map(({ source, destination, permanent }) => ({
+        source,
+        destination,
+        permanent: !!permanent,
+      })),
+    ];
   },
   headers() {
     return [
@@ -38,14 +50,19 @@ const nextConfig = {
 };
 
 const ContentSecurityPolicy = `
-    default-src 'self' vercel.live;
+    default-src 'self';
     script-src 'self' 'unsafe-eval' 'unsafe-inline' cdn.vercel-insights.com vercel.live va.vercel-scripts.com;
     style-src 'self' 'unsafe-inline';
-    img-src * blob: data:;
+    img-src 'self' data: blob: https:;
     media-src 'none';
-    connect-src *;
+    connect-src 'self' https://vitals.vercel-insights.com https://*.vercel-insights.com https://va.vercel-scripts.com https://vercel.live wss://vercel.live https://*.codesandbox.io https://*.csb.app https://sandpack-bundler.codesandbox.io;
     font-src 'self' data:;
-    frame-src 'self' *.codesandbox.io vercel.live;
+    frame-src 'self' https://*.codesandbox.io https://*.csb.app https://vercel.live;
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self';
+    frame-ancestors 'none';
+    upgrade-insecure-requests;
 `;
 
 const securityHeaders = [

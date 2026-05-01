@@ -5,6 +5,6 @@ import { Navbar } from "./nav";
 
 export function NavbarWrapper() {
   const pathname = usePathname();
-  if (pathname === "/") return null;
+  if (pathname === "/goggles") return null;
   return <Navbar />;
 }

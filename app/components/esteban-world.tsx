@@ -81,7 +81,7 @@ const worldOptions: WorldOption[] = [
     name: "El Capitan Valley",
     shortName: "Valley",
     description: "granite cliffs",
-    image: "/images/world-yosemite-immersive.png",
+    image: "/images/world-yosemite-immersive.webp",
     background: "#e7c48d",
     fog: "#d7b988",
     ambient: "#fff0d6",
@@ -98,7 +98,7 @@ const worldOptions: WorldOption[] = [
     name: "Biolume Canopy",
     shortName: "Biolume",
     description: "alien night forest",
-    image: "/images/world-biolume-canopy-immersive.png",
+    image: "/images/world-biolume-canopy-immersive.webp",
     background: "#07111b",
     fog: "#0b1626",
     ambient: "#b9f2ff",
@@ -116,7 +116,7 @@ const worldOptions: WorldOption[] = [
     name: "Sky Reef",
     shortName: "Sky Reef",
     description: "floating gardens",
-    image: "/images/world-sky-reef-immersive.png",
+    image: "/images/world-sky-reef-immersive.webp",
     background: "#b9d4e6",
     fog: "#c2d8e4",
     ambient: "#f4f8ff",
@@ -133,7 +133,7 @@ const worldOptions: WorldOption[] = [
     name: "Coastal Dusk",
     shortName: "Coast",
     description: "ocean cliffs",
-    image: "/images/world-coastal-dusk-immersive.png",
+    image: "/images/world-coastal-dusk-immersive.webp",
     background: "#d8a66c",
     fog: "#b48d68",
     ambient: "#ffe4b6",
@@ -150,7 +150,7 @@ const worldOptions: WorldOption[] = [
     name: "Alpine Glass",
     shortName: "Alpine",
     description: "lake and peaks",
-    image: "/images/world-alpine-glass-immersive.png",
+    image: "/images/world-alpine-glass-immersive.webp",
     background: "#b9d5e5",
     fog: "#a6bfca",
     ambient: "#e9f7ff",
@@ -167,7 +167,7 @@ const worldOptions: WorldOption[] = [
     name: "Desert Observatory",
     shortName: "Desert",
     description: "canyon twilight",
-    image: "/images/world-desert-observatory-immersive.png",
+    image: "/images/world-desert-observatory-immersive.webp",
     background: "#233a5f",
     fog: "#28334c",
     ambient: "#b8c5e2",
@@ -185,7 +185,7 @@ const worldOptions: WorldOption[] = [
     name: "Orbital Horizon",
     shortName: "Space",
     description: "Earthrise ridge",
-    image: "/images/world-orbital-horizon-immersive.png",
+    image: "/images/world-orbital-horizon-immersive.webp",
     background: "#030407",
     fog: "#07080d",
     ambient: "#d8e6ff",
@@ -203,7 +203,7 @@ const worldOptions: WorldOption[] = [
     name: "Aurora Tundra",
     shortName: "Aurora",
     description: "northern lights",
-    image: "/images/world-aurora-tundra-immersive.png",
+    image: "/images/world-aurora-tundra-immersive.webp",
     background: "#101b34",
     fog: "#17213b",
     ambient: "#d9eeff",
@@ -221,7 +221,7 @@ const worldOptions: WorldOption[] = [
     name: "Cloud Rainforest",
     shortName: "Forest",
     description: "mist and canopy",
-    image: "/images/world-cloud-rainforest-immersive.png",
+    image: "/images/world-cloud-rainforest-immersive.webp",
     background: "#84916c",
     fog: "#8f9872",
     ambient: "#f3efd0",
@@ -238,7 +238,7 @@ const worldOptions: WorldOption[] = [
     name: "Neon Overlook",
     shortName: "Neon",
     description: "rainy skyline",
-    image: "/images/world-neon-overlook-immersive.png",
+    image: "/images/world-neon-overlook-immersive.webp",
     background: "#16212c",
     fog: "#1e2933",
     ambient: "#dbeeff",
@@ -254,6 +254,9 @@ const worldOptions: WorldOption[] = [
 ];
 
 const featuredWorldIds: WorldId[] = ["yosemite", "biolume", "skyreef", "orbital"];
+const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
+const transitionDurationMs = 1520;
+const reducedTransitionDurationMs = 540;
 
 const workRows = [
   {
@@ -701,6 +704,7 @@ function DepthRidge({
 }) {
   const mesh = useRef<THREE.Mesh>(null);
   const { pointer } = useThree();
+  const elapsed = useRef(0);
   const shape = useMemo(() => {
     const ridge = new THREE.Shape();
     ridge.moveTo(-width / 2, -1.15);
@@ -721,11 +725,12 @@ function DepthRidge({
     };
   }, [geometry]);
 
-  useFrame((state) => {
+  useFrame((_state, delta) => {
+    elapsed.current += delta;
     if (!mesh.current) return;
     mesh.current.position.x = position[0] + pointer.x * speed;
     mesh.current.position.y =
-      position[1] + pointer.y * speed * 0.18 + Math.sin(state.clock.elapsedTime * 0.16) * 0.012;
+      position[1] + pointer.y * speed * 0.18 + Math.sin(elapsed.current * 0.16) * 0.012;
   });
 
   return (
@@ -745,6 +750,7 @@ function DepthRidge({
 function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: boolean }) {
   const points = useRef<THREE.Points>(null);
   const { pointer } = useThree();
+  const elapsed = useRef(0);
   const positions = useMemo(() => {
     const values: number[] = [];
 
@@ -760,10 +766,11 @@ function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: b
     return new Float32Array(values);
   }, []);
 
-  useFrame((state) => {
+  useFrame((_state, delta) => {
+    elapsed.current += delta;
     if (!points.current) return;
     points.current.position.x = pointer.x * 0.42;
-    points.current.position.y = pointer.y * 0.12 + Math.sin(state.clock.elapsedTime * 0.24) * 0.025;
+    points.current.position.y = pointer.y * 0.12 + Math.sin(elapsed.current * 0.24) * 0.025;
     points.current.rotation.z = pointer.x * 0.012;
   });
 
@@ -948,52 +955,55 @@ function WorldScene({
 
 function LensFrame({ phase }: { phase: ExperiencePhase }) {
   const visible = phase === "inside";
+  const reduceMotion = useReducedMotion();
 
   return (
     <AnimatePresence>
       {visible ? (
         <motion.div
           className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-          initial={{ opacity: 0, filter: "blur(5px)" }}
+          initial={{ opacity: 0, filter: reduceMotion ? "blur(0px)" : "blur(5px)" }}
           animate={{ opacity: 1, filter: "blur(0px)" }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.78, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: reduceMotion ? 0.22 : 0.58, ease: cinematicEase }}
           aria-hidden="true"
         >
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,244,220,0.1)_0%,rgba(255,244,220,0.025)_34%,rgba(9,7,5,0.1)_58%,rgba(0,0,0,0.76)_100%)]" />
           <div className="absolute inset-0 opacity-25 mix-blend-screen [background-image:linear-gradient(90deg,rgba(90,220,255,0.16),transparent_18%,transparent_82%,rgba(255,138,108,0.16)),linear-gradient(rgba(255,255,255,0.13)_1px,transparent_1px)] [background-size:100%_100%,100%_4px]" />
           <motion.div
             className="absolute inset-x-[-8%] top-[-6.5rem] h-40 rounded-b-[50%] bg-black/[0.78] blur-sm md:top-[-7.8rem] md:h-48"
-            initial={{ y: -22 }}
+            initial={{ y: reduceMotion ? 0 : -22 }}
             animate={{ y: 0 }}
-            transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
           />
           <motion.div
             className="absolute inset-x-[-8%] bottom-[-6.2rem] h-40 rounded-t-[50%] bg-black/[0.82] blur-sm md:bottom-[-7.8rem] md:h-48"
-            initial={{ y: 22 }}
+            initial={{ y: reduceMotion ? 0 : 22 }}
             animate={{ y: 0 }}
-            transition={{ duration: 0.82, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
           />
           <div className="absolute left-[-7rem] top-[-5%] h-[110%] w-48 rounded-r-[50%] bg-black/[0.58] blur-md md:w-64" />
           <div className="absolute right-[-7rem] top-[-5%] h-[110%] w-48 rounded-l-[50%] bg-black/[0.58] blur-md md:w-64" />
           <motion.div
             className="absolute left-[7%] top-[8%] h-36 w-[47%] rotate-[-9deg] rounded-[999px] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),rgba(255,255,255,0.02)_58%,transparent_72%)] blur-[1px]"
-            initial={{ opacity: 0, x: -18, y: 10 }}
+            initial={{ opacity: 0, x: reduceMotion ? 0 : -18, y: reduceMotion ? 0 : 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.12, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
           />
           <motion.div
             className="absolute right-[8%] top-[12%] h-28 w-[34%] rotate-[-11deg] rounded-[999px] border border-white/12 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_56%,transparent_76%)] blur-[1px]"
-            initial={{ opacity: 0, x: 18, y: 10 }}
+            initial={{ opacity: 0, x: reduceMotion ? 0 : 18, y: reduceMotion ? 0 : 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.18, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.12, ease: "easeOut" }}
           />
-          <motion.div
-            className="absolute left-[-18%] top-[14%] h-32 w-[52%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent)] blur-md mix-blend-screen"
-            initial={{ x: "-24vw", opacity: 0 }}
-            animate={{ x: ["-24vw", "52vw", "118vw"], opacity: [0, 0.8, 0] }}
-            transition={{ duration: 2.8, delay: 0.7, repeat: Infinity, repeatDelay: 4.6, ease: "easeInOut" }}
-          />
+          {!reduceMotion ? (
+            <motion.div
+              className="absolute left-[-18%] top-[14%] h-32 w-[52%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent)] blur-md mix-blend-screen"
+              initial={{ x: "-24vw", opacity: 0 }}
+              animate={{ x: ["-24vw", "52vw", "118vw"], opacity: [0, 0.68, 0] }}
+              transition={{ duration: 2.4, delay: 0.7, repeat: Infinity, repeatDelay: 5.6, ease: "easeInOut" }}
+            />
+          ) : null}
         </motion.div>
       ) : null}
     </AnimatePresence>
@@ -1002,6 +1012,7 @@ function LensFrame({ phase }: { phase: ExperiencePhase }) {
 
 function GoggleLift({ active }: { active: boolean }) {
   const reduceMotion = useReducedMotion();
+  const duration = reduceMotion ? 0.42 : 1.18;
 
   return (
     <AnimatePresence>
@@ -1019,26 +1030,26 @@ function GoggleLift({ active }: { active: boolean }) {
             initial={{ opacity: 0 }}
             animate={
               reduceMotion
-                ? { opacity: [0, 0.54, 0] }
-                : { opacity: [0, 0.18, 0.76, 0.28, 0] }
+                ? { opacity: [0, 0.42, 0] }
+                : { opacity: [0, 0.16, 0.68, 0.22, 0] }
             }
             transition={
               reduceMotion
-                ? { duration: 0.7, ease: "easeInOut" }
-                : { duration: 1.9, times: [0, 0.32, 0.58, 0.76, 1], ease: "easeInOut" }
+                ? { duration, ease: "easeInOut" }
+                : { duration, times: [0, 0.28, 0.54, 0.78, 1], ease: "easeInOut" }
             }
           />
           <motion.div
             className="absolute inset-x-[-8%] top-[-18vh] h-[38vh] rounded-b-[50%] bg-black/[0.82] blur-[2px]"
             initial={{ y: "-14vh" }}
             animate={{ y: reduceMotion ? "-7vh" : ["-14vh", "-4vh", "-7vh"] }}
-            transition={{ duration: reduceMotion ? 0.6 : 1.32, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.84, times: [0, 0.62, 1], ease: cinematicEase }}
           />
           <motion.div
             className="absolute inset-x-[-8%] bottom-[-18vh] h-[38vh] rounded-t-[50%] bg-black/[0.86] blur-[2px]"
             initial={{ y: "14vh" }}
             animate={{ y: reduceMotion ? "7vh" : ["14vh", "4vh", "7vh"] }}
-            transition={{ duration: reduceMotion ? 0.6 : 1.32, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.84, times: [0, 0.62, 1], ease: cinematicEase }}
           />
           <motion.div
             className="absolute inset-x-[-10%] bottom-[-7vh] mx-auto h-[72vh] max-h-[650px] min-h-[370px] w-[122vw] max-w-[1180px]"
@@ -1047,17 +1058,17 @@ function GoggleLift({ active }: { active: boolean }) {
               reduceMotion
                 ? { y: "2vh", scale: 1, rotateX: 0, opacity: 1 }
                 : {
-                    y: ["64vh", "13vh", "-1.5vh", "0vh"],
-                    scale: [0.9, 1.035, 0.992, 1],
-                    rotateX: [12, -2, 0, 0],
+                    y: ["62vh", "11vh", "-0.75vh", "0vh"],
+                    scale: [0.92, 1.025, 0.996, 1],
+                    rotateX: [10, -1.2, 0, 0],
                     opacity: [0.1, 1, 1, 1],
                   }
             }
             exit={{ y: "-10vh", opacity: 0 }}
             transition={
               reduceMotion
-                ? { duration: 0.6, ease: "easeOut" }
-                : { duration: 1.36, times: [0, 0.58, 0.82, 1], ease: [0.16, 1, 0.3, 1] }
+                ? { duration: 0.42, ease: "easeOut" }
+                : { duration: 0.98, times: [0, 0.58, 0.82, 1], ease: cinematicEase }
             }
             style={{ transformStyle: "preserve-3d" }}
           >
@@ -1065,13 +1076,13 @@ function GoggleLift({ active }: { active: boolean }) {
               className="absolute inset-x-[1%] top-[-12%] h-[29%] rounded-b-[50%] bg-[linear-gradient(180deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
               initial={{ opacity: 0, y: -40 }}
               animate={{ opacity: [0, 0.7, 0.96], y: [-40, -8, 0] }}
-              transition={{ duration: 0.86, delay: 0.12, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.24 : 0.58, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
             />
             <motion.div
               className="absolute inset-x-[1%] bottom-[-8%] h-[29%] rounded-t-[50%] bg-[linear-gradient(0deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_-24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
               initial={{ opacity: 0, y: 34 }}
               animate={{ opacity: [0, 0.76, 0.98], y: [34, 8, 0] }}
-              transition={{ duration: 0.86, delay: 0.12, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.24 : 0.58, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
             />
             <motion.div
               className="absolute left-[5.5%] top-[16%] h-[60%] w-[42%] overflow-hidden rounded-[50%] border-[13px] border-black/[0.92] bg-[radial-gradient(ellipse_at_48%_42%,rgba(235,251,255,0.28),rgba(255,255,255,0.08)_34%,rgba(0,0,0,0.12)_68%,rgba(0,0,0,0.52)_100%)] shadow-[inset_0_0_54px_rgba(255,255,255,0.18),inset_0_-26px_44px_rgba(0,0,0,0.3),0_24px_72px_rgba(0,0,0,0.56)] sm:border-[17px]"
@@ -1086,14 +1097,14 @@ function GoggleLift({ active }: { active: boolean }) {
                       scale: [0.78, 1.055, 0.994, 1],
                     }
               }
-              transition={{ duration: reduceMotion ? 0.58 : 1.12, delay: 0.05, times: [0, 0.65, 0.86, 1], ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
             >
               <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
               <motion.div
                 className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
                 initial={{ x: "-30%" }}
                 animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
-                transition={{ duration: reduceMotion ? 0.5 : 1.06, delay: 0.38, ease: "easeInOut" }}
+                transition={{ duration: reduceMotion ? 0.24 : 0.68, delay: reduceMotion ? 0 : 0.26, ease: "easeInOut" }}
               />
             </motion.div>
             <motion.div
@@ -1109,27 +1120,27 @@ function GoggleLift({ active }: { active: boolean }) {
                       scale: [0.78, 1.055, 0.994, 1],
                     }
               }
-              transition={{ duration: reduceMotion ? 0.58 : 1.12, delay: 0.05, times: [0, 0.65, 0.86, 1], ease: [0.16, 1, 0.3, 1] }}
+              transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
             >
               <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
               <motion.div
                 className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
                 initial={{ x: "-30%" }}
                 animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
-                transition={{ duration: reduceMotion ? 0.5 : 1.06, delay: 0.42, ease: "easeInOut" }}
+                transition={{ duration: reduceMotion ? 0.24 : 0.68, delay: reduceMotion ? 0 : 0.28, ease: "easeInOut" }}
               />
             </motion.div>
             <motion.div
               className="absolute left-1/2 top-[38%] h-[19%] w-[16%] -translate-x-1/2 rounded-b-[52%] border-b-[16px] border-black/[0.92] shadow-[0_12px_36px_rgba(0,0,0,0.34)]"
               initial={{ opacity: 0, y: 24, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.58, delay: 0.38, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.22 : 0.42, delay: reduceMotion ? 0 : 0.26, ease: "easeOut" }}
             />
             <motion.div
               className="absolute left-1/2 top-[46%] h-7 w-[10%] -translate-x-1/2 rounded-full bg-white/12 blur-md"
               initial={{ opacity: 0, scaleX: 0.4 }}
               animate={{ opacity: [0, 0.65, 0.18], scaleX: [0.4, 1.16, 1] }}
-              transition={{ duration: 0.72, delay: 0.7, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.22 : 0.48, delay: reduceMotion ? 0 : 0.46, ease: "easeOut" }}
             />
           </motion.div>
           <motion.div
@@ -1137,19 +1148,19 @@ function GoggleLift({ active }: { active: boolean }) {
             initial={{ opacity: 0 }}
             animate={{ opacity: reduceMotion ? [0, 0.5, 0] : [0, 0, 0.68, 0.22, 0] }}
             exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0.7 : 1.55, times: [0, 0.44, 0.62, 0.84, 1], ease: "easeInOut" }}
+            transition={{ duration: reduceMotion ? 0.4 : 1.02, times: [0, 0.42, 0.62, 0.84, 1], ease: "easeInOut" }}
           />
           <motion.div
             className="absolute left-[-26%] top-[18%] h-28 w-[64%] rotate-[-17deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(138,222,255,0.22),transparent)] blur-md mix-blend-screen"
             initial={{ x: "-20vw", opacity: 0 }}
             animate={{ x: reduceMotion ? "45vw" : ["-20vw", "48vw", "125vw"], opacity: reduceMotion ? [0, 0.45, 0] : [0, 1, 0] }}
-            transition={{ duration: reduceMotion ? 0.8 : 1.24, delay: 0.54, ease: "easeInOut" }}
+            transition={{ duration: reduceMotion ? 0.36 : 0.82, delay: reduceMotion ? 0 : 0.34, ease: "easeInOut" }}
           />
           <motion.div
             className="absolute inset-0 bg-white"
             initial={{ opacity: 0 }}
             animate={{ opacity: reduceMotion ? [0, 0.24, 0] : [0, 0, 0.42, 0] }}
-            transition={{ duration: reduceMotion ? 0.6 : 1.35, times: [0, 0.66, 0.72, 1], ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.36 : 0.86, times: [0, 0.62, 0.72, 1], ease: "easeOut" }}
           />
         </motion.div>
       ) : null}
@@ -1159,6 +1170,7 @@ function GoggleLift({ active }: { active: boolean }) {
 
 function LensCalibration({ active }: { active: boolean }) {
   const reduceMotion = useReducedMotion();
+  const duration = reduceMotion ? 0.42 : 1.02;
 
   return (
     <AnimatePresence>
@@ -1181,62 +1193,62 @@ function LensCalibration({ active }: { active: boolean }) {
                     clipPath: "ellipse(76% 64% at 50% 50%)",
                   }
                 : {
-                    opacity: [0, 0.58, 0.66, 0],
+                    opacity: [0, 0.48, 0.52, 0],
                     clipPath: [
                       "ellipse(95% 82% at 50% 50%)",
-                      "ellipse(46% 38% at 50% 50%)",
-                      "ellipse(23% 18% at 50% 50%)",
+                      "ellipse(52% 42% at 50% 50%)",
+                      "ellipse(32% 24% at 50% 50%)",
                       "ellipse(92% 76% at 50% 50%)",
                     ],
                   }
             }
             transition={
               reduceMotion
-                ? { duration: 0.7, ease: "easeInOut" }
-                : { duration: 1.42, times: [0, 0.43, 0.58, 1], ease: [0.76, 0, 0.24, 1] }
+                ? { duration, ease: "easeInOut" }
+                : { duration, times: [0, 0.4, 0.58, 1], ease: [0.76, 0, 0.24, 1] }
             }
           />
           <motion.div
             className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_0%,rgba(229,246,255,0.08)_36%,rgba(0,0,0,0.46)_78%,rgba(0,0,0,0.86)_100%)]"
             initial={{ opacity: 0 }}
-            animate={{ opacity: reduceMotion ? [0, 0.5, 0] : [0, 0.82, 0.28, 0] }}
-            transition={{ duration: reduceMotion ? 0.7 : 1.18, times: reduceMotion ? [0, 0.5, 1] : [0, 0.42, 0.78, 1], ease: "easeInOut" }}
+            animate={{ opacity: reduceMotion ? [0, 0.46, 0] : [0, 0.7, 0.22, 0] }}
+            transition={{ duration, times: reduceMotion ? [0, 0.5, 1] : [0, 0.4, 0.78, 1], ease: "easeInOut" }}
           />
           <motion.div
             className="absolute inset-0 opacity-45 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(93,220,255,0.14),transparent_18%,transparent_82%,rgba(255,114,91,0.14))] [background-size:100%_4px,100%_100%]"
             initial={{ y: -26, opacity: 0 }}
-            animate={{ y: reduceMotion ? 0 : [-26, 14, 0], opacity: [0, 0.42, 0] }}
-            transition={{ duration: reduceMotion ? 0.62 : 0.94, delay: 0.28, ease: "easeOut" }}
+            animate={{ y: reduceMotion ? 0 : [-22, 10, 0], opacity: [0, 0.34, 0] }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.64, delay: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
           />
           <motion.div
             className="absolute left-0 right-0 top-1/2 h-16 -translate-y-1/2 bg-[linear-gradient(180deg,transparent,rgba(217,242,255,0.32),transparent)] blur-sm"
             initial={{ y: "-62vh", opacity: 0 }}
             animate={{ y: reduceMotion ? "0vh" : ["-58vh", "6vh", "58vh"], opacity: [0, 0.92, 0] }}
-            transition={{ duration: reduceMotion ? 0.62 : 0.92, delay: 0.46, ease: [0.16, 1, 0.3, 1] }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.62, delay: reduceMotion ? 0 : 0.32, ease: cinematicEase }}
           />
           <motion.div
             className="absolute left-1/2 top-1/2 h-[52vh] w-[76vw] max-w-[790px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/18 shadow-[0_0_70px_rgba(200,230,255,0.18),inset_0_0_42px_rgba(255,255,255,0.08)]"
             initial={{ opacity: 0, scale: 0.72 }}
             animate={{ opacity: [0, 0.62, 0], scale: reduceMotion ? [0.9, 1, 1.03] : [0.72, 1.02, 1.08] }}
-            transition={{ duration: reduceMotion ? 0.7 : 0.95, delay: 0.4, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.62, delay: reduceMotion ? 0 : 0.28, ease: "easeOut" }}
           />
           <motion.div
             className="absolute left-1/2 top-1/2 h-[34vh] w-[58vw] max-w-[610px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-cyan-100/18 shadow-[0_0_90px_rgba(103,232,249,0.2)]"
             initial={{ opacity: 0, scale: 0.55 }}
             animate={{ opacity: [0, 0.74, 0], scale: reduceMotion ? [0.88, 1, 1.02] : [0.55, 1.1, 1.24] }}
-            transition={{ duration: reduceMotion ? 0.65 : 0.98, delay: 0.58, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.34 : 0.68, delay: reduceMotion ? 0 : 0.38, ease: "easeOut" }}
           />
           <motion.div
             className="absolute bottom-[14vh] left-1/2 h-1 w-40 -translate-x-1/2 overflow-hidden rounded-full border border-white/20 bg-white/10"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -2] }}
-            transition={{ duration: reduceMotion ? 0.7 : 0.98, delay: 0.4, times: [0, 0.25, 0.78, 1], ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.4 : 0.72, delay: reduceMotion ? 0 : 0.26, times: [0, 0.25, 0.78, 1], ease: "easeOut" }}
           >
             <motion.span
               className="block h-full bg-white/70"
               initial={{ width: "8%" }}
               animate={{ width: "100%" }}
-              transition={{ duration: reduceMotion ? 0.42 : 0.62, delay: 0.58, ease: "easeOut" }}
+              transition={{ duration: reduceMotion ? 0.24 : 0.42, delay: reduceMotion ? 0 : 0.36, ease: "easeOut" }}
             />
           </motion.div>
         </motion.div>
@@ -1246,21 +1258,23 @@ function LensCalibration({ active }: { active: boolean }) {
 }
 
 function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.div
       className="absolute inset-x-0 bottom-[12vh] z-20 flex justify-center px-6"
-      initial={{ opacity: 0, y: 12 }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: 12 }}
-      transition={{ duration: 0.7, ease: "easeOut" }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : 12 }}
+      transition={{ duration: reduceMotion ? 0.2 : 0.48, ease: "easeOut" }}
     >
       <motion.button
         type="button"
         onClick={onClick}
-        className="group rounded-full border border-white/25 bg-black/25 px-5 py-3 text-sm font-medium text-white/90 shadow-[0_16px_50px_rgba(0,0,0,0.26)] backdrop-blur-md transition hover:border-white/50 hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black"
-        whileHover={{ y: -2, scale: 1.025 }}
-        whileTap={{ y: 1, scale: 0.985 }}
-        transition={{ type: "spring", stiffness: 460, damping: 28 }}
+        className="group rounded-full border border-white/28 bg-black/28 px-5 py-3 text-sm font-semibold text-white/92 shadow-[0_18px_55px_rgba(0,0,0,0.3)] backdrop-blur-md transition hover:border-white/55 hover:bg-black/45 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black"
+        whileHover={reduceMotion ? undefined : { y: -2, scale: 1.025 }}
+        whileTap={reduceMotion ? undefined : { y: 1, scale: 0.985 }}
+        transition={{ type: "spring", stiffness: 520, damping: 30 }}
       >
         <span className="mr-3 inline-block h-2 w-2 rounded-full bg-amber-200 shadow-[0_0_18px_rgba(255,222,151,0.82)] transition group-hover:scale-110" />
         Put on goggles.
@@ -1274,13 +1288,13 @@ function ModernSiteLink({ phase }: { phase: ExperiencePhase }) {
 
   return (
     <motion.a
-      href="/modern"
+      href="/"
       className="absolute bottom-5 right-5 z-30 rounded-full border border-white/20 bg-black/25 px-4 py-2 text-xs font-semibold text-white/80 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:border-white/45 hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black sm:bottom-6 sm:right-6 sm:text-sm"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
     >
-      View modern site
+      View portfolio
       <span className="ml-2" aria-hidden="true">
         -&gt;
       </span>
@@ -1289,7 +1303,7 @@ function ModernSiteLink({ phase }: { phase: ExperiencePhase }) {
 }
 
 const goggleNavItems: Array<{ label: string; href: string; external?: boolean }> = [
-  { label: "Modern", href: "/modern" },
+  { label: "Portfolio", href: "/" },
   { label: "Work", href: "/work" },
   { label: "Projects", href: "/projects" },
   { label: "AI Lab", href: "/ai-lab" },
@@ -1298,20 +1312,22 @@ const goggleNavItems: Array<{ label: string; href: string; external?: boolean }>
 ];
 
 function GoggleNav({ phase }: { phase: ExperiencePhase }) {
+  const reduceMotion = useReducedMotion();
+
   if (phase !== "inside") return null;
 
   return (
     <motion.nav
       className="pointer-events-none absolute bottom-3 left-16 right-2.5 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
-      initial={{ opacity: 0, y: -10 }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : -12, scale: reduceMotion ? 1 : 0.98 }}
       animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.46, delay: 0.08, ease: "easeOut" }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
+      transition={{ duration: reduceMotion ? 0.2 : 0.36, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
       aria-label="Goggles navigation"
     >
       <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-[18px] border border-white/18 bg-black/32 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1.5 md:rounded-[22px] md:bg-black/24 md:p-2">
         <a
-          href="/"
+          href="/goggles"
           className="mr-1 hidden shrink-0 items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-xs font-semibold text-white/86 transition hover:border-white/35 hover:bg-white/16 lg:flex"
           aria-label="Esteban OS home"
         >
@@ -1348,6 +1364,8 @@ function WorldSelector({
   onTogglePicker: () => void;
   onSelect: (worldId: WorldId) => void;
 }) {
+  const reduceMotion = useReducedMotion();
+
   if (phase !== "inside") return null;
 
   const selectedWorld =
@@ -1359,10 +1377,10 @@ function WorldSelector({
   return (
     <motion.div
       className="absolute left-3 right-3 top-3 z-30 md:left-6 md:right-auto md:top-6 md:w-[19rem]"
-      initial={{ opacity: 0, y: -10 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -10 }}
-      transition={{ duration: 0.46, ease: "easeOut" }}
+      initial={{ opacity: 0, y: reduceMotion ? 0 : -12, scale: reduceMotion ? 1 : 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
+      transition={{ duration: reduceMotion ? 0.2 : 0.36, ease: "easeOut" }}
       aria-label="World selector"
     >
       <div className="rounded-[18px] border border-white/20 bg-black/32 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/24 md:p-2.5">
@@ -1423,10 +1441,10 @@ function WorldSelector({
         {pickerOpen ? (
           <motion.div
             className="absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[56svh] overflow-y-auto rounded-[18px] border border-white/18 bg-black/40 p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/30 md:p-3"
-            initial={{ opacity: 0, y: -8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.24, ease: "easeOut" }}
+            initial={{ opacity: 0, y: reduceMotion ? 0 : -8, scale: reduceMotion ? 1 : 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: reduceMotion ? 0 : -6, scale: reduceMotion ? 1 : 0.985 }}
+            transition={{ duration: reduceMotion ? 0.16 : 0.24, ease: "easeOut" }}
           >
             <div className="mb-2 px-1 text-[10px] uppercase tracking-[0.18em] text-white/52">
               Full world browser
@@ -1472,15 +1490,17 @@ function WorldSelector({
 }
 
 function TransitionStatus({ active }: { active: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <AnimatePresence>
       {active ? (
         <motion.div
           className="pointer-events-none absolute inset-x-0 bottom-[10vh] z-[55] flex justify-center px-6"
-          initial={{ opacity: 0, y: 8, scale: 0.96 }}
-          animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -6], scale: [0.96, 1, 1, 0.98] }}
-          exit={{ opacity: 0, y: -4 }}
-          transition={{ duration: 1.5, times: [0, 0.18, 0.74, 1], ease: "easeOut" }}
+          initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.96 }}
+          animate={{ opacity: [0, 1, 1, 0], y: reduceMotion ? 0 : [8, 0, 0, -6], scale: reduceMotion ? 1 : [0.96, 1, 1, 0.98] }}
+          exit={{ opacity: 0, y: reduceMotion ? 0 : -4 }}
+          transition={{ duration: reduceMotion ? 0.42 : 1.02, times: [0, 0.18, 0.74, 1], ease: "easeOut" }}
           aria-hidden="true"
         >
           <div className="flex items-center gap-2 rounded-full border border-white/16 bg-black/24 px-3 py-2 text-white shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md">
@@ -1489,7 +1509,7 @@ function TransitionStatus({ active }: { active: boolean }) {
                 key={index}
                 className="h-1.5 w-1.5 rounded-full bg-white/55"
                 animate={{ opacity: [0.35, 1, 0.35], scale: [0.9, 1.18, 0.9] }}
-                transition={{ duration: 0.62, delay: index * 0.1, repeat: 2, ease: "easeInOut" }}
+                transition={{ duration: reduceMotion ? 0.28 : 0.5, delay: index * 0.08, repeat: reduceMotion ? 0 : 2, ease: "easeInOut" }}
               />
             ))}
             <div className="h-1 w-40 overflow-hidden rounded-full border border-white/16 bg-white/8">
@@ -1497,7 +1517,7 @@ function TransitionStatus({ active }: { active: boolean }) {
                 className="block h-full rounded-full bg-white/80"
                 initial={{ width: "10%" }}
                 animate={{ width: ["10%", "52%", "100%"] }}
-                transition={{ duration: 1.06, times: [0, 0.62, 1], ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: reduceMotion ? 0.24 : 0.72, times: [0, 0.62, 1], ease: cinematicEase }}
               />
             </div>
           </div>
@@ -1508,15 +1528,17 @@ function TransitionStatus({ active }: { active: boolean }) {
 }
 
 function WorldChangeWash({ active }: { active: boolean }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <AnimatePresence>
       {active ? (
         <motion.div
           className="pointer-events-none absolute inset-0 z-[18] bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.18)_0%,rgba(255,255,255,0.04)_34%,rgba(0,0,0,0.22)_100%)]"
           initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 0.42, 0] }}
+          animate={{ opacity: reduceMotion ? [0, 0.24, 0] : [0, 0.5, 0.24, 0] }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.58, ease: "easeInOut" }}
+          transition={{ duration: reduceMotion ? 0.22 : 0.52, times: reduceMotion ? [0, 0.5, 1] : [0, 0.24, 0.64, 1], ease: "easeInOut" }}
           aria-hidden="true"
         />
       ) : null}
@@ -1534,7 +1556,7 @@ function ArrivalBloom({ active }: { active: boolean }) {
           className="pointer-events-none absolute inset-0 z-[36] overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: reduceMotion ? 0.72 : 1.28, times: [0, 0.24, 1], ease: "easeOut" }}
+          transition={{ duration: reduceMotion ? 0.34 : 0.86, times: [0, 0.24, 1], ease: "easeOut" }}
           aria-hidden="true"
         >
           <motion.div
@@ -1544,7 +1566,7 @@ function ArrivalBloom({ active }: { active: boolean }) {
               scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.08, 1.18],
               opacity: [0, 1, 0],
             }}
-            transition={{ duration: reduceMotion ? 0.64 : 1.1, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.3 : 0.78, ease: "easeOut" }}
           />
           <motion.div
             className="absolute left-1/2 top-1/2 h-[54vh] w-[78vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/22 shadow-[0_0_110px_rgba(210,240,255,0.26),inset_0_0_60px_rgba(255,255,255,0.12)]"
@@ -1553,7 +1575,7 @@ function ArrivalBloom({ active }: { active: boolean }) {
               scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.12, 1.22],
               opacity: [0, 0.74, 0],
             }}
-            transition={{ duration: reduceMotion ? 0.66 : 1.12, delay: 0.04, ease: "easeOut" }}
+            transition={{ duration: reduceMotion ? 0.3 : 0.78, delay: reduceMotion ? 0 : 0.04, ease: "easeOut" }}
           />
           <motion.div
             className="absolute left-[-28%] top-[20%] h-36 w-[70%] rotate-[-16deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(115,226,255,0.18),transparent)] blur-md mix-blend-screen"
@@ -1562,7 +1584,7 @@ function ArrivalBloom({ active }: { active: boolean }) {
               x: reduceMotion ? "45vw" : ["-14vw", "48vw", "126vw"],
               opacity: [0, 1, 0],
             }}
-            transition={{ duration: reduceMotion ? 0.58 : 1.04, delay: 0.1, ease: "easeInOut" }}
+            transition={{ duration: reduceMotion ? 0.28 : 0.72, delay: reduceMotion ? 0 : 0.08, ease: "easeInOut" }}
           />
         </motion.div>
       ) : null}
@@ -1672,6 +1694,8 @@ function FinderItem({
   active?: boolean;
   onOpen: () => void;
 }) {
+  const reduceMotion = useReducedMotion();
+
   return (
     <motion.button
       type="button"
@@ -1680,9 +1704,9 @@ function FinderItem({
         active ? "border-black bg-white" : "border-transparent"
       }`}
       aria-label={`Open ${label} in Esteban OS`}
-      whileHover={{ y: -4, rotateX: 5, rotateY: -4 }}
-      whileTap={{ y: 1, scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 420, damping: 28 }}
+      whileHover={reduceMotion ? undefined : { y: -4, rotateX: 5, rotateY: -4 }}
+      whileTap={reduceMotion ? undefined : { y: 1, scale: 0.97 }}
+      transition={{ type: "spring", stiffness: 440, damping: 30 }}
       style={{ transformStyle: "preserve-3d" }}
     >
       <FinderIcon kind={kind} />
@@ -2057,21 +2081,29 @@ function SectionView({
 
 function EstebanOS({ pointer }: { pointer: PointerState }) {
   const [activeSection, setActiveSection] = useState<SectionId | null>(null);
-  const transform = `perspective(1200px) rotateX(${pointer.y * -2.8}deg) rotateY(${pointer.x * 4.2}deg) translate3d(${pointer.x * 18}px, ${pointer.y * 8}px, 0)`;
+  const reduceMotion = useReducedMotion();
+  const transform = reduceMotion
+    ? "none"
+    : `perspective(1200px) rotateX(${pointer.y * -2.2}deg) rotateY(${pointer.x * 3.4}deg) translate3d(${pointer.x * 12}px, ${pointer.y * 6}px, 0)`;
   const activeItem = portfolioItems.find((item) => item.id === activeSection);
 
   return (
     <motion.div
       className="pointer-events-none absolute inset-0 z-20 flex items-start justify-center px-2 pb-[4.75rem] pt-[5.9rem] sm:px-4 sm:pb-20 sm:pt-24 md:grid md:place-items-center md:px-8 md:py-12"
-      initial={{ opacity: 0, scale: 0.94, y: 26, filter: "blur(16px)" }}
+      initial={{
+        opacity: 0,
+        scale: reduceMotion ? 1 : 0.95,
+        y: reduceMotion ? 0 : 22,
+        filter: reduceMotion ? "blur(0px)" : "blur(14px)",
+      }}
       animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: 0.96, filter: "blur(8px)" }}
-      transition={{ duration: 0.86, ease: [0.16, 1, 0.3, 1] }}
+      exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98, filter: reduceMotion ? "blur(0px)" : "blur(8px)" }}
+      transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
     >
       <div className="pointer-events-auto w-full sm:w-auto">
         <div
           className="relative w-full max-h-[calc(100svh-10.65rem)] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[3px_3px_0_rgba(0,0,0,0.45),0_24px_90px_rgba(18,12,7,0.34)] sm:w-[min(94vw,900px)] sm:max-h-[78svh] sm:shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] md:max-h-none"
-          style={{ transform, transformStyle: "preserve-3d" }}
+          style={{ transform, transformStyle: "preserve-3d", willChange: reduceMotion ? "auto" : "transform" }}
         >
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
           <div className="relative">
@@ -2093,17 +2125,37 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
                 </button>
               ))}
             </div>
-            {activeSection ? (
-              <SectionView
-                activeSection={activeSection}
-                onBack={() => setActiveSection(null)}
-              />
-            ) : (
-              <FinderDesktop
-                activeSection={activeSection}
-                onOpen={setActiveSection}
-              />
-            )}
+            <AnimatePresence mode="wait" initial={false}>
+              <motion.div
+                key={activeSection ?? "desktop"}
+                initial={{
+                  opacity: 0,
+                  y: reduceMotion ? 0 : 10,
+                  scale: reduceMotion ? 1 : 0.985,
+                  filter: reduceMotion ? "blur(0px)" : "blur(4px)",
+                }}
+                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
+                exit={{
+                  opacity: 0,
+                  y: reduceMotion ? 0 : -8,
+                  scale: reduceMotion ? 1 : 0.99,
+                  filter: reduceMotion ? "blur(0px)" : "blur(3px)",
+                }}
+                transition={{ duration: reduceMotion ? 0.14 : 0.22, ease: "easeOut" }}
+              >
+                {activeSection ? (
+                  <SectionView
+                    activeSection={activeSection}
+                    onBack={() => setActiveSection(null)}
+                  />
+                ) : (
+                  <FinderDesktop
+                    activeSection={activeSection}
+                    onOpen={setActiveSection}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
             <div className="flex items-center justify-between gap-3 border-t-2 border-black bg-[#d8d8d8] px-3 py-2 font-mono text-[9px] text-black/75 shadow-[0_1px_0_#ffffff_inset] sm:px-4 sm:text-[10px]">
               <span>{activeSection ? "1 window open" : `${portfolioItems.length} items`}</span>
               <span className="hidden min-w-0 truncate sm:block">
@@ -2133,9 +2185,11 @@ export function EstebanWorld() {
   const [selectedWorldId, setSelectedWorldId] = useState<WorldId>("yosemite");
   const [worldWashActive, setWorldWashActive] = useState(false);
   const [worldPickerOpen, setWorldPickerOpen] = useState(false);
+  const [canvasDpr, setCanvasDpr] = useState(1.35);
   const reduceMotion = useReducedMotion();
   const pointer = usePointerParallax();
   const worldWashTimeout = useRef<number | null>(null);
+  const worldSelectTimeout = useRef<number | null>(null);
   const worldImagePreloads = useRef<HTMLImageElement[]>([]);
   const gogglesOn = phase !== "outside";
   const selectedWorld =
@@ -2146,10 +2200,25 @@ export function EstebanWorld() {
 
     const timeout = window.setTimeout(() => {
       setPhase("inside");
-    }, reduceMotion ? 760 : 2060);
+    }, reduceMotion ? reducedTransitionDurationMs : transitionDurationMs);
 
     return () => window.clearTimeout(timeout);
   }, [phase, reduceMotion]);
+
+  useEffect(() => {
+    const updateDpr = () => {
+      const width = window.innerWidth;
+      const maxDpr = width < 640 ? 1.12 : width < 1024 ? 1.28 : 1.5;
+      setCanvasDpr(Math.min(window.devicePixelRatio || 1, maxDpr));
+    };
+
+    updateDpr();
+    window.addEventListener("resize", updateDpr, { passive: true });
+
+    return () => {
+      window.removeEventListener("resize", updateDpr);
+    };
+  }, []);
 
   useEffect(() => {
     const savedWorldId = window.localStorage.getItem("esteban-world");
@@ -2176,6 +2245,9 @@ export function EstebanWorld() {
       if (worldWashTimeout.current) {
         window.clearTimeout(worldWashTimeout.current);
       }
+      if (worldSelectTimeout.current) {
+        window.clearTimeout(worldSelectTimeout.current);
+      }
     };
   }, []);
 
@@ -2188,18 +2260,30 @@ export function EstebanWorld() {
   const handleWorldSelect = (worldId: WorldId) => {
     if (worldId === selectedWorldId) return;
 
-    setSelectedWorldId(worldId);
     setWorldPickerOpen(false);
-    window.localStorage.setItem("esteban-world", worldId);
     setWorldWashActive(true);
 
     if (worldWashTimeout.current) {
       window.clearTimeout(worldWashTimeout.current);
     }
+    if (worldSelectTimeout.current) {
+      window.clearTimeout(worldSelectTimeout.current);
+    }
+
+    const applyWorld = () => {
+      setSelectedWorldId(worldId);
+      window.localStorage.setItem("esteban-world", worldId);
+    };
+
+    if (reduceMotion) {
+      applyWorld();
+    } else {
+      worldSelectTimeout.current = window.setTimeout(applyWorld, 92);
+    }
 
     worldWashTimeout.current = window.setTimeout(() => {
       setWorldWashActive(false);
-    }, 620);
+    }, reduceMotion ? 240 : 560);
   };
 
   return (
@@ -2220,15 +2304,16 @@ export function EstebanWorld() {
         }
         transition={
           phase === "transition" && !reduceMotion
-            ? { duration: 1.72, times: [0, 0.56, 1], ease: [0.16, 1, 0.3, 1] }
-            : { duration: 0.86, ease: [0.16, 1, 0.3, 1] }
+            ? { duration: 1.18, times: [0, 0.56, 1], ease: cinematicEase }
+            : { duration: reduceMotion ? 0.24 : 0.62, ease: cinematicEase }
         }
       >
         <Canvas
           className="h-full w-full"
-          dpr={[1, 1.7]}
+          dpr={[1, canvasDpr]}
           camera={{ position: [0, 1.18, 4.18], fov: 50, near: 0.1, far: 70 }}
-          gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+          gl={{ antialias: canvasDpr > 1.2, alpha: false, powerPreference: "high-performance" }}
+          performance={{ min: 0.65, debounce: 220 }}
         >
           <WorldScene gogglesOn={gogglesOn} phase={phase} world={selectedWorld} />
         </Canvas>
