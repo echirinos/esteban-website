@@ -369,7 +369,7 @@ export async function POST(request: Request) {
       provider: "local",
       sources: pickSources(lastUserMessage.content),
       setup:
-        "Kimi is not configured yet. Add KIMI_API_KEY or MOONSHOT_API_KEY to enable live model answers.",
+        "The live AI model is not configured yet. Add the model API key to enable live answers.",
     });
   }
 

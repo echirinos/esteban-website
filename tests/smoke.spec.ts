@@ -38,17 +38,17 @@ test('ai lab leads with a working portfolio chat UI', async ({ page }) => {
   await page.goto('/ai-lab');
 
   await expect(
-    page.getByRole('heading', { name: 'Ask Esteban OS', level: 1 })
+    page.getByRole('heading', { name: 'Ask the portfolio.', level: 1 })
   ).toBeVisible();
-  await expect(page.getByText('Live portfolio chat', { exact: true })).toBeVisible();
+  await expect(page.getByText('Portfolio AI chat', { exact: true })).toBeVisible();
 
   const input = page.getByRole('textbox', { name: 'Ask Esteban a question' });
 
   await expect(input).toBeVisible();
-  await expect(page.getByRole('button', { name: 'Ask' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'Ask AI' })).toBeVisible();
 
   await input.fill('What AI product proof points matter?');
-  await page.getByRole('button', { name: 'Ask' }).click();
+  await page.getByRole('button', { name: 'Ask AI' }).click();
 
   await expect(page.getByText('What AI product proof points matter?')).toBeVisible();
   await expect(
@@ -61,7 +61,7 @@ test('ai lab leads with a working portfolio chat UI', async ({ page }) => {
 test('immersive goggles route remains available', async ({ page }) => {
   await page.goto('/goggles');
 
-  const gogglesButton = page.getByRole('button', { name: 'Put on goggles.' });
+  const gogglesButton = page.getByRole('button', { name: 'Enter lens' });
 
   await expect(gogglesButton).toBeVisible({
     timeout: 20_000,
@@ -74,7 +74,7 @@ test('immersive goggles route remains available', async ({ page }) => {
 
   await gogglesButton.click();
   await expect(page.getByLabel('World selector')).toBeVisible({ timeout: 20_000 });
-  await expect(page.getByRole('navigation', { name: 'Goggles navigation' })).toBeVisible();
+  await expect(page.getByRole('navigation', { name: 'Lens navigation' })).toBeVisible();
   await expect(page.getByText('Macintosh HD: Esteban Field Notes')).toBeVisible();
 });
 
@@ -82,11 +82,19 @@ test('contact page exposes a conversion path', async ({ page }) => {
   await page.goto('/contact');
 
   await expect(
-    page.getByRole('heading', { name: 'Contact Esteban', level: 1 })
+    page.getByRole('heading', { name: 'Reach out on LinkedIn.', level: 1 })
   ).toBeVisible();
-  await expect(page.getByLabel('Name')).toBeVisible();
-  await expect(page.getByLabel('Email')).toBeVisible();
-  await expect(page.getByLabel('Message')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Reach out to Esteban on LinkedIn' })).toBeVisible();
+  await expect(page.getByLabel('Name')).toHaveCount(0);
+  await expect(page.getByLabel('Email')).toHaveCount(0);
+  await expect(page.getByLabel('Message')).toHaveCount(0);
+});
+
+test('blog route redirects to the external writing archive', async ({ page }) => {
+  const response = await page.request.get('/blog', { maxRedirects: 0 });
+
+  expect(response.status()).toBe(307);
+  expect(response.headers().location).toBe('https://world.hey.com/echi/');
 });
 
 test('mobile homepage has no horizontal overflow', async ({ page }) => {

@@ -24,7 +24,7 @@ export function SurfaceCard({
   return (
     <div
       className={cx(
-        "rounded-[28px] border border-base-content/10 bg-base-100/86 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-8",
+        "rounded-lg border border-base-content/10 bg-base-100/86 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-8",
         className
       )}
     >

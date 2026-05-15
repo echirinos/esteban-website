@@ -1271,15 +1271,59 @@ function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
       <motion.button
         type="button"
         onClick={onClick}
-        className="group rounded-full border border-white/28 bg-black/28 px-5 py-3 text-sm font-semibold text-white/92 shadow-[0_18px_55px_rgba(0,0,0,0.3)] backdrop-blur-md transition hover:border-white/55 hover:bg-black/45 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black"
+        className="group rounded-full border border-white bg-white px-5 py-3 text-sm font-bold text-slate-950 shadow-[0_18px_60px_rgba(0,0,0,0.34)] backdrop-blur-md transition hover:border-cyan-100 hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black"
         whileHover={reduceMotion ? undefined : { y: -2, scale: 1.025 }}
         whileTap={reduceMotion ? undefined : { y: 1, scale: 0.985 }}
         transition={{ type: "spring", stiffness: 520, damping: 30 }}
       >
         <span className="mr-3 inline-block h-2 w-2 rounded-full bg-amber-200 shadow-[0_0_18px_rgba(255,222,151,0.82)] transition group-hover:scale-110" />
-        Put on goggles.
+        Enter lens
       </motion.button>
     </motion.div>
+  );
+}
+
+function LensIntroPanel({ phase }: { phase: ExperiencePhase }) {
+  const reduceMotion = useReducedMotion();
+
+  if (phase !== "outside") return null;
+
+  return (
+    <motion.aside
+      className="pointer-events-none absolute left-4 right-4 top-5 z-20 md:left-6 md:right-auto md:top-6 md:w-[25rem]"
+      initial={{ opacity: 0, y: reduceMotion ? 0 : -10, scale: reduceMotion ? 1 : 0.98 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
+      transition={{ duration: reduceMotion ? 0.2 : 0.52, ease: cinematicEase }}
+    >
+      <div className="pointer-events-auto overflow-hidden rounded-[24px] border border-white/18 bg-black/34 p-4 text-white shadow-[0_22px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-5">
+        <div className="flex items-center justify-between gap-4">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-100/72">
+            Esteban OS / lens mode
+          </p>
+          <span className="rounded-full border border-cyan-100/20 bg-cyan-100/10 px-2.5 py-1 text-[10px] font-semibold text-cyan-50/86">
+            Live map
+          </span>
+        </div>
+        <h1 className="mt-3 max-w-sm text-3xl font-black leading-[0.96] tracking-tight sm:text-4xl">
+          Step into the visual proof map.
+        </h1>
+        <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/70">
+          Explore the same portfolio through worlds, proof points, projects,
+          role-fit signal, and Ask Esteban.
+        </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {["AI product", "DevEx", "Demos", "Proof"].map((item) => (
+            <span
+              key={item}
+              className="rounded-full border border-white/14 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/76"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      </div>
+    </motion.aside>
   );
 }
 
@@ -1306,7 +1350,7 @@ const goggleNavItems: Array<{ label: string; href: string; external?: boolean }>
   { label: "Portfolio", href: "/" },
   { label: "Work", href: "/work" },
   { label: "Projects", href: "/projects" },
-  { label: "AI Lab", href: "/ai-lab" },
+  { label: "Ask AI", href: "/ai-lab" },
   { label: "Resume", href: "/resume" },
   { label: "Contact", href: "/contact" },
 ];
@@ -1323,7 +1367,7 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
       transition={{ duration: reduceMotion ? 0.2 : 0.36, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
-      aria-label="Goggles navigation"
+      aria-label="Lens navigation"
     >
       <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-[18px] border border-white/18 bg-black/32 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1.5 md:rounded-[22px] md:bg-black/24 md:p-2">
         <a
@@ -2321,6 +2365,7 @@ export function EstebanWorld() {
 
       <AmbientHud phase={phase} />
       <LensFrame phase={phase} />
+      <LensIntroPanel phase={phase} />
       <WorldChangeWash active={worldWashActive} />
       <GoggleLift active={phase === "transition"} />
       <LensCalibration active={phase === "transition"} />

@@ -5,10 +5,10 @@ import { usePathname } from "next/navigation";
 
 const navItems = [
   { href: "/", name: "Home" },
-  { href: "/goggles", name: "Goggles" },
+  { href: "/goggles", name: "Lens" },
   { href: "/work", name: "Work" },
   { href: "/projects", name: "Projects" },
-  { href: "/ai-lab", name: "AI Lab" },
+  { href: "/ai-lab", name: "Ask AI" },
   { href: "/resume", name: "Resume" },
   { href: "/contact", name: "Contact" },
 ];
@@ -26,7 +26,7 @@ function renderMenuItems(pathname: string) {
           <Link
             href={href}
             {...linkProps}
-            className={`rounded-full px-3 py-2 text-sm font-medium transition ${
+            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
               isActive
                 ? "bg-base-content text-base-100"
                 : "text-base-content/60 hover:bg-base-200/80 hover:text-base-content"
@@ -43,14 +43,14 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-4 z-40 mb-8 rounded-[22px] border border-base-content/10 bg-base-100/85 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
+    <header className="sticky top-4 z-40 mb-8 rounded-lg border border-base-content/10 bg-base-100/85 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
       <div className="flex min-h-14 items-center justify-between gap-4 px-3 py-2">
         <div className="flex items-center gap-2">
           <div className="dropdown md:hidden">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-sm rounded-full"
+              className="btn btn-ghost btn-sm rounded-lg"
               aria-label="Open navigation"
             >
               <svg
@@ -70,14 +70,14 @@ export function Navbar() {
             </div>
             <ul
               tabIndex={0}
-              className="menu dropdown-content z-[50] mt-3 w-56 rounded-[20px] border border-base-content/10 bg-base-100 p-2 shadow-lg"
+              className="menu dropdown-content z-[50] mt-3 w-56 rounded-lg border border-base-content/10 bg-base-100 p-2 shadow-lg"
             >
               {renderMenuItems(pathname)}
             </ul>
           </div>
           <Link
             href="/"
-            className="rounded-full px-3 py-2 text-sm font-bold tracking-tight text-base-content hover:bg-base-200/80"
+            className="rounded-lg px-3 py-2 text-sm font-bold tracking-tight text-base-content hover:bg-base-200/80"
           >
             Esteban Chirinos
           </Link>
@@ -87,7 +87,7 @@ export function Navbar() {
           <ul className="flex items-center gap-1">{renderMenuItems(pathname)}</ul>
         </nav>
 
-        <label className="swap swap-rotate btn btn-ghost rounded-full">
+        <label className="swap swap-rotate btn btn-ghost rounded-lg">
           <input type="checkbox" className="theme-controller" value="dark" />
 
           <svg

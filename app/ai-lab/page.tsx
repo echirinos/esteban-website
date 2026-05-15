@@ -9,9 +9,9 @@ import { AskEstebanChat } from "../components/ask-esteban-chat";
 import { labTracks } from "../lib/portfolio-data";
 
 export const metadata: Metadata = {
-  title: "AI Lab",
+  title: "Ask AI",
   description:
-    "Applied AI product experiments, demo systems, and prototype patterns by Esteban Chirinos.",
+    "Portfolio AI assistant for Esteban Chirinos, grounded in work history, proof points, projects, and role fit.",
 };
 
 const operatingPrinciples = [
@@ -23,45 +23,109 @@ const operatingPrinciples = [
 
 const chatSignals = [
   {
-    title: "Recruiter-ready answers",
+    title: "Ask what a recruiter would ask",
     description: "Role fit, proof points, education, and experience without hunting through every route.",
   },
   {
-    title: "Product signal first",
+    title: "Get product signal fast",
     description: "Ask about judgment, systems thinking, AI workflows, and how the work translates into teams.",
   },
   {
-    title: "Grounded portfolio context",
+    title: "Stay grounded in the portfolio",
     description: "Responses pull from the same proof points, resume material, and project context used on the site.",
   },
 ];
 
+const assistantMetrics = [
+  { value: "Live AI", label: "Assistant mode" },
+  { value: "8 routes", label: "Portfolio context" },
+  { value: "2-5", label: "Short answer bullets" },
+];
+
+const knowledgeSources = [
+  "Coinbase and platform work",
+  "Role-fit and recruiter proof",
+  "Projects, demos, and build logs",
+  "Education and certifications",
+];
+
 export default function AILabPage() {
   return (
-    <PageShell className="space-y-10">
-      <section className="py-4">
-        <div className="mb-5 max-w-4xl">
+    <PageShell className="max-w-7xl space-y-8">
+      <section className="grid gap-6 py-2 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+        <div className="max-w-4xl">
+          <p className="mb-4 inline-flex rounded-full border border-base-content/12 bg-base-100/72 px-3 py-1 text-xs font-semibold text-primary">
+            Portfolio AI assistant
+          </p>
           <h1 className="text-4xl font-bold leading-[0.95] tracking-tight md:text-6xl">
-            Ask Esteban OS
+            Ask the portfolio.
           </h1>
           <p className="mt-4 max-w-3xl text-base leading-relaxed text-base-content/68 md:mt-5 md:text-lg">
-            Ask about Coinbase work, AI product fit, technical depth, product
-            judgment, or what a hiring team should know first.
+            This page turns the portfolio into a focused AI assistant. Ask about
+            Coinbase work, AI product fit, technical depth, product judgment,
+            or what a hiring team should know first.
           </p>
+          <div className="mt-6 grid grid-cols-3 gap-2 sm:max-w-2xl sm:gap-3">
+            {assistantMetrics.map((metric) => (
+              <div
+                key={metric.label}
+                className="rounded-lg border border-base-content/10 bg-base-100/76 px-3 py-3"
+              >
+                <p className="text-xl font-bold text-primary sm:text-2xl">
+                  {metric.value}
+                </p>
+                <p className="mt-1 text-[11px] font-semibold leading-snug text-base-content/58">
+                  {metric.label}
+                </p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        <div className="grid gap-5 lg:min-h-[calc(100svh-16rem)] lg:grid-cols-[minmax(0,1fr)_320px] lg:items-stretch">
-          <AskEstebanChat
-            variant="lab"
-            className="lg:min-h-full"
-          />
+        <SurfaceCard className="hidden p-5 lg:block">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+            What this page is
+          </p>
+          <h2 className="mt-3 text-2xl font-bold leading-tight">
+            A recruiter-facing AI demo, not a generic chatbot.
+          </h2>
+          <p className="mt-3 text-sm leading-relaxed text-base-content/64">
+            The assistant is scoped to Esteban's public portfolio. It should
+            help someone understand fit, evidence, and next questions quickly.
+          </p>
+        </SurfaceCard>
+      </section>
 
-          <div className="flex flex-col justify-between rounded-[28px] border border-base-content/10 bg-base-100/86 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-8">
-            <div className="space-y-3">
+      <section className="grid gap-5 lg:min-h-[calc(100svh-14rem)] lg:grid-cols-[minmax(0,1fr)_340px] lg:items-stretch">
+        <AskEstebanChat
+          variant="lab"
+          className="lg:min-h-[720px]"
+        />
+
+        <aside className="space-y-4">
+          <SurfaceCard className="p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+              Knowledge the assistant can use
+            </p>
+            <div className="mt-4 space-y-3">
+              {knowledgeSources.map((source) => (
+                <div key={source} className="flex gap-3 text-sm text-base-content/70">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  <span>{source}</span>
+                </div>
+              ))}
+            </div>
+          </SurfaceCard>
+
+          <SurfaceCard className="p-5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+              Best use
+            </p>
+            <div className="mt-4 space-y-4">
               {chatSignals.map((signal) => (
                 <div
                   key={signal.title}
-                  className="border-t border-base-content/10 pt-3 first:border-t-0 first:pt-0"
+                  className="border-t border-base-content/10 pt-4 first:border-t-0 first:pt-0"
                 >
                   <h2 className="text-sm font-bold text-base-content">
                     {signal.title}
@@ -72,14 +136,14 @@ export default function AILabPage() {
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </SurfaceCard>
+        </aside>
       </section>
 
       <section className="py-8">
         <SectionHeading
-          title="Current tracks"
-          description="The lab is biased toward practical systems that help a technical user understand, adopt, or operate a platform faster."
+          title="What this AI lab proves"
+          description="The assistant is the working demo. The supporting tracks show the product judgment behind it: useful answers, clear context, source labels, and practical workflows."
         />
         <div className="grid gap-5 md:grid-cols-3">
           {labTracks.map((track) => (

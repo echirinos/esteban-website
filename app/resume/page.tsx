@@ -53,7 +53,7 @@ export default function ResumePage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 rounded-2xl border border-base-content/10 bg-base-200/45 p-4">
+          <div className="mt-8 rounded-lg border border-base-content/10 bg-base-200/45 p-4">
             <p className="text-sm font-semibold text-base-content/78">
               Experience timeline
             </p>

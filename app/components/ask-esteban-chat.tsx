@@ -25,16 +25,16 @@ type AskResponse = {
 };
 
 type AskEstebanChatProps = {
-  variant?: "classic" | "lab";
+  variant?: "classic" | "lab" | "home";
   className?: string;
 };
 
 const askEstebanPrompts = [
+  "Give me the 30-second recruiter summary.",
   "Why is Esteban a fit for AI product roles?",
-  "Summarize his Coinbase work.",
-  "What proof points should a recruiter know?",
+  "Summarize his Coinbase work with metrics.",
+  "What proof points should a hiring manager know?",
   "How technical is he?",
-  "What roles is he best aligned with?",
   "Show me PM-relevant experience.",
 ];
 
@@ -74,11 +74,12 @@ export function AskEstebanChat({
 }: AskEstebanChatProps) {
   const inputId = useId();
   const isLab = variant === "lab";
+  const isHome = variant === "home";
   const [messages, setMessages] = useState<AskMessage[]>([
     {
       role: "assistant",
       content:
-        "I can answer like a live portfolio chat. Ask about Esteban's Coinbase work, AI/product fit, technical depth, proof points, education, or the role he is best aligned with.",
+        "I am the portfolio assistant for Esteban. Ask for a recruiter summary, Coinbase proof, AI/product fit, technical depth, projects, education, or role alignment.",
       sources: ["Role Fit", "Receipts.txt"],
     },
   ]);
@@ -160,77 +161,128 @@ export function AskEstebanChat({
   const chatForm = (
     <form
       onSubmit={handleSubmit}
-      className={cx("gap-2", isLab ? "flex" : "flex flex-col sm:flex-row")}
+      className={cx(
+        "gap-2",
+        isLab
+          ? "rounded-lg border border-base-content/12 bg-base-100 p-2 shadow-[0_14px_42px_rgba(15,23,42,0.08)]"
+          : isHome
+            ? "flex"
+            : "flex flex-col sm:flex-row"
+      )}
     >
       <label className="sr-only" htmlFor={inputId}>
         Ask Esteban a question
       </label>
-      <input
-        id={inputId}
-        value={input}
-        onChange={(event) => setInput(event.target.value)}
-        placeholder={
-          isLab
-            ? "Ask about Coinbase, AI fit..."
-            : "Ask about Coinbase, PM fit, technical depth..."
-        }
-        className={cx(
-          "min-h-10 min-w-0 flex-1 px-3 py-2 text-sm font-bold outline-none disabled:opacity-50",
-          isLab
-            ? "min-h-12 rounded-2xl border border-base-content/12 bg-base-100 placeholder:text-base-content/35 focus:ring-2 focus:ring-primary/45"
-            : "border border-black bg-white shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] placeholder:text-black/40 focus:ring-2 focus:ring-black"
-        )}
-        maxLength={500}
-        disabled={isPending}
-      />
-      <button
-        type="submit"
-        disabled={isPending || input.trim().length === 0}
-        className={cx(
-          "px-4 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-50",
-          isLab
-            ? "shrink-0 rounded-2xl bg-base-content px-5 text-base-100 hover:bg-primary hover:text-primary-content sm:px-6"
-            : "border border-black bg-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] hover:bg-white hover:text-black"
-        )}
-      >
-        {isLab ? "Ask" : "Send"}
-      </button>
+      {isLab ? (
+        <>
+          <textarea
+            id={inputId}
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder="Ask about Coinbase, role fit, proof points, or technical depth..."
+            className="min-h-28 w-full resize-none rounded-md bg-transparent px-3 py-3 text-sm font-semibold leading-relaxed outline-none placeholder:text-base-content/35 disabled:opacity-50"
+            maxLength={500}
+            disabled={isPending}
+          />
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-base-content/10 px-2 pt-2">
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-base-content/42">
+              Public portfolio context + source labels
+            </span>
+            <button
+              type="submit"
+              disabled={isPending || input.trim().length === 0}
+              className="shrink-0 rounded-md bg-base-content px-5 py-2 text-sm font-black text-base-100 transition hover:bg-primary hover:text-primary-content disabled:cursor-not-allowed disabled:opacity-50 sm:px-6"
+            >
+              Ask AI
+            </button>
+          </div>
+        </>
+      ) : (
+        <>
+          <input
+            id={inputId}
+            value={input}
+            onChange={(event) => setInput(event.target.value)}
+            placeholder={
+              isHome
+                ? "Ask for proof, role fit, or Coinbase work..."
+                : "Ask about Coinbase, PM fit, technical depth..."
+            }
+            className={cx(
+              "min-h-10 min-w-0 flex-1 px-3 py-2 text-sm font-bold outline-none disabled:opacity-50",
+              isHome
+                ? "min-h-12 rounded-lg border border-base-content/12 bg-base-100 placeholder:text-base-content/35 focus:ring-2 focus:ring-primary/45"
+                : "border border-black bg-white shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] placeholder:text-black/40 focus:ring-2 focus:ring-black"
+            )}
+            maxLength={500}
+            disabled={isPending}
+          />
+          <button
+            type="submit"
+            disabled={isPending || input.trim().length === 0}
+            className={cx(
+              "px-4 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-50",
+              isHome
+                ? "shrink-0 rounded-lg bg-base-content px-5 text-base-100 hover:bg-primary hover:text-primary-content sm:px-6"
+                : "border border-black bg-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] hover:bg-white hover:text-black"
+            )}
+          >
+            Send
+          </button>
+        </>
+      )}
     </form>
   );
 
   return (
     <div
       className={cx(
-        isLab ? "space-y-3" : "space-y-2 sm:space-y-3",
+        isLab || isHome ? "space-y-3" : "space-y-2 sm:space-y-3",
         isLab &&
-          "rounded-[28px] border border-base-content/12 bg-base-100/95 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.1)] backdrop-blur md:p-6 lg:p-7",
+          "rounded-lg border border-base-content/12 bg-base-100/95 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.1)] backdrop-blur md:p-5 lg:p-6",
+        isHome &&
+          "rounded-lg border border-base-content/12 bg-base-100/88 p-4 shadow-[0_20px_64px_rgba(15,23,42,0.1)] backdrop-blur",
         className
       )}
     >
-      <div className={cx(isLab && "grid gap-4 md:grid-cols-[1fr_auto] md:items-start")}>
+      <div
+        className={cx(
+          isLab && "grid gap-4 md:grid-cols-[1fr_auto] md:items-start"
+        )}
+      >
         <div>
           <p
             className={cx(
               "text-[10px] uppercase tracking-[0.18em]",
-              isLab ? "text-primary" : "text-black/60"
+              isLab || isHome ? "text-primary" : "text-black/60"
             )}
           >
-            {isLab ? "Live portfolio chat" : "Ask Esteban OS"}
+            {isLab
+              ? "Portfolio AI chat"
+              : isHome
+                ? "Ask the proof"
+                : "Ask Esteban OS"}
           </p>
           <h3
             className={cx(
               "mt-1 max-w-2xl font-black leading-tight",
-              isLab ? "text-3xl text-base-content md:text-4xl" : "text-base sm:text-xl"
+              isLab
+                ? "text-2xl text-base-content md:text-3xl"
+                : isHome
+                  ? "text-2xl text-base-content"
+                  : "text-base sm:text-xl"
             )}
           >
             {isLab
-              ? "Chat with the proof, projects, and role-fit signal."
-              : "Skip the browsing. Ask for the signal directly."}
+              ? "Ask for the hiring signal."
+              : isHome
+                ? "Turn the portfolio into a recruiter-ready answer."
+                : "Skip the browsing. Ask for the signal directly."}
           </h3>
         </div>
         {isLab ? (
           <div className="flex flex-wrap gap-2 md:justify-end">
-            {["Try a question", "Grounded answers", "Sources shown"].map((item) => (
+            {["Portfolio-grounded", "Sources shown", "Recruiter-ready"].map((item) => (
               <span
                 key={item}
                 className="rounded-full border border-base-content/12 bg-base-200/70 px-3 py-1 text-xs font-semibold text-base-content/70"
@@ -246,11 +298,14 @@ export function AskEstebanChat({
           "max-w-2xl leading-relaxed",
           isLab
             ? "text-sm text-base-content/68"
-            : "hidden text-xs text-black/75 sm:block"
+            : isHome
+              ? "text-sm text-base-content/64"
+              : "hidden text-xs text-black/75 sm:block"
         )}
       >
-        Type a question about Esteban's work, AI product judgment, Coinbase
-        experience, technical depth, education, or recruiter-ready proof points.
+        This is a focused portfolio assistant, not a general chatbot. It answers
+        from Esteban's work history, projects, metrics, role-fit notes, and
+        source labels.
       </p>
 
       <div
@@ -258,23 +313,28 @@ export function AskEstebanChat({
           "grid gap-3",
           isLab
             ? "lg:grid-cols-[minmax(0,1fr)_300px]"
-            : "lg:grid-cols-[0.78fr_1.22fr]"
+            : isHome
+              ? "lg:grid-cols-[minmax(0,1fr)_220px]"
+              : "lg:grid-cols-[0.78fr_1.22fr]"
         )}
       >
         <div
           className={cx(
             "space-y-2",
-            isLab ? "order-1" : "order-1 lg:order-2"
+            isLab || isHome ? "order-1" : "order-1 lg:order-2"
           )}
         >
-          {isLab ? chatForm : null}
+          {isLab ? <div className="pb-1">{chatForm}</div> : null}
+          {isHome ? chatForm : null}
           <div
             ref={messageListRef}
             className={cx(
               "space-y-2 overflow-y-auto",
               isLab
-                ? "min-h-[160px] max-h-[520px] rounded-2xl border border-base-content/12 bg-base-200/35 p-3 sm:min-h-[220px] md:min-h-[380px] lg:min-h-[430px]"
-                : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
+                ? "min-h-[280px] max-h-[760px] rounded-lg border border-base-content/12 bg-base-200/35 p-4 sm:min-h-[420px] md:min-h-[500px] lg:min-h-[560px]"
+                : isHome
+                  ? "min-h-[180px] max-h-[260px] rounded-lg border border-base-content/12 bg-base-200/35 p-3"
+                  : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
             )}
           >
             {messages.map((message, index) => (
@@ -282,20 +342,25 @@ export function AskEstebanChat({
                 key={`${message.role}-${index}`}
                 className={cx(
                   isLab
-                    ? "rounded-2xl border p-3"
-                    : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
+                    ? "rounded-lg border p-3"
+                    : isHome
+                      ? "rounded-lg border p-3"
+                      : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
                   message.role === "user"
                     ? isLab
                       ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
-                      : "ml-auto max-w-[86%] bg-black text-white"
+                      : isHome
+                        ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
+                        : "ml-auto max-w-[86%] bg-black text-white"
                     : isLab
                       ? "mr-auto max-w-[96%] border-base-content/12 bg-base-100 text-base-content"
-                      : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
+                      : isHome
+                        ? "mr-auto max-w-[96%] border-base-content/12 bg-base-100 text-base-content"
+                        : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
                 )}
               >
                 <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  {message.role === "user" ? "You" : "Ask Esteban"}
-                  {message.provider ? ` / ${message.provider}` : ""}
+                  {message.role === "user" ? "You" : "Portfolio Assistant"}
                 </p>
                 <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
                   {message.content}
@@ -317,19 +382,23 @@ export function AskEstebanChat({
                 className={cx(
                   "mr-auto max-w-[92%] p-2",
                   isLab
-                    ? "rounded-2xl border border-base-content/12 bg-base-100 text-base-content"
-                    : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
+                    ? "rounded-lg border border-base-content/12 bg-base-100 text-base-content"
+                    : isHome
+                      ? "rounded-lg border border-base-content/12 bg-base-100 text-base-content"
+                      : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
                 )}
               >
                 <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  Ask Esteban
+                  Portfolio Assistant
                 </p>
-                <p className="mt-2 text-xs font-bold">Thinking...</p>
+                <p className="mt-2 text-xs font-bold">
+                  Reading the portfolio context...
+                </p>
               </article>
             ) : null}
           </div>
 
-          {!isLab ? chatForm : null}
+          {!isLab && !isHome ? chatForm : null}
         </div>
 
         <div
@@ -337,9 +406,21 @@ export function AskEstebanChat({
             "grid gap-2",
             isLab
               ? "order-2 sm:grid-cols-2 lg:grid-cols-1"
-              : "order-2 sm:grid-cols-2 lg:order-1 lg:grid-cols-1"
+              : isHome
+                ? "order-2 grid-cols-1"
+                : "order-2 sm:grid-cols-2 lg:order-1 lg:grid-cols-1"
           )}
         >
+          {isLab ? (
+            <div className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-3">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">
+                Question templates
+              </p>
+              <p className="mt-1 text-xs leading-relaxed text-base-content/62">
+                Start with the questions hiring teams usually ask first.
+              </p>
+            </div>
+          ) : null}
           {askEstebanPrompts.map((prompt) => (
             <button
               key={prompt}
@@ -348,8 +429,10 @@ export function AskEstebanChat({
               className={cx(
                 "text-left text-xs font-black leading-snug transition disabled:opacity-50",
                 isLab
-                  ? "rounded-2xl border border-base-content/12 bg-base-200/55 px-4 py-3 text-base-content hover:border-primary/45 hover:bg-primary/10"
-                  : "border border-black bg-[#f7f7f7] px-3 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] hover:bg-black hover:text-white"
+                  ? "rounded-lg border border-base-content/12 bg-base-200/55 px-4 py-3 text-base-content hover:border-primary/45 hover:bg-primary/10"
+                  : isHome
+                    ? "rounded-lg border border-base-content/12 bg-base-200/55 px-4 py-3 text-base-content hover:border-primary/45 hover:bg-primary/10"
+                    : "border border-black bg-[#f7f7f7] px-3 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] hover:bg-black hover:text-white"
               )}
               disabled={isPending}
             >
