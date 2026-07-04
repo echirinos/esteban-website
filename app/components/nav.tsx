@@ -22,19 +22,20 @@ function renderMenuItems(pathname: string) {
       : {};
 
     return (
-        <li key={href}>
-          <Link
-            href={href}
-            {...linkProps}
-            className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
-              isActive
-                ? "bg-base-content text-base-100"
-                : "text-base-content/60 hover:bg-base-200/80 hover:text-base-content"
-            }`}
-          >
-            {name}
-          </Link>
-        </li>
+      <li key={href}>
+        <Link
+          href={href}
+          {...linkProps}
+          className={`annotation block rounded-[2px] px-3 py-2 transition ${
+            isActive
+              ? "text-primary"
+              : "text-base-content/55 hover:text-base-content"
+          }`}
+        >
+          {isActive ? <span aria-hidden="true">■&nbsp;</span> : null}
+          {name}
+        </Link>
+      </li>
     );
   });
 }
@@ -43,14 +44,14 @@ export function Navbar() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-4 z-40 mb-8 rounded-lg border border-base-content/10 bg-base-100/85 shadow-[0_18px_50px_rgba(15,23,42,0.08)] backdrop-blur-xl">
-      <div className="flex min-h-14 items-center justify-between gap-4 px-3 py-2">
-        <div className="flex items-center gap-2">
+    <header className="site-header sticky top-0 z-40 border-b hairline backdrop-blur-md">
+      <div className="mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
+        <div className="flex items-center gap-1">
           <div className="dropdown md:hidden">
             <div
               tabIndex={0}
               role="button"
-              className="btn btn-ghost btn-sm rounded-lg"
+              className="btn btn-ghost h-11 min-h-11 w-11 rounded-[2px] px-2"
               aria-label="Open navigation"
             >
               <svg
@@ -63,21 +64,21 @@ export function Navbar() {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  strokeWidth="2"
+                  strokeWidth="1.5"
                   d="M4 6h16M4 12h8m-8 6h16"
                 />
               </svg>
             </div>
             <ul
               tabIndex={0}
-              className="menu dropdown-content z-[50] mt-3 w-56 rounded-lg border border-base-content/10 bg-base-100 p-2 shadow-lg"
+              className="dropdown-content menu z-[50] mt-3 w-56 gap-0.5 rounded-[2px] border hairline bg-base-100 p-2 shadow-xl"
             >
               {renderMenuItems(pathname)}
             </ul>
           </div>
           <Link
             href="/"
-            className="rounded-lg px-3 py-2 text-sm font-bold tracking-tight text-base-content hover:bg-base-200/80"
+            className="px-1 font-display text-lg font-semibold uppercase tracking-[0.06em] text-base-content transition hover:text-primary sm:px-2"
           >
             Esteban Chirinos
           </Link>
@@ -87,11 +88,14 @@ export function Navbar() {
           <ul className="flex items-center gap-1">{renderMenuItems(pathname)}</ul>
         </nav>
 
-        <label className="swap swap-rotate btn btn-ghost rounded-lg">
+        <label
+          className="swap swap-rotate btn btn-ghost h-11 min-h-11 w-11 rounded-[2px]"
+          aria-label="Toggle dark mode"
+        >
           <input type="checkbox" className="theme-controller" value="dark" />
 
           <svg
-            className="swap-off fill-current w-5 h-5"
+            className="swap-off h-5 w-5 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >
@@ -99,7 +103,7 @@ export function Navbar() {
           </svg>
 
           <svg
-            className="swap-on fill-current w-5 h-5"
+            className="swap-on h-5 w-5 fill-current"
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
           >

@@ -1,569 +1,287 @@
-import Image from "next/image";
 import Link from "next/link";
+import type { ReactNode } from "react";
 import { AskEstebanChat } from "./ask-esteban-chat";
+import { BlueprintContact, BlueprintHero } from "./blueprint-hero";
+import { DraftItem, DraftReveal, DraftStagger, RuleDraw } from "./blueprint-motion";
 import {
-  AnimeSignalField,
-  MotionItem,
-  MotionReveal,
-  MotionStagger,
-  MotionSurface,
-} from "./portfolio-motion";
-import { ProofEngineLoader } from "./proof-engine-loader";
-import {
-  InlineLink,
-  PageShell,
-  SectionHeading,
-  SurfaceCard,
-  TagList,
-} from "./portfolio-ui";
-import {
-  contactChannels,
   educationCredentials,
-  portfolioMetrics,
   projectEntries,
-  roleFit,
   strengthAreas,
   techStack,
   workExperiences,
 } from "../lib/portfolio-data";
 
-const featuredWork = workExperiences.filter((item) => item.featured);
-const supportingWork = workExperiences.filter((item) => !item.featured);
-const featuredProjects = projectEntries.filter((item) => item.highlighted).slice(0, 6);
-const heroMetrics = portfolioMetrics.slice(0, 3);
+const featuredProjects = projectEntries
+  .filter((item) => item.highlighted)
+  .slice(0, 6);
 
-const proofConsoleItems = [
-  {
-    label: "Partner integrations",
-    value: "30+",
-    detail: "Coinbase Onramp, Embedded Wallets, Advanced Trade, x402, AgentKit.",
-  },
-  {
-    label: "AI workflow lift",
-    value: "30%",
-    detail: "Reduced escalations through Salesforce, Slack, docs, and support systems.",
-  },
-  {
-    label: "Developer signal",
-    value: "100+",
-    detail: "Weekly insights translated into product recommendations and docs updates.",
-  },
-];
+function SheetSection({
+  code,
+  title,
+  description,
+  action,
+  id,
+  children,
+}: {
+  code: string;
+  title: string;
+  description?: string;
+  action?: ReactNode;
+  id?: string;
+  children: ReactNode;
+}) {
+  return (
+    <section id={id} className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
+      <div className="flex items-center gap-4">
+        <span className="annotation shrink-0 text-primary">{code}</span>
+        <RuleDraw className="block h-px min-w-0 flex-1 bg-[var(--hairline)]" />
+        {action ? <span className="shrink-0">{action}</span> : null}
+      </div>
+      <DraftReveal>
+        <h2 className="mt-6 font-display text-4xl font-semibold uppercase leading-none tracking-[0.02em] sm:text-5xl">
+          {title}
+        </h2>
+        {description ? (
+          <p className="mt-4 max-w-2xl leading-relaxed text-base-content/65">
+            {description}
+          </p>
+        ) : null}
+      </DraftReveal>
+      {children}
+    </section>
+  );
+}
 
-const bestFitConversations = [
-  {
-    title: "AI platform and product teams",
-    detail:
-      "Turn model capability, user workflow, and launch risk into demos, eval criteria, and product decisions.",
-  },
-  {
-    title: "Developer experience teams",
-    detail:
-      "Build reference apps, docs, onboarding paths, and support loops that make a platform easier to adopt.",
-  },
-  {
-    title: "Partner and solutions teams",
-    detail:
-      "Translate customer ambiguity into architecture, rollout plans, and proof that helps revenue teams move.",
-  },
-];
+function SheetLink({
+  href,
+  children,
+  external,
+}: {
+  href: string;
+  children: ReactNode;
+  external?: boolean;
+}) {
+  const className =
+    "annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current";
 
-const proofPrompts = [
-  "Why is Esteban a fit for AI product roles?",
-  "Summarize his Coinbase work.",
-  "What proof points should a recruiter know?",
-];
+  if (external) {
+    return (
+      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+        {children}
+      </a>
+    );
+  }
 
-const proofBandMetrics = [
-  { value: "$20M", label: "Revenue impact supported" },
-  { value: "30+", label: "Strategic partner integrations" },
-  { value: "100+", label: "Developer insights translated" },
-];
+  return (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  );
+}
 
 export function ModernPortfolioPage() {
   return (
-    <PageShell className="max-w-7xl">
-      <section className="grid gap-8 py-10 md:grid-cols-[minmax(0,1fr)_420px] md:items-center lg:grid-cols-[1.02fr_0.98fr] lg:py-20">
-        <MotionReveal initialVisible>
-          <div className="relative overflow-hidden">
-            <AnimeSignalField className="pointer-events-none absolute inset-x-[-18%] top-[-16%] h-72 opacity-35 lg:hidden" />
-            <div className="relative z-10">
-              <p className="mb-4 inline-flex rounded-full border border-base-content/12 bg-base-100/72 px-3 py-1 text-xs font-semibold text-base-content/62">
-                Applied AI / DevEx / technical product
-              </p>
-              <h1 className="max-w-3xl text-4xl font-bold leading-[0.94] tracking-tight sm:text-5xl md:text-6xl xl:text-7xl">
-                Esteban Chirinos
-              </h1>
-              <p className="mt-6 max-w-2xl text-xl leading-relaxed text-base-content/76">
-                I help AI and developer-platform teams turn customer friction
-                into shipped demos, reference implementations, onboarding
-                systems, and product feedback loops.
-              </p>
-              <p className="mt-5 hidden max-w-2xl leading-relaxed text-base-content/64 sm:block">
-                Senior Technical Solutions Engineer at Coinbase. Previously at
-                TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and
-                JPMorgan Chase across developer platforms, cloud, fintech,
-                product feedback loops, partner solutions, and operator
-                systems.
-              </p>
+    <div className="pb-0">
+      <BlueprintHero />
 
-              <TagList items={roleFit} className="mt-7 max-w-2xl" />
-
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link href="/contact" className="btn btn-primary">
-                  Contact Esteban
-                </Link>
-                <Link href="/work" className="btn btn-outline">
-                  View proof
-                </Link>
-                <Link href="#ask-esteban" className="btn btn-ghost">
-                  Ask the portfolio
-                </Link>
-                <Link href="/goggles" className="btn btn-ghost">
-                  Open lens
-                </Link>
-              </div>
-
-              <div className="mt-7 grid grid-cols-3 gap-2 sm:max-w-2xl sm:gap-3">
-                {heroMetrics.map((metric) => (
-                  <div
-                    key={metric.label}
-                    className="min-h-24 rounded-lg border border-base-content/10 bg-base-100/70 px-3 py-3 sm:px-4"
-                  >
-                    <p className="text-2xl font-bold text-primary sm:text-3xl">
-                      {metric.value}
-                    </p>
-                    <p className="mt-1 text-[11px] font-semibold leading-snug text-base-content/60 sm:text-xs">
-                      {metric.label}
-                    </p>
+      <SheetSection
+        code="Sht A-02 · Work"
+        title="Selected work"
+        description="Developer platforms, cloud, fintech, and marketplaces — and the customer signal that shaped better products at each stop."
+        action={<SheetLink href="/work">Full history</SheetLink>}
+      >
+        <DraftStagger className="mt-10">
+          {workExperiences.map((company, index) => (
+            <DraftItem key={company.name}>
+              <div
+                className={`group grid gap-x-6 gap-y-2 border-t py-6 hairline transition-colors hover:bg-base-200/50 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:py-7 ${
+                  index === workExperiences.length - 1 ? "border-b" : ""
+                }`}
+              >
+                <p className="annotation pt-1.5 text-base-content/50">
+                  {company.period.replace(" - ", " — ")}
+                </p>
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+                    <h3 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">
+                      {company.name}
+                    </h3>
+                    <p className="text-sm text-base-content/55">{company.role}</p>
                   </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </MotionReveal>
-
-        <MotionReveal delay={0.08} initialVisible>
-          <SurfaceCard className="relative overflow-hidden border-white/14 bg-[#081018] p-0 text-white shadow-[0_28px_90px_rgba(15,23,42,0.34)]">
-            <Image
-              alt=""
-              src="/images/world-yosemite-immersive.webp"
-              fill
-              priority
-              sizes="(min-width: 1024px) 560px, 360px"
-              className="object-cover opacity-35"
-            />
-            <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(4,10,16,0.58),rgba(4,10,16,0.96))]" />
-            <ProofEngineLoader className="pointer-events-none absolute bottom-7 right-[-24%] z-[1] hidden h-[58%] w-[76%] opacity-70 lg:block" />
-            <AnimeSignalField className="absolute inset-0 z-[2] opacity-60" />
-
-            <div className="relative z-10 grid min-h-[420px] gap-5 p-5 sm:p-6 lg:min-h-[560px]">
-              <div className="flex items-start justify-between gap-5">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/64">
-                    Portfolio proof console
-                  </p>
-                  <h2 className="mt-3 max-w-sm text-3xl font-bold leading-[1.04] text-white sm:text-4xl">
-                    Product signal from shipped technical work.
-                  </h2>
-                </div>
-                <Image
-                  alt="Esteban Chirinos profile photo"
-                  src="/images/esteban.png"
-                  width={250}
-                  height={245}
-                  priority
-                  className="h-20 w-20 rounded-lg border border-white/24 object-cover shadow-2xl sm:h-28 sm:w-28"
-                />
-              </div>
-
-              <div className="grid gap-2">
-                {proofConsoleItems.map((item) => (
-                  <div
-                    key={item.label}
-                    className="grid gap-3 rounded-lg border border-white/14 bg-slate-950/56 p-4 backdrop-blur sm:grid-cols-[86px_1fr]"
-                  >
-                    <div>
-                      <p className="text-3xl font-bold">{item.value}</p>
-                      <p className="text-[10px] font-semibold uppercase tracking-[0.16em] text-white/52">
-                        {item.label}
+                  {company.featured ? (
+                    <>
+                      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-base-content/70">
+                        {company.summary}
                       </p>
-                    </div>
-                    <p className="text-sm leading-relaxed text-white/72">
-                      {item.detail}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-              <div className="mt-auto">
-                <p className="mb-3 text-[10px] font-semibold uppercase tracking-[0.18em] text-white/50">
-                  Proof logos
-                </p>
-                <div className="grid grid-cols-3 gap-2 sm:grid-cols-6">
-                  {workExperiences.slice(0, 6).map((company) => (
-                    <div
-                      key={company.name}
-                      className="flex h-20 flex-col items-center justify-center gap-1.5 rounded-lg border border-white/80 bg-white px-2 py-2.5"
-                    >
-                      <Image
-                        alt={`${company.name} logo`}
-                        src={company.logo}
-                        width={96}
-                        height={56}
-                        className="max-h-8 w-auto max-w-full object-contain"
-                      />
-                      <p className="max-w-full text-center text-[10px] font-semibold leading-tight text-slate-600">
-                        {company.name}
+                      <p className="mt-3 font-mono text-xs leading-relaxed text-primary">
+                        {company.impact[0]}
                       </p>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </SurfaceCard>
-        </MotionReveal>
-      </section>
-
-      <MotionReveal>
-        <section
-          id="ask-esteban"
-          className="grid gap-5 py-8 lg:grid-cols-[0.78fr_1.22fr] lg:items-start"
-        >
-          <div className="pt-2">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
-              Recruiter-ready context
-            </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-              Ask the site for the role-fit signal.
-            </h2>
-            <p className="mt-4 max-w-xl leading-relaxed text-base-content/66">
-              The strongest product portfolios behave like tools. This chat
-              preview lets visitors ask for the exact proof they need instead of
-              hunting through every route.
-            </p>
-            <div className="mt-6 grid gap-2">
-              {proofPrompts.map((prompt) => (
-                <Link
-                  key={prompt}
-                  href="/ai-lab"
-                  className="rounded-lg border border-base-content/10 bg-base-100/72 px-4 py-3 text-sm font-semibold text-base-content/72 transition hover:border-primary/35 hover:bg-primary/10 hover:text-base-content"
-                >
-                  {prompt}
-                </Link>
-              ))}
-            </div>
-          </div>
-
-          <AskEstebanChat variant="home" />
-        </section>
-      </MotionReveal>
-
-      <section className="py-8">
-        <MotionStagger className="grid gap-4 lg:grid-cols-3">
-          {bestFitConversations.map((item) => (
-            <MotionSurface key={item.title}>
-              <SurfaceCard className="h-full p-5">
-                <p className="text-sm font-semibold text-primary">Best fit</p>
-                <h2 className="mt-2 text-xl font-semibold leading-tight">
-                  {item.title}
-                </h2>
-                <p className="mt-3 text-sm leading-relaxed text-base-content/66">
-                  {item.detail}
-                </p>
-              </SurfaceCard>
-            </MotionSurface>
-          ))}
-        </MotionStagger>
-      </section>
-
-      <MotionReveal>
-        <section className="py-8" aria-label="Proof across recognized teams">
-          <div className="overflow-hidden rounded-lg border border-white/10 bg-[#081018] px-5 py-7 text-white shadow-[0_26px_80px_rgba(15,23,42,0.22)] sm:px-7 lg:px-8">
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-white/52">
-                  Recognizable proof
-                </p>
-                <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-tight md:text-4xl">
-                  Shipped in the kinds of environments hiring teams recognize.
-                </h2>
-                <p className="mt-4 max-w-xl text-sm leading-relaxed text-white/62">
-                  The signal is not only the logos. It is the pattern across
-                  developer platforms, regulated customers, cloud accounts,
-                  partner launches, and product feedback loops.
-                </p>
-              </div>
-
-              <div className="grid gap-3 sm:grid-cols-3">
-                {proofBandMetrics.map((metric) => (
-                  <div
-                    key={metric.label}
-                    className="rounded-lg border border-white/12 bg-white/[0.06] p-4"
-                  >
-                    <p className="text-3xl font-bold text-white">{metric.value}</p>
-                    <p className="mt-2 text-xs font-semibold leading-snug text-white/52">
-                      {metric.label}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="mt-7 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-              {workExperiences.slice(0, 6).map((company) => (
-                <div
-                  key={company.name}
-                  className="grid min-h-24 place-items-center rounded-lg border border-white/12 bg-white px-3 py-3 text-center"
-                >
-                  <Image
-                    alt={`${company.name} logo`}
-                    src={company.logo}
-                    width={96}
-                    height={56}
-                    className="max-h-9 w-auto max-w-full object-contain"
-                  />
-                  <span className="mt-3 text-[11px] font-semibold leading-tight text-slate-600">
-                    {company.name}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-      </MotionReveal>
-
-      <section className="py-12">
-        <SectionHeading
-          title="Places I have worked"
-          description="Developer platforms, cloud, fintech, marketplaces, financial services, and the customer signals that shape better products."
-          action={<InlineLink href="/work">Full work history</InlineLink>}
-        />
-
-        <MotionStagger className="grid gap-5 lg:grid-cols-2">
-          {featuredWork.map((company) => (
-            <MotionSurface key={company.name}>
-              <SurfaceCard className="h-full">
-                <div className="flex items-start gap-4">
-                  <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-base-content/10 bg-base-200/70 p-3">
-                    <Image
-                      alt={`${company.name} logo`}
-                      src={company.logo}
-                      width={72}
-                      height={72}
-                      className="max-h-11 w-auto object-contain"
-                    />
-                  </div>
-                  <div className="min-w-0">
-                    <h3 className="text-2xl font-semibold">{company.name}</h3>
-                    <p className="mt-1 text-sm text-base-content/58">
-                      {company.role} / {company.period}
-                    </p>
-                  </div>
-                </div>
-                <p className="mt-5 leading-relaxed text-base-content/68">
-                  {company.summary}
-                </p>
-                <TagList items={company.tags} className="mt-5" />
-                <div className="mt-5 space-y-2">
-                  {company.impact.slice(0, 3).map((item) => (
-                    <div key={item} className="flex gap-3 text-sm text-base-content/70">
-                      <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
-                      <span>{item}</span>
-                    </div>
-                  ))}
-                </div>
-              </SurfaceCard>
-            </MotionSurface>
-          ))}
-        </MotionStagger>
-      </section>
-
-      <section className="py-2">
-        <MotionStagger className="grid gap-4 md:grid-cols-3">
-          {supportingWork.map((company) => (
-            <MotionItem key={company.name}>
-              <SurfaceCard className="h-full p-5">
-                <div className="mb-4 grid h-14 w-14 place-items-center rounded-lg border border-base-content/10 bg-base-200/70 p-3">
-                  <Image
-                    alt={`${company.name} logo`}
-                    src={company.logo}
-                    width={72}
-                    height={72}
-                    className="max-h-9 w-auto object-contain"
-                  />
-                </div>
-                <h3 className="text-lg font-semibold">{company.name}</h3>
-                <p className="mt-1 text-sm text-base-content/58">
-                  {company.role}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-base-content/66">
-                  {company.summary}
-                </p>
-              </SurfaceCard>
-            </MotionItem>
-          ))}
-        </MotionStagger>
-      </section>
-
-      <section className="py-14">
-        <SectionHeading
-          title="What I have built"
-          description="Reference apps, tutorials, founder products, and operator systems where product judgment, user clarity, and shipping speed all mattered."
-          action={<InlineLink href="/projects">View all projects</InlineLink>}
-        />
-
-        <MotionStagger className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-          {featuredProjects.map((project, index) => (
-            <MotionSurface key={project.name}>
-              <SurfaceCard className="group h-full overflow-hidden p-0">
-                <div className="relative grid h-44 place-items-center overflow-hidden border-b border-base-content/8 bg-[linear-gradient(135deg,rgba(15,118,110,0.12),rgba(29,78,216,0.14),rgba(197,106,20,0.1))] p-6">
-                  <span className="absolute right-4 top-4 rounded-full border border-base-content/10 bg-base-100/76 px-3 py-1 text-xs font-bold text-base-content/58">
-                    0{index + 1}
-                  </span>
-                  {project.image ? (
-                    <Image
-                      alt={`${project.name} image`}
-                      src={project.image}
-                      width={360}
-                      height={160}
-                      className="max-h-24 w-auto object-contain transition duration-300 group-hover:scale-105"
-                    />
+                    </>
                   ) : (
-                    <span className="text-sm font-semibold text-base-content/50">
-                      {project.category}
-                    </span>
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-base-content/60">
+                      {company.summary}
+                    </p>
                   )}
                 </div>
-                <div className="p-5">
-                  <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+                <a
+                  href={company.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={`Open ${company.name}`}
+                  className="annotation hidden pt-1.5 text-base-content/35 transition group-hover:text-primary sm:block"
+                >
+                  ↗
+                </a>
+              </div>
+            </DraftItem>
+          ))}
+        </DraftStagger>
+      </SheetSection>
+
+      <SheetSection
+        code="Sht A-03 · Builds"
+        title="What I have built"
+        description="Reference apps, tutorials, founder products, and operator systems where product judgment and shipping speed both mattered."
+        action={<SheetLink href="/projects">All projects</SheetLink>}
+      >
+        <DraftStagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {featuredProjects.map((project, index) => {
+            const plate = (
+              <>
+                <div className="flex items-center justify-between">
+                  <span className="annotation text-base-content/40">
+                    P-0{index + 1}
+                  </span>
+                  <span className="annotation text-primary">
                     {project.category}
-                  </p>
-                  <h3 className="mt-2 text-xl font-semibold leading-tight">
-                    {project.name}
-                  </h3>
-                  <p className="mt-3 text-sm leading-relaxed text-base-content/66">
-                    {project.description}
-                  </p>
-                  <TagList items={project.tags} className="mt-4" />
+                  </span>
+                </div>
+                <h3 className="mt-5 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
+                  {project.name}
+                </h3>
+                <p className="mb-5 mt-3 flex-1 text-sm leading-relaxed text-base-content/65">
+                  {project.description}
+                </p>
+                <div className="mt-auto flex items-center justify-between gap-3 border-t pt-4 hairline">
+                  <span className="min-w-0 truncate pt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-base-content/45">
+                    {project.tags.slice(0, 2).join(" · ")}
+                  </span>
                   {project.href ? (
-                    <div className="mt-5">
-                      <InlineLink href={project.href} external>
-                        Open project
-                      </InlineLink>
-                    </div>
+                    <span className="annotation shrink-0 text-base-content/40 transition group-hover:text-primary">
+                      Open ↗
+                    </span>
                   ) : null}
                 </div>
-              </SurfaceCard>
-            </MotionSurface>
-          ))}
-        </MotionStagger>
-      </section>
+              </>
+            );
 
-      <section className="grid gap-5 py-12 lg:grid-cols-[0.92fr_1.08fr] lg:items-start">
-        <MotionReveal>
-          <SurfaceCard className="bg-[linear-gradient(180deg,rgba(255,255,255,0.92),rgba(236,242,248,0.92))]">
-            <h2 className="text-3xl font-bold tracking-tight">How I work</h2>
-            <p className="mt-3 max-w-xl leading-relaxed text-base-content/66">
-              I sit between product, engineering, customers, and go-to-market
-              teams. The output is usually a clearer product decision, a sharper
-              roadmap signal, a better integration path, a stronger demo, or a
-              faster path from customer need to shipped workflow.
-            </p>
-            <TagList items={strengthAreas} className="mt-6" />
-          </SurfaceCard>
-        </MotionReveal>
+            const plateClass =
+              "group flex h-full flex-col border p-5 hairline bg-base-100 transition duration-200 hover:-translate-y-1 hover:border-primary";
 
-        <MotionStagger className="grid gap-4 sm:grid-cols-2">
-          <MotionItem className="sm:col-span-2">
-            <SurfaceCard className="h-full p-5">
-              <p className="text-sm font-semibold">Product + technical training</p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-2">
-                {educationCredentials.map((item) => (
-                  <div
-                    key={item.school}
-                    className="rounded-lg border border-base-content/10 bg-base-100/72 p-4"
+            return (
+              <DraftItem key={project.name} className="h-full">
+                {project.href ? (
+                  <a
+                    href={project.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={plateClass}
                   >
-                    <p className="text-xs font-semibold uppercase tracking-[0.16em] text-base-content/42">
-                      {item.school}
-                    </p>
-                    <p className="mt-2 text-lg font-semibold">{item.credential}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-base-content/62">
-                      {item.emphasis}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </SurfaceCard>
-          </MotionItem>
-
-          {contactChannels.map((channel) => (
-            <MotionItem key={channel.label}>
-              <SurfaceCard className="h-full p-5">
-                <p className="text-sm font-semibold">{channel.label}</p>
-                <p className="mt-2 text-sm leading-relaxed text-base-content/64">
-                  {channel.detail}
-                </p>
-                <div className="mt-4">
-                  <InlineLink href={channel.href} external>
-                    Open {channel.label}
-                  </InlineLink>
+                    {plate}
+                  </a>
+                ) : (
+                  <div className={plateClass}>{plate}</div>
+                )}
+              </DraftItem>
+            );
+          })}
+          <DraftItem className="h-full">
+            <Link
+              href="/projects"
+              className="group flex h-full flex-col justify-between border border-dashed p-5 hairline transition duration-200 hover:-translate-y-1 hover:border-solid hover:border-primary"
+            >
+              <div>
+                <div className="flex items-center justify-between">
+                  <span className="annotation text-base-content/40">
+                    P-0{featuredProjects.length + 1}
+                  </span>
+                  <span className="annotation text-primary">Index</span>
                 </div>
-              </SurfaceCard>
-            </MotionItem>
-          ))}
-
-          <MotionItem className="sm:col-span-2">
-            <SurfaceCard className="h-full p-5">
-              <p className="text-sm font-semibold">Tech stack</p>
-              <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {techStack.map((tech) => (
-                  <div
-                    key={tech.name}
-                    className="grid min-h-24 place-items-center rounded-lg border border-base-content/10 bg-base-100/70 p-4 text-center"
-                  >
-                    <Image
-                      alt={`${tech.name} logo`}
-                      src={tech.logo}
-                      width={72}
-                      height={72}
-                      className="max-h-10 w-auto object-contain"
-                    />
-                    <span className="mt-3 text-xs font-medium text-base-content/55">
-                      {tech.name}
-                    </span>
-                  </div>
-                ))}
+                <h3 className="mt-5 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
+                  Full drawing index
+                </h3>
+                <p className="mt-3 text-sm leading-relaxed text-base-content/65">
+                  Every project sheet: reference apps, tutorials, founder
+                  products, and operator systems.
+                </p>
               </div>
-            </SurfaceCard>
-          </MotionItem>
-        </MotionStagger>
-      </section>
+              <div className="mt-5 border-t pt-4 hairline">
+                <span className="annotation text-base-content/40 transition group-hover:text-primary">
+                  All projects →
+                </span>
+              </div>
+            </Link>
+          </DraftItem>
+        </DraftStagger>
+      </SheetSection>
 
-      <MotionReveal>
-        <SurfaceCard className="bg-[linear-gradient(135deg,rgba(15,118,110,0.08),rgba(191,219,254,0.42),rgba(255,255,255,0.9))]">
-          <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
-            <div>
-              <h2 className="text-2xl font-bold tracking-tight">
-                Building something technical?
-              </h2>
-              <p className="mt-3 max-w-2xl text-base-content/70">
-                I am open to applied AI, developer experience, technical product
-                management, demo engineering, AI deployment, partner solutions,
-                and customer-facing platform roles.
-              </p>
+      <SheetSection
+        code="Sht A-04 · Q&A"
+        title="Ask the portfolio"
+        description="The strongest portfolios behave like tools. Ask for the exact proof you need instead of hunting through every route."
+        id="ask-esteban"
+        action={<SheetLink href="/ai-lab">Ask AI</SheetLink>}
+      >
+        <DraftReveal className="mt-10">
+          <AskEstebanChat variant="home" />
+        </DraftReveal>
+      </SheetSection>
+
+      <SheetSection
+        code="Sht A-05 · Spec"
+        title="How I work"
+        description="I sit between product, engineering, customers, and go-to-market teams. The output is a clearer product decision, a sharper roadmap signal, a stronger demo, or a faster path from customer need to shipped workflow."
+      >
+        <div className="mt-10 grid gap-10 lg:grid-cols-2">
+          <DraftReveal>
+            <p className="annotation text-base-content/50">Capabilities</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              {strengthAreas.map((item) => (
+                <span
+                  key={item}
+                  className="border px-3 py-1.5 hairline font-mono text-[11px] uppercase tracking-[0.1em] text-base-content/70"
+                >
+                  {item}
+                </span>
+              ))}
             </div>
-            <div className="flex flex-wrap gap-3 md:justify-end">
-              <Link href="/contact" className="btn btn-primary">
-                Contact
-              </Link>
-              <Link href="/resume" className="btn btn-outline">
-                Resume
-              </Link>
+
+            <p className="annotation mt-8 text-base-content/50">Stack</p>
+            <p className="mt-3 max-w-xl font-mono text-[13px] leading-relaxed text-base-content/65">
+              {techStack.map((tech) => tech.name).join(" · ")}
+            </p>
+          </DraftReveal>
+
+          <DraftReveal delay={0.06}>
+            <p className="annotation text-base-content/50">Training</p>
+            <div className="mt-4 grid gap-px border hairline bg-[var(--hairline)]">
+              {educationCredentials.map((item) => (
+                <div key={item.school} className="bg-base-100 p-4">
+                  <p className="annotation text-base-content/45">{item.school}</p>
+                  <p className="mt-1.5 font-display text-xl font-semibold uppercase tracking-[0.02em]">
+                    {item.credential}
+                  </p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-base-content/60">
+                    {item.emphasis}
+                  </p>
+                </div>
+              ))}
             </div>
-          </div>
-        </SurfaceCard>
-      </MotionReveal>
-    </PageShell>
+          </DraftReveal>
+        </div>
+      </SheetSection>
+
+      <BlueprintContact />
+    </div>
   );
 }

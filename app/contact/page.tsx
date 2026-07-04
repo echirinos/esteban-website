@@ -46,7 +46,7 @@ export default function ContactPage() {
             <ul className="mt-6 grid gap-3 text-sm leading-relaxed text-base-content/68">
               {outreachNotes.map((note) => (
                 <li key={note} className="flex gap-3">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-primary" />
                   <span>{note}</span>
                 </li>
               ))}
@@ -57,15 +57,15 @@ export default function ContactPage() {
             href={linkedinUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="group flex min-h-48 flex-col justify-between rounded-lg border border-[#0A66C2]/20 bg-[#0A66C2] p-5 text-white shadow-[0_18px_48px_rgba(10,102,194,0.24)] transition hover:-translate-y-1 hover:bg-base-content hover:text-base-100"
+            className="group flex flex-col gap-6 rounded-[2px] border border-primary bg-primary p-5 text-primary-content transition hover:-translate-y-1 hover:border-accent hover:bg-accent hover:text-accent-content"
             aria-label="Reach out to Esteban on LinkedIn"
           >
-            <FaLinkedin className="h-12 w-12 shrink-0" aria-hidden="true" />
+            <FaLinkedin className="h-9 w-9 shrink-0" aria-hidden="true" />
             <span>
-              <span className="block text-xs font-bold uppercase tracking-[0.16em] opacity-75">
+              <span className="annotation block opacity-75">
                 LinkedIn
               </span>
-              <span className="mt-2 block text-xl font-black leading-tight">
+              <span className="mt-2 block font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
                 Reach out on LinkedIn
               </span>
             </span>

@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type FormEvent,
+  type ReactNode,
 } from "react";
 
 type AskMessage = {
@@ -40,6 +41,65 @@ const askEstebanPrompts = [
 
 const cx = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(" ");
+
+/*
+ * Answers come back with light markdown (bold + bullets). Render just that
+ * subset instead of showing literal asterisks.
+ */
+function renderInlineMarkdown(text: string): ReactNode[] {
+  return text.split(/(\*\*[^*]+\*\*)/g).map((part, index) =>
+    part.startsWith("**") && part.endsWith("**") ? (
+      <strong key={index}>{part.slice(2, -2)}</strong>
+    ) : (
+      part
+    )
+  );
+}
+
+function MessageBody({ content }: { content: string }) {
+  const blocks: ReactNode[] = [];
+  const lines = content.split(/\r?\n/);
+  let bullets: string[] = [];
+  let key = 0;
+
+  const flushBullets = () => {
+    if (!bullets.length) return;
+    blocks.push(
+      <ul key={`list-${key++}`} className="space-y-1">
+        {bullets.map((item, index) => (
+          <li key={index} className="flex gap-2">
+            <span
+              aria-hidden="true"
+              className="mt-[5px] h-1 w-1 shrink-0 bg-current opacity-60"
+            />
+            <span>{renderInlineMarkdown(item)}</span>
+          </li>
+        ))}
+      </ul>
+    );
+    bullets = [];
+  };
+
+  for (const rawLine of lines) {
+    const line = rawLine.trim();
+    const bulletMatch = line.match(/^[-*•]\s+(.*)$/);
+
+    if (bulletMatch) {
+      bullets.push(bulletMatch[1]);
+      continue;
+    }
+
+    flushBullets();
+
+    if (line) {
+      blocks.push(<p key={`text-${key++}`}>{renderInlineMarkdown(line)}</p>);
+    }
+  }
+
+  flushBullets();
+
+  return <div className="mt-2 space-y-1.5 text-xs leading-relaxed">{blocks}</div>;
+}
 
 async function readAskResponse(response: Response): Promise<AskResponse> {
   const contentType = response.headers.get("content-type") || "";
@@ -164,7 +224,7 @@ export function AskEstebanChat({
       className={cx(
         "gap-2",
         isLab
-          ? "rounded-lg border border-base-content/12 bg-base-100 p-2 shadow-[0_14px_42px_rgba(15,23,42,0.08)]"
+          ? "rounded-[2px] border p-2 hairline bg-base-100"
           : isHome
             ? "flex"
             : "flex flex-col sm:flex-row"
@@ -191,7 +251,7 @@ export function AskEstebanChat({
             <button
               type="submit"
               disabled={isPending || input.trim().length === 0}
-              className="shrink-0 rounded-md bg-base-content px-5 py-2 text-sm font-black text-base-100 transition hover:bg-primary hover:text-primary-content disabled:cursor-not-allowed disabled:opacity-50 sm:px-6"
+              className="draft-btn draft-btn-fill shrink-0 transition disabled:cursor-not-allowed disabled:opacity-50"
             >
               Ask AI
             </button>
@@ -205,13 +265,13 @@ export function AskEstebanChat({
             onChange={(event) => setInput(event.target.value)}
             placeholder={
               isHome
-                ? "Ask for proof, role fit, or Coinbase work..."
+                ? "Ask about proof or role fit..."
                 : "Ask about Coinbase, PM fit, technical depth..."
             }
             className={cx(
               "min-h-10 min-w-0 flex-1 px-3 py-2 text-sm font-bold outline-none disabled:opacity-50",
               isHome
-                ? "min-h-12 rounded-lg border border-base-content/12 bg-base-100 placeholder:text-base-content/35 focus:ring-2 focus:ring-primary/45"
+                ? "min-h-12 rounded-[2px] border hairline bg-base-100 font-medium placeholder:text-base-content/35 focus:ring-2 focus:ring-primary/45"
                 : "border border-black bg-white shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] placeholder:text-black/40 focus:ring-2 focus:ring-black"
             )}
             maxLength={500}
@@ -221,10 +281,10 @@ export function AskEstebanChat({
             type="submit"
             disabled={isPending || input.trim().length === 0}
             className={cx(
-              "px-4 py-2 text-sm font-black transition disabled:cursor-not-allowed disabled:opacity-50",
+              "transition disabled:cursor-not-allowed disabled:opacity-50",
               isHome
-                ? "shrink-0 rounded-lg bg-base-content px-5 text-base-100 hover:bg-primary hover:text-primary-content sm:px-6"
-                : "border border-black bg-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] hover:bg-white hover:text-black"
+                ? "draft-btn draft-btn-fill shrink-0"
+                : "border border-black bg-black px-4 py-2 text-sm font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] hover:bg-white hover:text-black"
             )}
           >
             Send
@@ -238,10 +298,8 @@ export function AskEstebanChat({
     <div
       className={cx(
         isLab || isHome ? "space-y-3" : "space-y-2 sm:space-y-3",
-        isLab &&
-          "rounded-lg border border-base-content/12 bg-base-100/95 p-4 shadow-[0_24px_80px_rgba(15,23,42,0.1)] backdrop-blur md:p-5 lg:p-6",
-        isHome &&
-          "rounded-lg border border-base-content/12 bg-base-100/88 p-4 shadow-[0_20px_64px_rgba(15,23,42,0.1)] backdrop-blur",
+        isLab && "rounded-[2px] border p-4 hairline bg-base-100 md:p-5 lg:p-6",
+        isHome && "border p-4 hairline bg-base-100 sm:p-5",
         className
       )}
     >
@@ -253,24 +311,26 @@ export function AskEstebanChat({
         <div>
           <p
             className={cx(
-              "text-[10px] uppercase tracking-[0.18em]",
+              isLab || isHome
+                ? "annotation"
+                : "text-[10px] uppercase tracking-[0.18em]",
               isLab || isHome ? "text-primary" : "text-black/60"
             )}
           >
             {isLab
               ? "Portfolio AI chat"
               : isHome
-                ? "Ask the proof"
+                ? "Portfolio assistant"
                 : "Ask Esteban OS"}
           </p>
           <h3
             className={cx(
-              "mt-1 max-w-2xl font-black leading-tight",
+              "mt-1 max-w-2xl leading-tight",
               isLab
-                ? "text-2xl text-base-content md:text-3xl"
+                ? "mt-2 font-display text-2xl font-semibold uppercase tracking-[0.02em] text-base-content md:text-3xl"
                 : isHome
-                  ? "text-2xl text-base-content"
-                  : "text-base sm:text-xl"
+                  ? "mt-2 font-display text-2xl font-semibold uppercase tracking-[0.02em] text-base-content"
+                  : "text-base font-black sm:text-xl"
             )}
           >
             {isLab
@@ -285,7 +345,7 @@ export function AskEstebanChat({
             {["Portfolio-grounded", "Sources shown", "Recruiter-ready"].map((item) => (
               <span
                 key={item}
-                className="rounded-full border border-base-content/12 bg-base-200/70 px-3 py-1 text-xs font-semibold text-base-content/70"
+                className="border px-2.5 py-1 hairline font-mono text-[10px] uppercase tracking-[0.1em] text-base-content/65"
               >
                 {item}
               </span>
@@ -331,9 +391,9 @@ export function AskEstebanChat({
             className={cx(
               "space-y-2 overflow-y-auto",
               isLab
-                ? "min-h-[280px] max-h-[760px] rounded-lg border border-base-content/12 bg-base-200/35 p-4 sm:min-h-[420px] md:min-h-[500px] lg:min-h-[560px]"
+                ? "min-h-[280px] max-h-[760px] rounded-[2px] border hairline bg-base-200/40 p-4 sm:min-h-[420px] md:min-h-[500px] lg:min-h-[560px]"
                 : isHome
-                  ? "min-h-[180px] max-h-[260px] rounded-lg border border-base-content/12 bg-base-200/35 p-3"
+                  ? "min-h-[180px] max-h-[260px] rounded-[2px] border hairline bg-base-200/40 p-3"
                   : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
             )}
           >
@@ -341,11 +401,9 @@ export function AskEstebanChat({
               <article
                 key={`${message.role}-${index}`}
                 className={cx(
-                  isLab
-                    ? "rounded-lg border p-3"
-                    : isHome
-                      ? "rounded-lg border p-3"
-                      : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
+                  isLab || isHome
+                    ? "rounded-[2px] border p-3"
+                    : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
                   message.role === "user"
                     ? isLab
                       ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
@@ -362,9 +420,7 @@ export function AskEstebanChat({
                 <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
                   {message.role === "user" ? "You" : "Portfolio Assistant"}
                 </p>
-                <p className="mt-2 whitespace-pre-wrap text-xs leading-relaxed">
-                  {message.content}
-                </p>
+                <MessageBody content={message.content} />
                 {message.sources?.length ? (
                   <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
                     Sources: {message.sources.join(", ")}
@@ -381,11 +437,9 @@ export function AskEstebanChat({
               <article
                 className={cx(
                   "mr-auto max-w-[92%] p-2",
-                  isLab
-                    ? "rounded-lg border border-base-content/12 bg-base-100 text-base-content"
-                    : isHome
-                      ? "rounded-lg border border-base-content/12 bg-base-100 text-base-content"
-                      : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
+                  isLab || isHome
+                    ? "rounded-[2px] border hairline bg-base-100 text-base-content"
+                    : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
                 )}
               >
                 <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
@@ -412,11 +466,9 @@ export function AskEstebanChat({
           )}
         >
           {isLab ? (
-            <div className="rounded-lg border border-primary/20 bg-primary/10 px-4 py-3">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-primary">
-                Question templates
-              </p>
-              <p className="mt-1 text-xs leading-relaxed text-base-content/62">
+            <div className="rounded-[2px] border border-primary/40 bg-primary/5 px-4 py-3">
+              <p className="annotation text-primary">Question templates</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-base-content/62">
                 Start with the questions hiring teams usually ask first.
               </p>
             </div>
@@ -427,12 +479,12 @@ export function AskEstebanChat({
               type="button"
               onClick={() => void submitQuestion(prompt)}
               className={cx(
-                "text-left text-xs font-black leading-snug transition disabled:opacity-50",
+                "text-left text-xs leading-snug transition disabled:opacity-50",
                 isLab
-                  ? "rounded-lg border border-base-content/12 bg-base-200/55 px-4 py-3 text-base-content hover:border-primary/45 hover:bg-primary/10"
+                  ? "rounded-[2px] border hairline bg-base-100 px-4 py-3 font-medium text-base-content/75 hover:border-primary hover:text-base-content"
                   : isHome
-                    ? "rounded-lg border border-base-content/12 bg-base-200/55 px-4 py-3 text-base-content hover:border-primary/45 hover:bg-primary/10"
-                    : "border border-black bg-[#f7f7f7] px-3 py-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] hover:bg-black hover:text-white"
+                    ? "rounded-[2px] border hairline bg-base-100 px-4 py-3 font-medium text-base-content/75 hover:border-primary hover:text-base-content"
+                    : "border border-black bg-[#f7f7f7] px-3 py-2 font-black shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] hover:bg-black hover:text-white"
               )}
               disabled={isPending}
             >

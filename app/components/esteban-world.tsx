@@ -2,7 +2,16 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import {
+  AnimatePresence,
+  motion,
+  useMotionTemplate,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+  type MotionValue,
+} from "framer-motion";
 import {
   Suspense,
   useEffect,
@@ -16,7 +25,7 @@ import { AskEstebanChat } from "./ask-esteban-chat";
 
 type ExperiencePhase = "outside" | "transition" | "inside";
 type IconKind = "folder" | "disk" | "lab" | "contact" | "document" | "assistant";
-type PointerState = { x: number; y: number };
+type PointerMotion = { x: MotionValue<number>; y: MotionValue<number> };
 type SectionId =
   | "ask"
   | "work"
@@ -255,7 +264,7 @@ const worldOptions: WorldOption[] = [
 
 const featuredWorldIds: WorldId[] = ["yosemite", "biolume", "skyreef", "orbital"];
 const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const transitionDurationMs = 1520;
+const transitionDurationMs = 1360;
 const reducedTransitionDurationMs = 540;
 
 const workRows = [
@@ -457,22 +466,20 @@ const aiShippingRows = [
   },
 ];
 
-function usePointerParallax() {
-  const [pointer, setPointer] = useState<PointerState>({ x: 0, y: 0 });
-  const raf = useRef<number | null>(null);
+/*
+ * Pointer parallax as motion values: spring-smoothed and applied via style
+ * transforms, so pointer movement never re-renders the React tree.
+ */
+function usePointerParallax(): PointerMotion {
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, { stiffness: 60, damping: 18, mass: 0.55 });
+  const y = useSpring(rawY, { stiffness: 60, damping: 18, mass: 0.55 });
 
   useEffect(() => {
     const updatePointer = (clientX: number, clientY: number) => {
-      if (raf.current) {
-        window.cancelAnimationFrame(raf.current);
-      }
-
-      raf.current = window.requestAnimationFrame(() => {
-        setPointer({
-          x: (clientX / window.innerWidth - 0.5) * 2,
-          y: (clientY / window.innerHeight - 0.5) * 2,
-        });
-      });
+      rawX.set((clientX / window.innerWidth - 0.5) * 2);
+      rawY.set((clientY / window.innerHeight - 0.5) * 2);
     };
 
     const onPointerMove = (event: PointerEvent) => {
@@ -492,13 +499,10 @@ function usePointerParallax() {
     return () => {
       window.removeEventListener("pointermove", onPointerMove);
       window.removeEventListener("touchmove", onTouchMove);
-      if (raf.current) {
-        window.cancelAnimationFrame(raf.current);
-      }
     };
-  }, []);
+  }, [rawX, rawY]);
 
-  return pointer;
+  return { x, y };
 }
 
 function CameraRig({
@@ -511,6 +515,7 @@ function CameraRig({
   const { camera, pointer } = useThree();
   const targetPosition = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
+  const currentLookAt = useMemo(() => new THREE.Vector3(0, 1.62, -8.2), []);
   const elapsed = useRef(0);
 
   useFrame((_state, delta) => {
@@ -525,15 +530,23 @@ function CameraRig({
     );
     targetLookAt.set(pointer.x * 0.32, 1.62 + pointer.y * 0.12, -8.2);
 
-    camera.position.lerp(targetPosition, 0.045);
+    // Frame-rate independent smoothing (identical feel at 60Hz and 120Hz).
+    const lambda = 2.8;
+    camera.position.x = THREE.MathUtils.damp(camera.position.x, targetPosition.x, lambda, delta);
+    camera.position.y = THREE.MathUtils.damp(camera.position.y, targetPosition.y, lambda, delta);
+    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetPosition.z, lambda, delta);
+
+    currentLookAt.x = THREE.MathUtils.damp(currentLookAt.x, targetLookAt.x, lambda, delta);
+    currentLookAt.y = THREE.MathUtils.damp(currentLookAt.y, targetLookAt.y, lambda, delta);
+    currentLookAt.z = THREE.MathUtils.damp(currentLookAt.z, targetLookAt.z, lambda, delta);
 
     if (camera instanceof THREE.PerspectiveCamera) {
       const targetFov = phase === "transition" ? 44 : 50;
-      camera.fov = THREE.MathUtils.lerp(camera.fov, targetFov, 0.04);
+      camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 2.4, delta);
       camera.updateProjectionMatrix();
     }
 
-    camera.lookAt(targetLookAt);
+    camera.lookAt(currentLookAt);
   });
 
   return null;
@@ -664,10 +677,13 @@ function DepthImageLayer({
     elapsed.current += delta;
     if (!mesh.current) return;
 
-    mesh.current.position.x =
+    const targetX =
       position[0] + pointer.x * parallax + Math.sin(elapsed.current * 0.18) * 0.015;
-    mesh.current.position.y =
+    const targetY =
       position[1] + pointer.y * parallax * 0.45 + Math.cos(elapsed.current * 0.22) * 0.012;
+
+    mesh.current.position.x = THREE.MathUtils.damp(mesh.current.position.x, targetX, 4.5, delta);
+    mesh.current.position.y = THREE.MathUtils.damp(mesh.current.position.y, targetY, 4.5, delta);
   });
 
   if (!alphaMap) return null;
@@ -728,9 +744,11 @@ function DepthRidge({
   useFrame((_state, delta) => {
     elapsed.current += delta;
     if (!mesh.current) return;
-    mesh.current.position.x = position[0] + pointer.x * speed;
-    mesh.current.position.y =
+    const targetX = position[0] + pointer.x * speed;
+    const targetY =
       position[1] + pointer.y * speed * 0.18 + Math.sin(elapsed.current * 0.16) * 0.012;
+    mesh.current.position.x = THREE.MathUtils.damp(mesh.current.position.x, targetX, 4.5, delta);
+    mesh.current.position.y = THREE.MathUtils.damp(mesh.current.position.y, targetY, 4.5, delta);
   });
 
   return (
@@ -769,9 +787,11 @@ function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: b
   useFrame((_state, delta) => {
     elapsed.current += delta;
     if (!points.current) return;
-    points.current.position.x = pointer.x * 0.42;
-    points.current.position.y = pointer.y * 0.12 + Math.sin(elapsed.current * 0.24) * 0.025;
-    points.current.rotation.z = pointer.x * 0.012;
+    const targetX = pointer.x * 0.42;
+    const targetY = pointer.y * 0.12 + Math.sin(elapsed.current * 0.24) * 0.025;
+    points.current.position.x = THREE.MathUtils.damp(points.current.position.x, targetX, 4, delta);
+    points.current.position.y = THREE.MathUtils.damp(points.current.position.y, targetY, 4, delta);
+    points.current.rotation.z = THREE.MathUtils.damp(points.current.rotation.z, pointer.x * 0.012, 4, delta);
   });
 
   return (
@@ -806,6 +826,7 @@ function WorldDepthStage({
 }) {
   const { size } = useThree();
   const portrait = size.width < size.height;
+  const compact = size.width < 768;
   const basePosition = portrait ? world.portraitPosition : world.desktopPosition;
 
   return (
@@ -818,22 +839,26 @@ function WorldDepthStage({
         opacity={gogglesOn ? 0.16 : 0.08}
         parallax={-0.1}
       />
-      <DepthImageLayer
-        world={world}
-        mask="center"
-        position={[basePosition[0] + 0.08, basePosition[1] + 0.02, -8.05]}
-        scale={0.98}
-        opacity={gogglesOn ? 0.14 : 0.06}
-        parallax={0.16}
-      />
-      <DepthImageLayer
-        world={world}
-        mask="foreground"
-        position={[basePosition[0], basePosition[1] - 0.06, -6.82]}
-        scale={0.92}
-        opacity={gogglesOn ? 0.08 : 0.03}
-        parallax={0.28}
-      />
+      {!compact ? (
+        <DepthImageLayer
+          world={world}
+          mask="center"
+          position={[basePosition[0] + 0.08, basePosition[1] + 0.02, -8.05]}
+          scale={0.98}
+          opacity={gogglesOn ? 0.14 : 0.06}
+          parallax={0.16}
+        />
+      ) : null}
+      {!compact ? (
+        <DepthImageLayer
+          world={world}
+          mask="foreground"
+          position={[basePosition[0], basePosition[1] - 0.06, -6.82]}
+          scale={0.92}
+          opacity={gogglesOn ? 0.08 : 0.03}
+          parallax={0.28}
+        />
+      ) : null}
       <DepthRidge
         world={world}
         position={[-1.2, -0.98, -4.9]}
@@ -1271,12 +1296,12 @@ function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
       <motion.button
         type="button"
         onClick={onClick}
-        className="group rounded-full border border-white bg-white px-5 py-3 text-sm font-bold text-slate-950 shadow-[0_18px_60px_rgba(0,0,0,0.34)] backdrop-blur-md transition hover:border-cyan-100 hover:bg-cyan-100 focus:outline-none focus:ring-2 focus:ring-white/80 focus:ring-offset-2 focus:ring-offset-black"
+        className="draft-btn draft-btn-fill group px-6 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.4)]"
         whileHover={reduceMotion ? undefined : { y: -2, scale: 1.025 }}
         whileTap={reduceMotion ? undefined : { y: 1, scale: 0.985 }}
         transition={{ type: "spring", stiffness: 520, damping: 30 }}
       >
-        <span className="mr-3 inline-block h-2 w-2 rounded-full bg-amber-200 shadow-[0_0_18px_rgba(255,222,151,0.82)] transition group-hover:scale-110" />
+        <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse bg-white shadow-[0_0_14px_rgba(255,255,255,0.85)] transition group-hover:scale-125" />
         Enter lens
       </motion.button>
     </motion.div>
@@ -1296,16 +1321,14 @@ function LensIntroPanel({ phase }: { phase: ExperiencePhase }) {
       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
       transition={{ duration: reduceMotion ? 0.2 : 0.52, ease: cinematicEase }}
     >
-      <div className="pointer-events-auto overflow-hidden rounded-[24px] border border-white/18 bg-black/34 p-4 text-white shadow-[0_22px_70px_rgba(0,0,0,0.28)] backdrop-blur-xl sm:p-5">
+      <div className="pointer-events-auto rounded-[2px] border border-white/25 bg-[#0b1533]/72 p-4 text-white shadow-[0_22px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-5">
         <div className="flex items-center justify-between gap-4">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-cyan-100/72">
-            Esteban OS / lens mode
-          </p>
-          <span className="rounded-full border border-cyan-100/20 bg-cyan-100/10 px-2.5 py-1 text-[10px] font-semibold text-cyan-50/86">
-            Live map
+          <p className="annotation text-white/60">Sht L-01 &middot; Lens mode</p>
+          <span className="annotation border border-white/25 px-2 py-1 text-white/80">
+            Live
           </span>
         </div>
-        <h1 className="mt-3 max-w-sm text-3xl font-black leading-[0.96] tracking-tight sm:text-4xl">
+        <h1 className="mt-4 max-w-sm font-display text-4xl font-bold uppercase leading-[0.9] tracking-[0.02em] sm:text-5xl">
           Step into the visual proof map.
         </h1>
         <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/70">
@@ -1316,7 +1339,7 @@ function LensIntroPanel({ phase }: { phase: ExperiencePhase }) {
           {["AI product", "DevEx", "Demos", "Proof"].map((item) => (
             <span
               key={item}
-              className="rounded-full border border-white/14 bg-white/10 px-3 py-1 text-[11px] font-semibold text-white/76"
+              className="border border-white/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/75"
             >
               {item}
             </span>
@@ -1333,14 +1356,14 @@ function ModernSiteLink({ phase }: { phase: ExperiencePhase }) {
   return (
     <motion.a
       href="/"
-      className="absolute bottom-5 right-5 z-30 rounded-full border border-white/20 bg-black/25 px-4 py-2 text-xs font-semibold text-white/80 shadow-[0_14px_36px_rgba(0,0,0,0.22)] backdrop-blur-md transition hover:border-white/45 hover:bg-black/40 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black sm:bottom-6 sm:right-6 sm:text-sm"
+      className="annotation absolute bottom-5 right-5 z-30 rounded-[2px] border border-white/30 bg-[#0b1533]/60 px-4 py-3 text-white/85 shadow-[0_14px_36px_rgba(0,0,0,0.24)] backdrop-blur-md transition hover:border-white/60 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 focus:ring-offset-2 focus:ring-offset-black sm:bottom-6 sm:right-6"
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.25, ease: "easeOut" }}
     >
       View portfolio
       <span className="ml-2" aria-hidden="true">
-        -&gt;
+        →
       </span>
     </motion.a>
   );
@@ -1369,13 +1392,13 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
       transition={{ duration: reduceMotion ? 0.2 : 0.36, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
       aria-label="Lens navigation"
     >
-      <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 overflow-hidden rounded-[18px] border border-white/18 bg-black/32 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1.5 md:rounded-[22px] md:bg-black/24 md:p-2">
+      <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 rounded-[2px] border border-white/25 bg-[#0b1533]/64 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.26)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1 md:p-1.5">
         <a
           href="/goggles"
-          className="mr-1 hidden shrink-0 items-center gap-2 rounded-full border border-white/14 bg-white/10 px-3 py-2 text-xs font-semibold text-white/86 transition hover:border-white/35 hover:bg-white/16 lg:flex"
+          className="mr-1 hidden shrink-0 items-center gap-2 rounded-[2px] border border-white/25 bg-white/10 px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/85 transition hover:border-white/50 hover:bg-white/15 lg:flex"
           aria-label="Esteban OS home"
         >
-          <span className="h-1.5 w-1.5 rounded-full bg-cyan-200 shadow-[0_0_14px_rgba(165,243,252,0.82)]" />
+          <span className="h-1.5 w-1.5 bg-[#ff7e4b] shadow-[0_0_12px_rgba(255,126,75,0.85)]" />
           Esteban OS
         </a>
 
@@ -1385,7 +1408,7 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
             href={item.href}
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}
-            className="shrink-0 rounded-full border border-white/10 bg-black/16 px-1.5 py-2 text-[9px] font-semibold leading-none text-white/78 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:px-2 sm:text-xs md:px-3"
+            className="shrink-0 rounded-[2px] px-1.5 py-2 font-mono text-[9px] font-semibold uppercase leading-none tracking-[0.1em] text-white/75 transition hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:px-2 sm:text-[11px] md:px-3"
           >
             {item.label}
           </a>
@@ -1427,19 +1450,17 @@ function WorldSelector({
       transition={{ duration: reduceMotion ? 0.2 : 0.36, ease: "easeOut" }}
       aria-label="World selector"
     >
-      <div className="rounded-[18px] border border-white/20 bg-black/32 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/24 md:p-2.5">
+      <div className="rounded-[2px] border border-white/25 bg-[#0b1533]/64 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:p-2.5">
         <div className="flex items-center justify-between gap-2 px-0.5 md:gap-3 md:px-1">
           <div className="flex min-w-0 items-center gap-2.5 md:gap-3">
             <span
-              className="h-9 w-12 shrink-0 rounded-lg border border-white/18 bg-cover bg-center shadow-[inset_0_0_18px_rgba(0,0,0,0.28)] md:h-10 md:w-14"
+              className="h-9 w-12 shrink-0 rounded-[2px] border border-white/25 bg-cover bg-center shadow-[inset_0_0_18px_rgba(0,0,0,0.28)] md:h-10 md:w-14"
               style={{ backgroundImage: `url(${selectedWorld.image})` }}
               aria-hidden="true"
             />
             <div className="min-w-0">
-              <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-white/60">
-                World
-              </p>
-              <p className="mt-1 truncate text-sm font-semibold text-white/84">
+              <p className="annotation text-white/55">World</p>
+              <p className="mt-1 truncate text-sm font-semibold text-white/85">
                 {selectedWorld.name}
               </p>
             </div>
@@ -1447,12 +1468,12 @@ function WorldSelector({
           <button
             type="button"
             onClick={onTogglePicker}
-            className="shrink-0 rounded-full border border-white/12 bg-black/18 px-3 py-2 text-[11px] font-semibold text-white/78 transition hover:border-white/35 hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
+            className="shrink-0 rounded-[2px] border border-white/25 px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80 transition hover:border-white/55 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
           >
             {pickerOpen ? "Done" : "Change"}
           </button>
         </div>
-        <div className="mt-2 hidden flex-wrap gap-1.5 md:flex">
+        <div className="mt-2 hidden flex-wrap gap-1 md:flex">
           {quickWorlds.map((world) => {
             const active = world.id === selectedWorldId;
 
@@ -1461,19 +1482,19 @@ function WorldSelector({
                 key={world.id}
                 type="button"
                 onClick={() => onSelect(world.id)}
-                className={`flex items-center gap-2 rounded-full border py-1.5 pl-1.5 pr-3 text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
+                className={`flex items-center gap-2 rounded-[2px] border py-1.5 pl-1.5 pr-3 text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
                   active
-                    ? "border-white/65 bg-white/22 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-                    : "border-white/12 bg-black/18 text-white/68 hover:border-white/35 hover:bg-white/10 hover:text-white"
+                    ? "border-[#ff7e4b]/80 bg-white/15 text-white"
+                    : "border-white/15 bg-black/15 text-white/65 hover:border-white/40 hover:bg-white/10 hover:text-white"
                 }`}
                 aria-pressed={active}
               >
                 <span
-                  className="h-5 w-7 rounded-full border border-white/16 bg-cover bg-center shadow-[inset_0_0_10px_rgba(0,0,0,0.35)]"
+                  className="h-5 w-7 rounded-[1px] border border-white/20 bg-cover bg-center shadow-[inset_0_0_10px_rgba(0,0,0,0.35)]"
                   style={{ backgroundImage: `url(${world.image})` }}
                   aria-hidden="true"
                 />
-                <span className="block text-[11px] font-semibold leading-none">
+                <span className="block font-mono text-[10px] font-semibold uppercase leading-none tracking-[0.08em]">
                   {world.shortName}
                 </span>
               </button>
@@ -1484,13 +1505,13 @@ function WorldSelector({
       <AnimatePresence>
         {pickerOpen ? (
           <motion.div
-            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[56svh] overflow-y-auto rounded-[18px] border border-white/18 bg-black/40 p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.22)] backdrop-blur-xl md:rounded-[22px] md:bg-black/30 md:p-3"
+            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[56svh] overflow-y-auto rounded-[2px] border border-white/25 bg-[#0b1533]/78 p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.26)] backdrop-blur-xl md:p-3"
             initial={{ opacity: 0, y: reduceMotion ? 0 : -8, scale: reduceMotion ? 1 : 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: reduceMotion ? 0 : -6, scale: reduceMotion ? 1 : 0.985 }}
             transition={{ duration: reduceMotion ? 0.16 : 0.24, ease: "easeOut" }}
           >
-            <div className="mb-2 px-1 text-[10px] uppercase tracking-[0.18em] text-white/52">
+            <div className="annotation mb-2 px-1 text-white/55">
               Full world browser
             </div>
             <div className="grid grid-cols-2 gap-1.5 sm:grid-cols-3">
@@ -1502,10 +1523,10 @@ function WorldSelector({
                     key={world.id}
                     type="button"
                     onClick={() => onSelect(world.id)}
-                    className={`overflow-hidden rounded-md border text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
+                    className={`overflow-hidden rounded-[2px] border text-left transition focus:outline-none focus:ring-2 focus:ring-white/70 ${
                       active
-                        ? "border-white/65 bg-white/22 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.2)]"
-                        : "border-white/12 bg-black/18 text-white/68 hover:border-white/35 hover:bg-white/10 hover:text-white"
+                        ? "border-[#ff7e4b]/80 bg-white/15 text-white"
+                        : "border-white/15 bg-black/15 text-white/65 hover:border-white/40 hover:bg-white/10 hover:text-white"
                     }`}
                     aria-pressed={active}
                   >
@@ -2123,12 +2144,14 @@ function SectionView({
   );
 }
 
-function EstebanOS({ pointer }: { pointer: PointerState }) {
+function EstebanOS({ pointer }: { pointer: PointerMotion }) {
   const [activeSection, setActiveSection] = useState<SectionId | null>(null);
   const reduceMotion = useReducedMotion();
-  const transform = reduceMotion
-    ? "none"
-    : `perspective(1200px) rotateX(${pointer.y * -2.2}deg) rotateY(${pointer.x * 3.4}deg) translate3d(${pointer.x * 12}px, ${pointer.y * 6}px, 0)`;
+  const rotateX = useTransform(pointer.y, (value) => value * -2.2);
+  const rotateY = useTransform(pointer.x, (value) => value * 3.4);
+  const shiftX = useTransform(pointer.x, (value) => value * 12);
+  const shiftY = useTransform(pointer.y, (value) => value * 6);
+  const parallaxTransform = useMotionTemplate`perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(${shiftX}px, ${shiftY}px, 0)`;
   const activeItem = portfolioItems.find((item) => item.id === activeSection);
 
   return (
@@ -2145,9 +2168,13 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
       transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
     >
       <div className="pointer-events-auto w-full sm:w-auto">
-        <div
+        <motion.div
           className="relative w-full max-h-[calc(100svh-10.65rem)] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[3px_3px_0_rgba(0,0,0,0.45),0_24px_90px_rgba(18,12,7,0.34)] sm:w-[min(94vw,900px)] sm:max-h-[78svh] sm:shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] md:max-h-none"
-          style={{ transform, transformStyle: "preserve-3d", willChange: reduceMotion ? "auto" : "transform" }}
+          style={{
+            transform: reduceMotion ? "none" : parallaxTransform,
+            transformStyle: "preserve-3d",
+            willChange: reduceMotion ? "auto" : "transform",
+          }}
         >
           <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
           <div className="relative">
@@ -2207,7 +2234,7 @@ function EstebanOS({ pointer }: { pointer: PointerState }) {
               </span>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </motion.div>
   );
@@ -2274,14 +2301,45 @@ export function EstebanWorld() {
   }, []);
 
   useEffect(() => {
-    worldImagePreloads.current = worldOptions.map((world) => {
+    // Load the featured worlds up front; defer the rest to idle time so they
+    // never compete with the visible world's texture on first paint.
+    const preloadWorld = (world: WorldOption) => {
       useTexture.preload(world.image);
 
       const preloadImage = new window.Image();
       preloadImage.decoding = "async";
       preloadImage.src = world.image;
-      return preloadImage;
-    });
+      worldImagePreloads.current.push(preloadImage);
+    };
+
+    const featured = worldOptions.filter((world) =>
+      featuredWorldIds.includes(world.id)
+    );
+    const deferred = worldOptions.filter(
+      (world) => !featuredWorldIds.includes(world.id)
+    );
+
+    featured.forEach(preloadWorld);
+
+    let cancelled = false;
+    const loadDeferred = () => {
+      if (cancelled) return;
+      deferred.forEach(preloadWorld);
+    };
+
+    const hasIdleCallback = typeof window.requestIdleCallback === "function";
+    const idleHandle = hasIdleCallback
+      ? window.requestIdleCallback(loadDeferred, { timeout: 4000 })
+      : window.setTimeout(loadDeferred, 1600);
+
+    return () => {
+      cancelled = true;
+      if (hasIdleCallback) {
+        window.cancelIdleCallback(idleHandle);
+      } else {
+        window.clearTimeout(idleHandle);
+      }
+    };
   }, []);
 
   useEffect(() => {

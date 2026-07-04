@@ -11,7 +11,16 @@ export function PageShell({
   children: ReactNode;
   className?: string;
 }) {
-  return <section className={cx("mx-auto max-w-6xl pb-16", className)}>{children}</section>;
+  return (
+    <section
+      className={cx(
+        "mx-auto w-full max-w-6xl px-5 pb-16 pt-8 sm:px-8",
+        className
+      )}
+    >
+      {children}
+    </section>
+  );
 }
 
 export function SurfaceCard({
@@ -24,7 +33,7 @@ export function SurfaceCard({
   return (
     <div
       className={cx(
-        "rounded-lg border border-base-content/10 bg-base-100/86 p-6 shadow-[0_20px_60px_rgba(15,23,42,0.08)] backdrop-blur md:p-8",
+        "rounded-[2px] border p-6 hairline bg-base-100 md:p-8",
         className
       )}
     >
@@ -45,7 +54,7 @@ export function PageIntro({
   return (
     <div className="grid gap-5 py-4 md:grid-cols-[minmax(0,1fr)_260px] md:items-end">
       <div>
-        <h1 className="max-w-4xl text-4xl font-bold leading-[0.95] tracking-tight md:text-6xl">
+        <h1 className="max-w-4xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
           {title}
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/68">
@@ -63,13 +72,13 @@ export function MetricStrip({
   items: Array<{ value: string; label: string }>;
 }) {
   return (
-    <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+    <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
       {items.map((item) => (
         <SurfaceCard key={item.label} className="p-5">
-          <p className="text-3xl font-bold text-primary">{item.value}</p>
-          <p className="mt-1 text-sm font-medium text-base-content/52">
-            {item.label}
+          <p className="font-display text-4xl font-semibold text-primary">
+            {item.value}
           </p>
+          <p className="annotation mt-2 text-base-content/50">{item.label}</p>
         </SurfaceCard>
       ))}
     </div>
@@ -88,9 +97,11 @@ export function SectionHeading({
   return (
     <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
-        <h2 className="text-3xl font-bold tracking-tight">{title}</h2>
+        <h2 className="font-display text-4xl font-semibold uppercase leading-none tracking-[0.02em]">
+          {title}
+        </h2>
         {description ? (
-          <p className="mt-2 max-w-2xl text-base leading-relaxed text-base-content/62">
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-base-content/62">
             {description}
           </p>
         ) : null}
@@ -112,7 +123,7 @@ export function TagList({
       {items.map((item) => (
         <span
           key={item}
-          className="rounded-full border border-base-content/12 bg-base-100/72 px-3 py-1 text-xs font-medium text-base-content/72"
+          className="border px-2.5 py-1 hairline font-mono text-[10px] uppercase tracking-[0.1em] text-base-content/65"
         >
           {item}
         </span>
@@ -130,7 +141,8 @@ export function InlineLink({
   children: ReactNode;
   external?: boolean;
 }) {
-  const className = "text-sm font-semibold text-primary transition hover:text-base-content";
+  const className =
+    "annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current";
 
   if (external) {
     return (

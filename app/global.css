@@ -2,113 +2,128 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Clean, refined themes */
+/* ---------------------------------------------------------------------------
+   Whiteprint theme: drafting-vellum paper, blueprint-blue linework,
+   safety-orange accent. Dark mode is full blueprint mode.
+--------------------------------------------------------------------------- */
+
 :root {
-  --accent-1: #0f766e;
-  --accent-2: #1d4ed8;
-  --accent-3: #c56a14;
-  --subtle-glow: rgba(15, 118, 110, 0.14);
+  --accent-1: #2343b4;
+  --accent-2: #14276b;
+  --accent-3: #d9530b;
+  --subtle-glow: rgba(35, 67, 180, 0.14);
+  --grid-line: rgba(35, 67, 180, 0.09);
+  --grid-line-major: rgba(35, 67, 180, 0.16);
+  --hairline: rgba(19, 28, 59, 0.16);
+
+  /* Channel values for Tailwind alpha modifiers (see tailwind.config.ts) */
+  --rgb-base-100: 244 244 239;
+  --rgb-base-200: 234 235 226;
+  --rgb-base-300: 214 216 202;
+  --rgb-base-content: 19 28 59;
+  --rgb-primary: 35 67 180;
+  --rgb-primary-content: 255 255 255;
+  --rgb-secondary: 20 39 107;
+  --rgb-secondary-content: 237 241 255;
+  --rgb-accent: 217 83 11;
+  --rgb-accent-content: 255 255 255;
 }
 
 :is(:root:has(input.theme-controller[value="light"]:checked), [data-theme="light"]) {
   color-scheme: light;
-  --primary: #0f766e;
-  --primary-focus: #115e59;
+  --primary: #2343b4;
+  --primary-focus: #1b358f;
   --primary-content: #ffffff;
-  --color-primary: #0f766e;
+  --color-primary: #2343b4;
   --color-primary-content: #ffffff;
 
-  --secondary: #1d4ed8;
-  --secondary-focus: #1e40af;
-  --secondary-content: #ffffff;
-  --color-secondary: #1d4ed8;
-  --color-secondary-content: #ffffff;
+  --secondary: #14276b;
+  --secondary-focus: #0e1c50;
+  --secondary-content: #edf1ff;
+  --color-secondary: #14276b;
+  --color-secondary-content: #edf1ff;
 
-  --accent: #c56a14;
-  --accent-focus: #9a4f08;
+  --accent: #d9530b;
+  --accent-focus: #b34209;
   --accent-content: #ffffff;
-  --color-accent: #c56a14;
+  --color-accent: #d9530b;
   --color-accent-content: #ffffff;
 
-  --base-100: #f7fafc;
-  --base-200: #edf2f7;
-  --base-300: #d5dee8;
-  --base-content: #13202b;
-  --color-base-100: #f7fafc;
-  --color-base-200: #edf2f7;
-  --color-base-300: #d5dee8;
-  --color-base-content: #13202b;
-  --color-neutral: #13202b;
-  --color-neutral-content: #f7fafc;
-  --radius-selector: 0.5rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
+  --base-100: #f4f4ef;
+  --base-200: #eaebe2;
+  --base-300: #d6d8ca;
+  --base-content: #131c3b;
+  --color-base-100: #f4f4ef;
+  --color-base-200: #eaebe2;
+  --color-base-300: #d6d8ca;
+  --color-base-content: #131c3b;
+  --color-neutral: #131c3b;
+  --color-neutral-content: #f4f4ef;
+  --radius-selector: 0.125rem;
+  --radius-field: 0.125rem;
+  --radius-box: 0.125rem;
   --depth: 0;
+
+  --hairline: rgba(19, 28, 59, 0.16);
+  --grid-line: rgba(35, 67, 180, 0.09);
+  --grid-line-major: rgba(35, 67, 180, 0.16);
 }
 
 :is(:root:has(input.theme-controller[value="dark"]:checked), [data-theme="dark"]) {
   color-scheme: dark;
-  --primary: #5eead4;
-  --primary-focus: #2dd4bf;
-  --primary-content: #052e2b;
-  --color-primary: #5eead4;
-  --color-primary-content: #052e2b;
+  --primary: #8fa8ff;
+  --primary-focus: #6d8dff;
+  --primary-content: #0a1440;
+  --color-primary: #8fa8ff;
+  --color-primary-content: #0a1440;
 
-  --secondary: #93c5fd;
-  --secondary-focus: #60a5fa;
-  --secondary-content: #0b1f3a;
-  --color-secondary: #93c5fd;
-  --color-secondary-content: #0b1f3a;
+  --secondary: #dce4ff;
+  --secondary-focus: #b9c8ff;
+  --secondary-content: #14276b;
+  --color-secondary: #dce4ff;
+  --color-secondary-content: #14276b;
 
-  --accent: #fdba74;
-  --accent-focus: #fb923c;
-  --accent-content: #3b1d05;
-  --color-accent: #fdba74;
-  --color-accent-content: #3b1d05;
+  --accent: #ff7e4b;
+  --accent-focus: #ff9668;
+  --accent-content: #331303;
+  --color-accent: #ff7e4b;
+  --color-accent-content: #331303;
 
-  --base-100: #081018;
-  --base-200: #101a24;
-  --base-300: #1c2a38;
-  --base-content: #eef4f8;
-  --color-base-100: #081018;
-  --color-base-200: #101a24;
-  --color-base-300: #1c2a38;
-  --color-base-content: #eef4f8;
-  --color-neutral: #eef4f8;
-  --color-neutral-content: #081018;
+  --base-100: #0e1b4e;
+  --base-200: #132462;
+  --base-300: #22367f;
+  --base-content: #e8edff;
+  --color-base-100: #0e1b4e;
+  --color-base-200: #132462;
+  --color-base-300: #22367f;
+  --color-base-content: #e8edff;
+  --color-neutral: #e8edff;
+  --color-neutral-content: #0e1b4e;
 
-  --subtle-glow: rgba(94, 234, 212, 0.16);
-  --radius-selector: 0.5rem;
-  --radius-field: 0.5rem;
-  --radius-box: 0.5rem;
+  --subtle-glow: rgba(143, 168, 255, 0.18);
+  --hairline: rgba(200, 213, 255, 0.24);
+  --grid-line: rgba(160, 180, 255, 0.08);
+  --grid-line-major: rgba(160, 180, 255, 0.14);
+  --radius-selector: 0.125rem;
+  --radius-field: 0.125rem;
+  --radius-box: 0.125rem;
   --depth: 0;
-}
 
-/* Cupcake fallback */
-:is(:root:has(input.theme-controller[value="cupcake"]:checked), [data-theme="cupcake"]) {
-  --color-primary: #ef95ae;
-  --color-primary-content: #ffffff;
-  --color-secondary: #6cc8d1;
-  --color-secondary-content: #153f45;
-  --color-accent: #f9d72f;
-  --color-accent-content: #1f2937;
-
-  --primary: #ef95ae;
-  --primary-focus: #e67a98;
-  --primary-content: #ffffff;
-
-  --secondary: #6cc8d1;
-  --secondary-focus: #5abbc5;
-  --secondary-content: #153f45;
-
-  --accent: #f9d72f;
-  --accent-focus: #f8d10c;
-  --accent-content: #1f2937;
+  --rgb-base-100: 14 27 78;
+  --rgb-base-200: 19 36 98;
+  --rgb-base-300: 34 54 127;
+  --rgb-base-content: 232 237 255;
+  --rgb-primary: 143 168 255;
+  --rgb-primary-content: 10 20 64;
+  --rgb-secondary: 220 228 255;
+  --rgb-secondary-content: 20 39 107;
+  --rgb-accent: 255 126 75;
+  --rgb-accent-content: 51 19 3;
 }
 
 ::selection {
-  background-color: var(--primary);
-  color: var(--primary-content);
+  background-color: var(--accent);
+  color: var(--accent-content);
 }
 
 :root {
@@ -130,53 +145,139 @@
     --sh-keyword: #f47067;
     --sh-string: #0fa295;
   }
-
-  html {
-    color-scheme: dark;
-  }
 }
 
 html {
   min-width: 360px;
-  scroll-behavior: smooth;
 }
 
 body {
   position: relative;
   overflow-x: hidden;
-  background:
-    radial-gradient(circle at 14% 0%, rgba(15, 118, 110, 0.08), transparent 26rem),
-    radial-gradient(circle at 85% 18%, rgba(197, 106, 20, 0.05), transparent 24rem),
-    linear-gradient(180deg, var(--base-100), var(--base-100));
+  background-color: var(--base-100);
+  color: var(--base-content);
+  font-family: var(--font-body), ui-sans-serif, system-ui, sans-serif;
 }
 
-/* Subtle dot pattern background */
-body::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-image: radial-gradient(circle, var(--base-300) 1px, transparent 1px);
-  background-size: 32px 32px;
-  pointer-events: none;
-  z-index: 0;
-  opacity: 0.12;
+/* ---------------------------------------------------------------------------
+   Drafting utilities
+--------------------------------------------------------------------------- */
+
+/* Mono annotation voice: sheet codes, eyebrows, dimension labels */
+.annotation {
+  font-family: var(--font-annotation), ui-monospace, monospace;
+  font-size: 0.6875rem;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
 }
 
-/* Glassmorphism - refined */
+/* Drafting grid: fine 24px minor lines, 120px major lines */
+.sheet-grid {
+  background-image: linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px),
+    linear-gradient(var(--grid-line-major) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line-major) 1px, transparent 1px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    120px 120px,
+    120px 120px;
+}
+
+/* Blueprint field variant: white linework on deep blue */
+.sheet-grid-field {
+  background-image: linear-gradient(rgba(214, 226, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 226, 255, 0.055) 1px, transparent 1px),
+    linear-gradient(rgba(214, 226, 255, 0.11) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(214, 226, 255, 0.11) 1px, transparent 1px);
+  background-size:
+    24px 24px,
+    24px 24px,
+    120px 120px,
+    120px 120px;
+}
+
+.hairline {
+  border-color: var(--hairline);
+}
+
+/*
+ * DaisyUI 5 theme colors are full color values, so Tailwind alpha modifiers
+ * (bg-base-100/90) cannot compose with them. The header uses color-mix
+ * directly to guarantee a real background over dark sections.
+ */
+.site-header {
+  background-color: color-mix(in srgb, var(--base-100) 92%, transparent);
+}
+
+/* Drafting buttons: rectangular, mono caps labels */
+.draft-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 0.8125rem 1.375rem;
+  font-family: var(--font-annotation), ui-monospace, monospace;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border-color 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.draft-btn:active {
+  transform: translateY(1px);
+}
+
+.draft-btn-fill {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-content);
+}
+
+.draft-btn-fill:hover {
+  background-color: var(--accent-focus);
+  border-color: var(--accent-focus);
+}
+
+.draft-btn-line {
+  border-color: currentColor;
+  color: inherit;
+  background: transparent;
+}
+
+.draft-btn-line:hover {
+  background-color: color-mix(in srgb, currentColor 10%, transparent);
+}
+
+.draft-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Disabled fills go quiet instead of reading as a mis-toned brand orange */
+.draft-btn-fill:disabled {
+  background-color: transparent;
+  border-color: var(--hairline);
+  color: inherit;
+  opacity: 0.55;
+}
+
+/* Legacy glass-card (kept for unused components) */
 .glass-card {
-  background: rgba(255, 255, 255, 0.04);
+  background: color-mix(in srgb, var(--base-100) 72%, transparent);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  transition: all 0.3s ease;
-}
-
-[data-theme="light"] .glass-card {
-  background: rgba(255, 255, 255, 0.6);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: 1px solid var(--hairline);
 }
 
 .btn.btn-primary {
@@ -192,24 +293,6 @@ body::before {
 .btn.btn-accent {
   color: var(--color-accent-content);
   --tw-prose-links: var(--color-accent-content);
-}
-
-/* Glow effect - subtle */
-.glow-effect {
-  box-shadow: 0 0 20px var(--subtle-glow);
-  transition: box-shadow 0.3s ease;
-}
-
-.glow-effect:hover {
-  box-shadow: 0 0 30px var(--subtle-glow);
-}
-
-/* Neon border - refined */
-.neon-border {
-  position: relative;
-  border: 1px solid transparent;
-  background: linear-gradient(var(--base-100), var(--base-100)) padding-box,
-              linear-gradient(135deg, var(--primary), var(--secondary), var(--accent)) border-box;
 }
 
 .anchor:hover {

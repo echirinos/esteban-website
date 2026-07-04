@@ -36,12 +36,6 @@ const chatSignals = [
   },
 ];
 
-const assistantMetrics = [
-  { value: "Live AI", label: "Assistant mode" },
-  { value: "8 routes", label: "Portfolio context" },
-  { value: "2-5", label: "Short answer bullets" },
-];
-
 const knowledgeSources = [
   "Coinbase and platform work",
   "Role-fit and recruiter proof",
@@ -54,40 +48,23 @@ export default function AILabPage() {
     <PageShell className="max-w-7xl space-y-8">
       <section className="grid gap-6 py-2 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
         <div className="max-w-4xl">
-          <p className="mb-4 inline-flex rounded-full border border-base-content/12 bg-base-100/72 px-3 py-1 text-xs font-semibold text-primary">
-            Portfolio AI assistant
+          <p className="annotation mb-4 text-primary">
+            Sht Q-01 &middot; Portfolio AI assistant
           </p>
-          <h1 className="text-4xl font-bold leading-[0.95] tracking-tight md:text-6xl">
+          <h1 className="font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
             Ask the portfolio.
           </h1>
-          <p className="mt-4 max-w-3xl text-base leading-relaxed text-base-content/68 md:mt-5 md:text-lg">
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-base-content/68 md:text-lg">
             This page turns the portfolio into a focused AI assistant. Ask about
             Coinbase work, AI product fit, technical depth, product judgment,
             or what a hiring team should know first.
           </p>
-          <div className="mt-6 grid grid-cols-3 gap-2 sm:max-w-2xl sm:gap-3">
-            {assistantMetrics.map((metric) => (
-              <div
-                key={metric.label}
-                className="rounded-lg border border-base-content/10 bg-base-100/76 px-3 py-3"
-              >
-                <p className="text-xl font-bold text-primary sm:text-2xl">
-                  {metric.value}
-                </p>
-                <p className="mt-1 text-[11px] font-semibold leading-snug text-base-content/58">
-                  {metric.label}
-                </p>
-              </div>
-            ))}
-          </div>
         </div>
 
         <SurfaceCard className="hidden p-5 lg:block">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
-            What this page is
-          </p>
-          <h2 className="mt-3 text-2xl font-bold leading-tight">
-            A recruiter-facing AI demo, not a generic chatbot.
+          <p className="annotation text-base-content/45">What this page is</p>
+          <h2 className="mt-3 font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
+            A working demo, not a generic chatbot.
           </h2>
           <p className="mt-3 text-sm leading-relaxed text-base-content/64">
             The assistant is scoped to Esteban's public portfolio. It should
@@ -104,13 +81,13 @@ export default function AILabPage() {
 
         <aside className="space-y-4">
           <SurfaceCard className="p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+            <p className="annotation text-base-content/45">
               Knowledge the assistant can use
             </p>
             <div className="mt-4 space-y-3">
               {knowledgeSources.map((source) => (
                 <div key={source} className="flex gap-3 text-sm text-base-content/70">
-                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-primary" />
                   <span>{source}</span>
                 </div>
               ))}
@@ -118,9 +95,7 @@ export default function AILabPage() {
           </SurfaceCard>
 
           <SurfaceCard className="p-5">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
-              Best use
-            </p>
+            <p className="annotation text-base-content/45">Best use</p>
             <div className="mt-4 space-y-4">
               {chatSignals.map((signal) => (
                 <div
@@ -167,7 +142,7 @@ export default function AILabPage() {
           {operatingPrinciples.map((principle) => (
             <SurfaceCard key={principle} className="p-5">
               <div className="flex gap-3">
-                <span className="mt-1 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                <span className="mt-1 h-2 w-2 shrink-0 bg-primary" />
                 <p className="text-sm leading-relaxed text-base-content/72">
                   {principle}
                 </p>

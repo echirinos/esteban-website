@@ -25,11 +25,11 @@ export default function WorkPage() {
     <PageShell>
       <SurfaceCard className="mb-8">
         <PageIntro
-          title="Applied AI, DevEx, product, and solutions work."
+          title="Applied AI, DevEx, and product work."
           description="I’ve spent my career where technical products meet customers: developer platforms, API integrations, cloud architecture, discovery calls, product feedback loops, documentation, workshops, and demos that make complex systems easier to adopt."
           aside={
-            <div className="rounded-lg border border-base-content/10 bg-base-100/70 p-4">
-              <p className="text-sm font-semibold text-base-content/75">Best aligned with</p>
+            <div className="rounded-[2px] border p-4 hairline bg-base-100">
+              <p className="annotation text-base-content/50">Best aligned with</p>
               <TagList items={roleFit} className="mt-3 max-w-xs" />
             </div>
           }

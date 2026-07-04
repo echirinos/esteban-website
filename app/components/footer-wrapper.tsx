@@ -25,12 +25,12 @@ export function FooterWrapper() {
   ];
 
   return (
-    <footer className="relative z-10 px-4 py-10">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6 rounded-lg border border-base-content/8 bg-base-100/78 px-6 py-6 shadow-[0_18px_50px_rgba(15,23,42,0.06)] backdrop-blur sm:flex-row sm:items-center sm:justify-between">
-        <p className="text-sm text-base-content/40">
+    <footer className="relative z-10 mt-16 border-t hairline">
+      <div className="mx-auto flex max-w-6xl flex-col gap-6 px-5 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-8">
+        <p className="annotation text-base-content/40">
           &copy; {new Date().getFullYear()} Esteban Chirinos
         </p>
-        <nav className="flex flex-wrap gap-5">
+        <nav className="flex flex-wrap gap-x-5 gap-y-2">
           {footerLinks.map((link) => {
             const isExternal = link.href.startsWith("http");
 
@@ -40,7 +40,7 @@ export function FooterWrapper() {
                 href={link.href}
                 target={isExternal ? "_blank" : undefined}
                 rel={isExternal ? "noopener noreferrer" : undefined}
-                className="text-sm text-base-content/40 hover:text-primary transition-colors"
+                className="annotation text-base-content/40 transition-colors hover:text-primary"
               >
                 {link.name}
               </a>
@@ -53,7 +53,7 @@ export function FooterWrapper() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Twitter"
-            className="text-base-content/30 hover:text-primary transition-colors"
+            className="text-base-content/30 transition-colors hover:text-primary"
           >
             <FaXTwitter className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>
@@ -62,7 +62,7 @@ export function FooterWrapper() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="GitHub"
-            className="text-base-content/30 hover:text-primary transition-colors"
+            className="text-base-content/30 transition-colors hover:text-primary"
           >
             <FaGithub className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>
@@ -71,7 +71,7 @@ export function FooterWrapper() {
             target="_blank"
             rel="noopener noreferrer"
             aria-label="LinkedIn"
-            className="text-base-content/30 hover:text-primary transition-colors"
+            className="text-base-content/30 transition-colors hover:text-primary"
           >
             <FaLinkedin className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>

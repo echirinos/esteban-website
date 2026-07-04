@@ -44,11 +44,11 @@ export default function ResumePage() {
 
       <div className="grid gap-5 lg:grid-cols-[1.1fr_0.9fr]">
         <SurfaceCard>
-          <h2 className="text-2xl font-semibold">Career snapshot</h2>
+          <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Career snapshot</h2>
           <div className="mt-5 space-y-4">
             {snapshot.map((item) => (
               <div key={item} className="flex gap-3 text-base-content/74">
-                <span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-primary" />
+                <span className="mt-2 h-2 w-2 shrink-0 bg-primary" />
                 <span>{item}</span>
               </div>
             ))}

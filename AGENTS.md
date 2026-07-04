@@ -22,10 +22,30 @@ The GitHub remote used for the active site is `echirinos/esteban-website`.
 
 ## Design Direction
 
-Keep the site crisp, high-contrast, and proof-led. Preserve the restrained
-portfolio style: direct hero copy, visible proof card, scannable credentials,
-and clear CTAs. Avoid adding generic marketing filler or decorative UI that
-competes with the work evidence.
+The site uses a "whiteprint" drafting identity: Esteban is a solutions
+architect and certified roofing contractor, so the visual language is the
+technical drawing — vellum paper (`--base-100`), drafting-blue linework and
+links (`--primary`), a deep blueprint-blue field for the hero and contact
+bookend (`#101f58`), and safety orange reserved for primary CTAs
+(`--accent`). Dark mode is full blueprint mode (blue field site-wide).
+
+- Type: Barlow Condensed (display, uppercase, `font-display`), Archivo
+  (body, `font-sans`), IBM Plex Mono (annotations, `font-mono` and the
+  `.annotation` utility).
+- Structure devices: sections are labeled as drawing sheets
+  (`SHT A-02 · WORK`), work history is a hairline schedule table (no cards),
+  projects are numbered plates (P-01…), the chat section is the RFI.
+- Corners are square (2px max radius); borders use `.hairline`
+  (`--hairline`); the drafting grid utilities are `.sheet-grid` /
+  `.sheet-grid-field`.
+- Motion: Lenis smooth scroll (`app/components/lenis-provider.tsx`),
+  framer-motion draft-in reveals (`app/components/blueprint-motion.tsx`),
+  hero load sequence + parallax (`app/components/blueprint-hero.tsx`).
+  Everything respects `prefers-reduced-motion`.
+
+Keep it proof-led: direct hero copy, visible metrics ("quantities"),
+scannable schedule rows, clear CTAs. Avoid rounded-card grids, drop shadows,
+gradients, and marketing filler — they break the drafting language.
 
 ## DaisyUI Theme Notes
 
