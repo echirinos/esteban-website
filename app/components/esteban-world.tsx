@@ -264,7 +264,7 @@ const worldOptions: WorldOption[] = [
 
 const featuredWorldIds: WorldId[] = ["yosemite", "biolume", "skyreef", "orbital"];
 const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const transitionDurationMs = 1360;
+const transitionDurationMs = 1800;
 const reducedTransitionDurationMs = 540;
 
 const workRows = [
@@ -521,7 +521,7 @@ function CameraRig({
   useFrame((_state, delta) => {
     elapsed.current += delta;
     const drift = Math.sin(elapsed.current * 0.26) * 0.018;
-    const targetZ = phase === "transition" ? 3.82 : gogglesOn ? 4.03 : 4.18;
+    const targetZ = phase === "transition" ? 3.58 : gogglesOn ? 4.03 : 4.18;
 
     targetPosition.set(
       pointer.x * 0.18,
@@ -541,7 +541,7 @@ function CameraRig({
     currentLookAt.z = THREE.MathUtils.damp(currentLookAt.z, targetLookAt.z, lambda, delta);
 
     if (camera instanceof THREE.PerspectiveCamera) {
-      const targetFov = phase === "transition" ? 44 : 50;
+      const targetFov = phase === "transition" ? 40 : 50;
       camera.fov = THREE.MathUtils.damp(camera.fov, targetFov, 2.4, delta);
       camera.updateProjectionMatrix();
     }
@@ -1193,9 +1193,22 @@ function GoggleLift({ active }: { active: boolean }) {
   );
 }
 
-function LensCalibration({ active }: { active: boolean }) {
+function LensBoot({
+  active,
+  worldName,
+}: {
+  active: boolean;
+  worldName: string;
+}) {
   const reduceMotion = useReducedMotion();
-  const duration = reduceMotion ? 0.42 : 1.02;
+
+  const bootLines = [
+    "Esteban OS 8 // lens mode",
+    "Optics ........ calibrated",
+    `World ......... ${worldName}`,
+    "Depth rig ..... locked",
+    "Entering",
+  ];
 
   return (
     <AnimatePresence>
@@ -1208,74 +1221,174 @@ function LensCalibration({ active }: { active: boolean }) {
           transition={{ duration: 0.2 }}
           aria-hidden="true"
         >
-          <motion.div
-            className="absolute inset-0 bg-black"
-            initial={{ opacity: 0, clipPath: "ellipse(95% 82% at 50% 50%)" }}
-            animate={
-              reduceMotion
-                ? {
-                    opacity: [0, 0.45, 0],
-                    clipPath: "ellipse(76% 64% at 50% 50%)",
-                  }
-                : {
-                    opacity: [0, 0.48, 0.52, 0],
-                    clipPath: [
-                      "ellipse(95% 82% at 50% 50%)",
-                      "ellipse(52% 42% at 50% 50%)",
-                      "ellipse(32% 24% at 50% 50%)",
-                      "ellipse(92% 76% at 50% 50%)",
-                    ],
-                  }
-            }
-            transition={
-              reduceMotion
-                ? { duration, ease: "easeInOut" }
-                : { duration, times: [0, 0.4, 0.58, 1], ease: [0.76, 0, 0.24, 1] }
-            }
-          />
-          <motion.div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0)_0%,rgba(229,246,255,0.08)_36%,rgba(0,0,0,0.46)_78%,rgba(0,0,0,0.86)_100%)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: reduceMotion ? [0, 0.46, 0] : [0, 0.7, 0.22, 0] }}
-            transition={{ duration, times: reduceMotion ? [0, 0.5, 1] : [0, 0.4, 0.78, 1], ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute inset-0 opacity-45 mix-blend-screen [background-image:linear-gradient(rgba(255,255,255,0.15)_1px,transparent_1px),linear-gradient(90deg,rgba(93,220,255,0.14),transparent_18%,transparent_82%,rgba(255,114,91,0.14))] [background-size:100%_4px,100%_100%]"
-            initial={{ y: -26, opacity: 0 }}
-            animate={{ y: reduceMotion ? 0 : [-22, 10, 0], opacity: [0, 0.34, 0] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.64, delay: reduceMotion ? 0 : 0.2, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute left-0 right-0 top-1/2 h-16 -translate-y-1/2 bg-[linear-gradient(180deg,transparent,rgba(217,242,255,0.32),transparent)] blur-sm"
-            initial={{ y: "-62vh", opacity: 0 }}
-            animate={{ y: reduceMotion ? "0vh" : ["-58vh", "6vh", "58vh"], opacity: [0, 0.92, 0] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.62, delay: reduceMotion ? 0 : 0.32, ease: cinematicEase }}
-          />
-          <motion.div
-            className="absolute left-1/2 top-1/2 h-[52vh] w-[76vw] max-w-[790px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/18 shadow-[0_0_70px_rgba(200,230,255,0.18),inset_0_0_42px_rgba(255,255,255,0.08)]"
-            initial={{ opacity: 0, scale: 0.72 }}
-            animate={{ opacity: [0, 0.62, 0], scale: reduceMotion ? [0.9, 1, 1.03] : [0.72, 1.02, 1.08] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.62, delay: reduceMotion ? 0 : 0.28, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute left-1/2 top-1/2 h-[34vh] w-[58vw] max-w-[610px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-cyan-100/18 shadow-[0_0_90px_rgba(103,232,249,0.2)]"
-            initial={{ opacity: 0, scale: 0.55 }}
-            animate={{ opacity: [0, 0.74, 0], scale: reduceMotion ? [0.88, 1, 1.02] : [0.55, 1.1, 1.24] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.68, delay: reduceMotion ? 0 : 0.38, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute bottom-[14vh] left-1/2 h-1 w-40 -translate-x-1/2 overflow-hidden rounded-full border border-white/20 bg-white/10"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: [0, 1, 1, 0], y: [8, 0, 0, -2] }}
-            transition={{ duration: reduceMotion ? 0.4 : 0.72, delay: reduceMotion ? 0 : 0.26, times: [0, 0.25, 0.78, 1], ease: "easeOut" }}
-          >
-            <motion.span
-              className="block h-full bg-white/70"
-              initial={{ width: "8%" }}
-              animate={{ width: "100%" }}
-              transition={{ duration: reduceMotion ? 0.24 : 0.42, delay: reduceMotion ? 0 : 0.36, ease: "easeOut" }}
-            />
-          </motion.div>
+          {reduceMotion ? (
+            <motion.div
+              className="absolute inset-0 grid place-items-center bg-[#02040c]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: [0, 0.92, 0] }}
+              transition={{ duration: 0.54, times: [0, 0.5, 1], ease: "easeInOut" }}
+            >
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#cfe0ff]">
+                Entering Esteban OS
+              </p>
+            </motion.div>
+          ) : (
+            <>
+              {/* Headset interior: black cover with a binocular iris that opens onto the world */}
+              <motion.div
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0, 1, 1] }}
+                transition={{ duration: 1.8, times: [0, 0.17, 0.26, 1] }}
+              >
+                <svg
+                  className="absolute inset-0 h-full w-full"
+                  viewBox="0 0 100 100"
+                  preserveAspectRatio="xMidYMid slice"
+                >
+                  <defs>
+                    <mask id="lens-iris-mask">
+                      <rect width="100" height="100" fill="white" />
+                      <motion.circle
+                        cx="39"
+                        cy="50"
+                        fill="black"
+                        initial={{ r: 0 }}
+                        animate={{ r: [0, 0, 4, 120] }}
+                        transition={{ duration: 1.8, times: [0, 0.6, 0.68, 0.97], ease: [0.72, 0, 0.16, 1] }}
+                      />
+                      <motion.circle
+                        cx="61"
+                        cy="50"
+                        fill="black"
+                        initial={{ r: 0 }}
+                        animate={{ r: [0, 0, 4, 120] }}
+                        transition={{ duration: 1.8, times: [0, 0.62, 0.7, 0.97], ease: [0.72, 0, 0.16, 1] }}
+                      />
+                    </mask>
+                  </defs>
+                  <rect width="100" height="100" fill="#02040c" mask="url(#lens-iris-mask)" />
+                </svg>
+              </motion.div>
+
+              {/* Wireframe grid floor rushing toward the viewer */}
+              <div className="absolute inset-0" style={{ perspective: "520px" }}>
+                <motion.div
+                  className="absolute left-1/2 top-[46%] h-[240%] w-[360%] -translate-x-1/2"
+                  style={{
+                    rotateX: 74,
+                    transformOrigin: "top center",
+                    backgroundImage:
+                      "linear-gradient(rgba(143,168,255,0.42) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(143,168,255,0.42) 1.5px, transparent 1.5px)",
+                    backgroundSize: "72px 72px",
+                    maskImage:
+                      "linear-gradient(180deg, transparent, black 18%, black 72%, transparent)",
+                    WebkitMaskImage:
+                      "linear-gradient(180deg, transparent, black 18%, black 72%, transparent)",
+                  }}
+                  initial={{ opacity: 0, backgroundPositionY: "0px" }}
+                  animate={{
+                    opacity: [0, 0, 0.95, 0.95, 0],
+                    backgroundPositionY: ["0px", "648px"],
+                  }}
+                  transition={{
+                    opacity: { duration: 1.8, times: [0, 0.22, 0.32, 0.62, 0.74] },
+                    backgroundPositionY: { duration: 1.35, delay: 0.4, ease: [0.3, 0, 0.9, 0.4] },
+                  }}
+                />
+                <motion.div
+                  className="absolute left-1/2 top-[8%] h-[160%] w-[360%] -translate-x-1/2"
+                  style={{
+                    rotateX: -74,
+                    transformOrigin: "bottom center",
+                    backgroundImage:
+                      "linear-gradient(rgba(143,168,255,0.22) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(143,168,255,0.22) 1.5px, transparent 1.5px)",
+                    backgroundSize: "72px 72px",
+                    maskImage:
+                      "linear-gradient(0deg, transparent, black 30%, black 78%, transparent)",
+                    WebkitMaskImage:
+                      "linear-gradient(0deg, transparent, black 30%, black 78%, transparent)",
+                  }}
+                  initial={{ opacity: 0, backgroundPositionY: "648px" }}
+                  animate={{
+                    opacity: [0, 0, 0.7, 0.7, 0],
+                    backgroundPositionY: ["648px", "0px"],
+                  }}
+                  transition={{
+                    opacity: { duration: 1.8, times: [0, 0.24, 0.34, 0.6, 0.72] },
+                    backgroundPositionY: { duration: 1.35, delay: 0.4, ease: [0.3, 0, 0.9, 0.4] },
+                  }}
+                />
+              </div>
+
+              {/* Horizon line */}
+              <motion.div
+                className="absolute left-0 right-0 top-[46%] h-px bg-[#8fa8ff] shadow-[0_0_28px_rgba(143,168,255,0.95)]"
+                initial={{ opacity: 0, scaleX: 0 }}
+                animate={{ opacity: [0, 0, 1, 1, 0], scaleX: [0, 0, 1, 1, 1] }}
+                transition={{ duration: 1.8, times: [0, 0.24, 0.34, 0.6, 0.72], ease: "easeOut" }}
+              />
+
+              {/* Boot readout */}
+              <div className="absolute left-1/2 top-1/2 w-[min(78vw,420px)] -translate-x-1/2 -translate-y-1/2">
+                {bootLines.map((line, index) => (
+                  <motion.p
+                    key={line}
+                    className="font-mono text-[11px] font-medium uppercase leading-[1.9] tracking-[0.18em] text-[#d4e2ff] sm:text-xs"
+                    style={{
+                      textShadow:
+                        "1.5px 0 rgba(255,64,128,0.5), -1.5px 0 rgba(84,240,255,0.5)",
+                    }}
+                    initial={{ opacity: 0, y: 5 }}
+                    animate={{ opacity: [0, 1, 1, 0], y: 0 }}
+                    transition={{
+                      duration: 0.92,
+                      delay: 0.46 + index * 0.1,
+                      times: [0, 0.14, 0.82, 1],
+                      ease: "easeOut",
+                    }}
+                  >
+                    {line}
+                    {index === bootLines.length - 1 ? (
+                      <motion.span
+                        className="ml-2 inline-block h-3 w-2 translate-y-[1px] bg-[#d4e2ff]"
+                        animate={{ opacity: [1, 0, 1] }}
+                        transition={{ duration: 0.3, repeat: 2 }}
+                      />
+                    ) : null}
+                  </motion.p>
+                ))}
+              </div>
+
+              {/* Warp spokes at punch-through */}
+              <motion.div
+                className="absolute left-1/2 top-1/2 h-[165vmax] w-[165vmax] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
+                style={{
+                  background:
+                    "repeating-conic-gradient(from 0deg, rgba(255,255,255,0) 0deg 4deg, rgba(168,196,255,0.2) 5deg 6.5deg, rgba(255,255,255,0) 7.5deg 12deg)",
+                  maskImage:
+                    "radial-gradient(circle, transparent 6%, black 30%, black 62%, transparent 78%)",
+                  WebkitMaskImage:
+                    "radial-gradient(circle, transparent 6%, black 30%, black 62%, transparent 78%)",
+                }}
+                initial={{ opacity: 0, scale: 0.34, rotate: 0 }}
+                animate={{
+                  opacity: [0, 0, 0.9, 0],
+                  scale: [0.34, 0.34, 1.12, 1.38],
+                  rotate: 26,
+                }}
+                transition={{ duration: 1.8, times: [0, 0.52, 0.72, 0.94], ease: "easeInOut" }}
+              />
+
+              {/* Punch flash as the lenses light up */}
+              <motion.div
+                className="absolute inset-0 bg-white mix-blend-screen"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0, 0.72, 0] }}
+                transition={{ duration: 1.8, times: [0, 0.58, 0.66, 0.8], ease: "easeOut" }}
+              />
+            </>
+          )}
         </motion.div>
       ) : null}
     </AnimatePresence>
@@ -1551,44 +1664,6 @@ function WorldSelector({
         ) : null}
       </AnimatePresence>
     </motion.div>
-  );
-}
-
-function TransitionStatus({ active }: { active: boolean }) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <AnimatePresence>
-      {active ? (
-        <motion.div
-          className="pointer-events-none absolute inset-x-0 bottom-[10vh] z-[55] flex justify-center px-6"
-          initial={{ opacity: 0, y: reduceMotion ? 0 : 8, scale: reduceMotion ? 1 : 0.96 }}
-          animate={{ opacity: [0, 1, 1, 0], y: reduceMotion ? 0 : [8, 0, 0, -6], scale: reduceMotion ? 1 : [0.96, 1, 1, 0.98] }}
-          exit={{ opacity: 0, y: reduceMotion ? 0 : -4 }}
-          transition={{ duration: reduceMotion ? 0.42 : 1.02, times: [0, 0.18, 0.74, 1], ease: "easeOut" }}
-          aria-hidden="true"
-        >
-          <div className="flex items-center gap-2 rounded-full border border-white/16 bg-black/24 px-3 py-2 text-white shadow-[0_18px_60px_rgba(0,0,0,0.24)] backdrop-blur-md">
-            {[0, 1, 2].map((index) => (
-              <motion.span
-                key={index}
-                className="h-1.5 w-1.5 rounded-full bg-white/55"
-                animate={{ opacity: [0.35, 1, 0.35], scale: [0.9, 1.18, 0.9] }}
-                transition={{ duration: reduceMotion ? 0.28 : 0.5, delay: index * 0.08, repeat: reduceMotion ? 0 : 2, ease: "easeInOut" }}
-              />
-            ))}
-            <div className="h-1 w-40 overflow-hidden rounded-full border border-white/16 bg-white/8">
-              <motion.span
-                className="block h-full rounded-full bg-white/80"
-                initial={{ width: "10%" }}
-                animate={{ width: ["10%", "52%", "100%"] }}
-                transition={{ duration: reduceMotion ? 0.24 : 0.72, times: [0, 0.62, 1], ease: cinematicEase }}
-              />
-            </div>
-          </div>
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
   );
 }
 
@@ -2395,10 +2470,10 @@ export function EstebanWorld() {
         animate={
           phase === "transition" && !reduceMotion
             ? {
-                scale: [1, 1.035, 1.012],
+                scale: [1, 1.085, 1.015],
                 filter: [
                   "blur(0px) saturate(1) contrast(1)",
-                  "blur(10px) saturate(1.22) contrast(1.08)",
+                  "blur(14px) saturate(1.3) contrast(1.1)",
                   "blur(1px) saturate(1.08) contrast(1.03)",
                 ],
               }
@@ -2406,7 +2481,7 @@ export function EstebanWorld() {
         }
         transition={
           phase === "transition" && !reduceMotion
-            ? { duration: 1.18, times: [0, 0.56, 1], ease: cinematicEase }
+            ? { duration: 1.62, times: [0, 0.52, 1], ease: cinematicEase }
             : { duration: reduceMotion ? 0.24 : 0.62, ease: cinematicEase }
         }
       >
@@ -2426,8 +2501,7 @@ export function EstebanWorld() {
       <LensIntroPanel phase={phase} />
       <WorldChangeWash active={worldWashActive} />
       <GoggleLift active={phase === "transition"} />
-      <LensCalibration active={phase === "transition"} />
-      <TransitionStatus active={phase === "transition"} />
+      <LensBoot active={phase === "transition"} worldName={selectedWorld.name} />
       <ArrivalBloom active={phase === "inside"} />
       <WorldSelector
         selectedWorldId={selectedWorld.id}

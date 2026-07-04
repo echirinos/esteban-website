@@ -65,7 +65,9 @@ export function BlueprintHero() {
     target: sectionRef,
     offset: ["start start", "end start"],
   });
-  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "14%"]);
+  const gridY = useTransform(scrollYProgress, [0, 1], ["0%", "24%"]);
+  const contentY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const contentOpacity = useTransform(scrollYProgress, [0, 0.75], [1, 0.2]);
 
   return (
     <section
@@ -96,6 +98,7 @@ export function BlueprintHero() {
         className="relative z-10 mx-auto max-w-6xl px-7 pb-14 pt-16 sm:px-12 sm:pt-20 lg:px-14 lg:pb-20 lg:pt-24"
         initial={reduceMotion ? false : "hidden"}
         animate="visible"
+        style={reduceMotion ? undefined : { y: contentY, opacity: contentOpacity }}
       >
         <motion.p
           className="annotation text-white/60"
@@ -235,13 +238,23 @@ const contactRoutes = [
 ];
 
 export function BlueprintContact() {
+  const sectionRef = useRef<HTMLElement | null>(null);
+  const reduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ["start end", "end end"],
+  });
+  const gridY = useTransform(scrollYProgress, [0, 1], ["-12%", "0%"]);
+
   return (
     <section
+      ref={sectionRef}
       className={`relative mt-16 overflow-hidden ${HERO_FIELD} text-white lg:mt-24`}
     >
-      <div
+      <motion.div
         aria-hidden="true"
-        className="sheet-grid-field absolute inset-0"
+        className="sheet-grid-field absolute -bottom-16 -top-16 left-0 right-0"
+        style={reduceMotion ? undefined : { y: gridY }}
       />
       <div
         aria-hidden="true"

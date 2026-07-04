@@ -12,7 +12,7 @@ export function LenisProvider() {
     const lenis = new Lenis({
       autoRaf: true,
       anchors: true,
-      lerp: 0.11,
+      lerp: 0.09,
     });
 
     return () => lenis.destroy();

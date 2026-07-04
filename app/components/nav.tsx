@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion, useScroll, useSpring } from "framer-motion";
 
 const navItems = [
   { href: "/", name: "Home" },
@@ -38,6 +39,23 @@ function renderMenuItems(pathname: string) {
       </li>
     );
   });
+}
+
+function ScrollProgress() {
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 150,
+    damping: 28,
+    mass: 0.4,
+  });
+
+  return (
+    <motion.span
+      aria-hidden="true"
+      className="absolute bottom-[-1px] left-0 right-0 h-[2px] origin-left bg-primary"
+      style={{ scaleX }}
+    />
+  );
 }
 
 export function Navbar() {
@@ -111,6 +129,7 @@ export function Navbar() {
           </svg>
         </label>
       </div>
+      <ScrollProgress />
     </header>
   );
 }
