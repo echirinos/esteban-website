@@ -1556,7 +1556,7 @@ function WorldSelector({
 
   return (
     <motion.div
-      className="absolute left-3 right-3 top-3 z-30 md:left-6 md:right-auto md:top-6 md:w-[19rem]"
+      className="absolute left-3 right-3 top-3 z-[60] md:left-6 md:right-auto md:top-6 md:w-[19rem]"
       initial={{ opacity: 0, y: reduceMotion ? 0 : -12, scale: reduceMotion ? 1 : 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
@@ -1617,8 +1617,22 @@ function WorldSelector({
       </div>
       <AnimatePresence>
         {pickerOpen ? (
+          <motion.button
+            type="button"
+            aria-label="Close world browser"
+            onClick={onTogglePicker}
+            className="fixed inset-0 z-[59] cursor-default bg-black/60 backdrop-blur-[2px]"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          />
+        ) : null}
+      </AnimatePresence>
+      <AnimatePresence>
+        {pickerOpen ? (
           <motion.div
-            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] max-h-[56svh] overflow-y-auto rounded-[2px] border border-white/25 bg-[#0b1533]/78 p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.26)] backdrop-blur-xl md:p-3"
+            className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[61] max-h-[56svh] overflow-y-auto rounded-[2px] border border-white/25 bg-[#0a1330] p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.5)] md:p-3"
             initial={{ opacity: 0, y: reduceMotion ? 0 : -8, scale: reduceMotion ? 1 : 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: reduceMotion ? 0 : -6, scale: reduceMotion ? 1 : 0.985 }}
@@ -2247,7 +2261,8 @@ function EstebanOS({ pointer }: { pointer: PointerMotion }) {
           className="relative w-full max-h-[calc(100svh-10.65rem)] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[3px_3px_0_rgba(0,0,0,0.45),0_24px_90px_rgba(18,12,7,0.34)] sm:w-[min(94vw,900px)] sm:max-h-[78svh] sm:shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] md:max-h-none"
           style={{
             transform: reduceMotion ? "none" : parallaxTransform,
-            transformStyle: "preserve-3d",
+            // Flat on purpose: preserve-3d lets the tilted plane interleave
+            // above higher z-index overlays like the world picker.
             willChange: reduceMotion ? "auto" : "transform",
           }}
         >

@@ -110,7 +110,10 @@ export function BlueprintHero() {
           <span className="whitespace-nowrap">Technical product</span>
         </motion.p>
 
-        <h1 className="mt-6 font-display font-bold uppercase leading-[0.88] tracking-[0.015em]">
+        <h1
+          aria-label="Esteban Chirinos"
+          className="mt-6 font-display font-bold uppercase leading-[0.88] tracking-[0.015em]"
+        >
           <span className="block overflow-hidden">
             <motion.span
               className="block text-[clamp(4.5rem,19vw,12.5rem)]"

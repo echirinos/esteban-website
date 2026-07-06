@@ -93,6 +93,7 @@ export default function RootLayout({
     <html
       lang="en"
       data-theme="light"
+      suppressHydrationWarning
       className={cx(
         archivo.variable,
         barlowCondensed.variable,
@@ -101,6 +102,12 @@ export default function RootLayout({
     >
       <head>
         <SandpackCSS />
+        {/* Apply saved or OS-preferred theme before first paint */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}})();`,
+          }}
+        />
       </head>
       <body className="antialiased relative">
         <LenisProvider />

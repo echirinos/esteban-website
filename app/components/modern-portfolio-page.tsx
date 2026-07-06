@@ -117,7 +117,9 @@ export function ModernPortfolioPage() {
                       <h3 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">
                         {company.name}
                       </h3>
-                      <p className="text-sm text-base-content/55">{company.role}</p>
+                      <p className="basis-full text-sm text-base-content/55 sm:basis-auto">
+                        {company.role}
+                      </p>
                     </div>
                   </div>
                   {company.featured ? (
@@ -174,8 +176,8 @@ export function ModernPortfolioPage() {
                 <p className="mb-5 mt-3 flex-1 text-sm leading-relaxed text-base-content/65">
                   {project.description}
                 </p>
-                <div className="mt-auto flex items-center justify-between gap-3 border-t pt-4 hairline">
-                  <span className="min-w-0 truncate pt-0.5 font-mono text-[10px] uppercase tracking-[0.14em] text-base-content/45">
+                <div className="mt-auto flex items-start justify-between gap-3 border-t pt-4 hairline">
+                  <span className="min-w-0 pt-0.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-base-content/45">
                     {project.tags.slice(0, 2).join(" · ")}
                   </span>
                   {project.href ? (

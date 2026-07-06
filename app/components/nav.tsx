@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion, useScroll, useSpring } from "framer-motion";
+import { useEffect, useState } from "react";
 
 const navItems = [
   { href: "/", name: "Home" },
@@ -60,6 +61,22 @@ function ScrollProgress() {
 
 export function Navbar() {
   const pathname = usePathname();
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.dataset.theme === "dark");
+  }, []);
+
+  const handleThemeChange = (checked: boolean) => {
+    const theme = checked ? "dark" : "light";
+    setIsDark(checked);
+    document.documentElement.dataset.theme = theme;
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {
+      // Private browsing may block storage; the in-session theme still applies.
+    }
+  };
 
   return (
     <header className="site-header sticky top-0 z-40 border-b hairline backdrop-blur-md">
@@ -110,7 +127,13 @@ export function Navbar() {
           className="swap swap-rotate btn btn-ghost h-11 min-h-11 w-11 rounded-[2px]"
           aria-label="Toggle dark mode"
         >
-          <input type="checkbox" className="theme-controller" value="dark" />
+          <input
+            type="checkbox"
+            className="theme-controller"
+            value="dark"
+            checked={isDark}
+            onChange={(event) => handleThemeChange(event.target.checked)}
+          />
 
           <svg
             className="swap-off h-5 w-5 fill-current"

@@ -49,7 +49,7 @@ export default function WorkPage() {
           {featuredWork.map((company) => (
             <SurfaceCard key={company.name}>
               <div className="flex items-start gap-4">
-                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-lg border border-base-content/10 bg-base-200/70 p-3">
+                <div className="grid h-16 w-16 shrink-0 place-items-center rounded-[2px] border p-3 hairline bg-white">
                   <Image
                     alt={`${company.name} logo`}
                     src={company.logo}
@@ -82,7 +82,7 @@ export default function WorkPage() {
                   href={company.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm font-semibold text-primary transition hover:text-base-content"
+                  className="annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current"
                 >
                   Visit {company.name}
                 </a>
@@ -100,7 +100,7 @@ export default function WorkPage() {
         <div className="grid gap-4 md:grid-cols-3">
           {supportingWork.map((company) => (
             <SurfaceCard key={company.name} className="p-5">
-              <div className="mb-4 grid h-14 w-14 place-items-center rounded-lg border border-base-content/10 bg-base-200/70 p-3">
+              <div className="mb-4 grid h-14 w-14 place-items-center rounded-[2px] border p-3 hairline bg-white">
                 <Image
                   alt={`${company.name} logo`}
                   src={company.logo}
@@ -134,10 +134,10 @@ export default function WorkPage() {
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
-            <Link href="/" className="btn btn-primary">
+            <Link href="/" className="draft-btn draft-btn-fill">
               Portfolio
             </Link>
-            <Link href="/resume" className="btn btn-outline">
+            <Link href="/resume" className="draft-btn draft-btn-line">
               Resume
             </Link>
           </div>

@@ -68,7 +68,7 @@ export default function ProjectsPage() {
                       href={project.href}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-semibold text-primary transition hover:text-base-content"
+                      className="annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current"
                     >
                       Open project
                     </a>
@@ -104,7 +104,7 @@ export default function ProjectsPage() {
                     href={project.href}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm font-semibold text-primary transition hover:text-base-content"
+                    className="annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current"
                   >
                     Visit project
                   </a>

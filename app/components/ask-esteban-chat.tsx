@@ -42,6 +42,33 @@ const askEstebanPrompts = [
 const cx = (...classes: Array<string | false | null | undefined>) =>
   classes.filter(Boolean).join(" ");
 
+const pendingStages = [
+  "Reading the portfolio context...",
+  "Scanning proof points and work history...",
+  "Checking role-fit notes...",
+  "Drafting the answer...",
+];
+
+/* Staged status so a several-second answer never looks hung. */
+function PendingStatus() {
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const interval = window.setInterval(() => {
+      setStage((current) => Math.min(current + 1, pendingStages.length - 1));
+    }, 1700);
+
+    return () => window.clearInterval(interval);
+  }, []);
+
+  return (
+    <p className="mt-2 text-xs font-bold">
+      {pendingStages[stage]}
+      <span className="ml-1 inline-block h-3 w-1.5 translate-y-[2px] animate-pulse bg-current opacity-70" />
+    </p>
+  );
+}
+
 /*
  * Answers come back with light markdown (bold + bullets). Render just that
  * subset instead of showing literal asterisks.
@@ -445,9 +472,7 @@ export function AskEstebanChat({
                 <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
                   Portfolio Assistant
                 </p>
-                <p className="mt-2 text-xs font-bold">
-                  Reading the portfolio context...
-                </p>
+                <PendingStatus />
               </article>
             ) : null}
           </div>

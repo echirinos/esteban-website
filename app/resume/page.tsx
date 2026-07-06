@@ -53,7 +53,7 @@ export default function ResumePage() {
               </div>
             ))}
           </div>
-          <div className="mt-8 rounded-lg border border-base-content/10 bg-base-200/45 p-4">
+          <div className="mt-8 rounded-[2px] border p-4 hairline bg-base-200/45">
             <p className="text-sm font-semibold text-base-content/78">
               Experience timeline
             </p>
@@ -103,10 +103,10 @@ export default function ResumePage() {
             <h2 className="text-2xl font-semibold">Strengths</h2>
             <TagList items={strengthAreas} className="mt-5" />
             <div className="mt-6 flex flex-wrap gap-3">
-              <Link href="/work" className="btn btn-primary btn-sm">
+              <Link href="/work" className="draft-btn draft-btn-fill">
                 View work
               </Link>
-              <Link href="/contact" className="btn btn-outline btn-sm">
+              <Link href="/contact" className="draft-btn draft-btn-line">
                 Contact
               </Link>
             </div>
