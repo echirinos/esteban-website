@@ -46,8 +46,10 @@ const knowledgeSources = [
 export default function AILabPage() {
   return (
     <PageShell className="max-w-7xl space-y-8">
-      <section className="grid gap-6 py-2 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
-        <div className="max-w-4xl">
+      <section>
+        <SurfaceCard>
+          <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
+            <div className="max-w-4xl">
           <p className="annotation mb-4 text-primary">
             Sht Q-01 &middot; Portfolio AI assistant
           </p>
@@ -59,17 +61,20 @@ export default function AILabPage() {
             Coinbase work, AI product fit, technical depth, product judgment,
             or what a hiring team should know first.
           </p>
-        </div>
+            </div>
 
-        <SurfaceCard className="hidden p-5 lg:block">
-          <p className="annotation text-base-content/45">What this page is</p>
-          <h2 className="mt-3 font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
-            A working demo, not a generic chatbot.
-          </h2>
-          <p className="mt-3 text-sm leading-relaxed text-base-content/65">
-            The assistant is scoped to Esteban's public portfolio. It should
-            help someone understand fit, evidence, and next questions quickly.
-          </p>
+            <div className="hidden rounded-[2px] border p-5 hairline bg-base-100 lg:block">
+              <p className="annotation text-base-content/65">What this page is</p>
+              <h2 className="mt-3 font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
+                A working demo, not a generic chatbot.
+              </h2>
+              <p className="mt-3 text-sm leading-relaxed text-base-content/65">
+                The assistant is scoped to Esteban's public portfolio. It should
+                help someone understand fit, evidence, and next questions
+                quickly.
+              </p>
+            </div>
+          </div>
         </SurfaceCard>
       </section>
 
@@ -81,7 +86,7 @@ export default function AILabPage() {
 
         <aside className="space-y-4">
           <SurfaceCard className="p-5">
-            <p className="annotation text-base-content/45">
+            <p className="annotation text-base-content/65">
               Knowledge the assistant can use
             </p>
             <div className="mt-4 space-y-3">
@@ -95,7 +100,7 @@ export default function AILabPage() {
           </SurfaceCard>
 
           <SurfaceCard className="p-5">
-            <p className="annotation text-base-content/45">Best use</p>
+            <p className="annotation text-base-content/65">Best use</p>
             <div className="mt-4 space-y-4">
               {chatSignals.map((signal) => (
                 <div
