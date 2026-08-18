@@ -95,7 +95,7 @@ export function ModernPortfolioPage() {
           {workExperiences.map((company, index) => (
             <DraftItem key={company.name}>
               <div
-                className={`group grid gap-x-6 gap-y-2 border-t py-6 hairline transition-colors hover:bg-base-200/50 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:py-7 ${
+                className={`group relative grid gap-x-6 gap-y-2 border-t py-6 hairline transition-colors hover:bg-base-200/50 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:py-7 ${
                   index === workExperiences.length - 1 ? "border-b" : ""
                 }`}
               >
@@ -137,14 +137,17 @@ export function ModernPortfolioPage() {
                     </p>
                   )}
                 </div>
+                {/* Stretched link: the whole schedule row is the tap target */}
                 <a
                   href={company.url}
                   target="_blank"
                   rel="noopener noreferrer"
                   aria-label={`Open ${company.name}`}
-                  className="annotation hidden pt-1.5 text-base-content/35 transition group-hover:text-primary sm:block"
+                  className="annotation pt-1.5 text-base-content/50 transition after:absolute after:inset-0 group-hover:text-primary"
                 >
-                  ↗
+                  <span className="hidden sm:inline" aria-hidden="true">
+                    ↗
+                  </span>
                 </a>
               </div>
             </DraftItem>
