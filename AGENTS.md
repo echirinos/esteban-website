@@ -42,6 +42,13 @@ bookend (`#101f58`), and safety orange reserved for primary CTAs
   framer-motion draft-in reveals (`app/components/blueprint-motion.tsx`),
   hero load sequence + parallax (`app/components/blueprint-hero.tsx`).
   Everything respects `prefers-reduced-motion`.
+- Any motion element whose SSR initial state is hidden (`opacity: 0`,
+  offscreen transform) MUST carry `data-draft=""` — layout.tsx ships a
+  noscript override and global.css a print override so content is never
+  permanently invisible. A no-JS smoke test enforces this.
+- Tailwind alpha shorthand only compiles for multiples of 5 (`/65` works,
+  `/62` silently generates no CSS). Light-mode muted text floor is `/65`
+  (4.5:1 on vellum); the light accent is `#c24a08` (white label passes AA).
 
 Keep it proof-led: direct hero copy, visible metrics ("quantities"),
 scannable schedule rows, clear CTAs. Avoid rounded-card grids, drop shadows,
