@@ -272,14 +272,6 @@ body {
   opacity: 0.55;
 }
 
-/* Legacy glass-card (kept for unused components) */
-.glass-card {
-  background: color-mix(in srgb, var(--base-100) 72%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid var(--hairline);
-}
-
 .btn.btn-primary {
   color: var(--color-primary-content);
   --tw-prose-links: var(--color-primary-content);

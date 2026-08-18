@@ -43,7 +43,7 @@ export default {
     require("daisyui")
   ],
   daisyui: {
-    themes: ["light", "dark", "cupcake"],
+    themes: ["light", "dark"],
     darkTheme: "dark",
     base: true,
     styled: true,
