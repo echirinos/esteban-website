@@ -43,10 +43,12 @@ export function SurfaceCard({
 }
 
 export function PageIntro({
+  code,
   title,
   description,
   aside,
 }: {
+  code?: string;
   title: string;
   description: string;
   aside?: ReactNode;
@@ -54,7 +56,8 @@ export function PageIntro({
   return (
     <div className="grid gap-5 py-4 md:grid-cols-[minmax(0,1fr)_260px] md:items-end">
       <div>
-        <h1 className="max-w-4xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
+        {code ? <p className="annotation text-primary">{code}</p> : null}
+        <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
           {title}
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/70">

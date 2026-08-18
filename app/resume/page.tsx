@@ -37,6 +37,7 @@ export default function ResumePage() {
     <PageShell>
       <SurfaceCard className="mb-8">
         <PageIntro
+          code="Sht R-01 · Resume"
           title="The short recruiter version."
           description="Best aligned with applied AI, developer experience, technical product management, demo engineering, AI deployment, partner solutions, and customer-facing platform roles."
         />
