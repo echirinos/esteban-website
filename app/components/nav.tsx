@@ -31,7 +31,7 @@ function renderMenuItems(pathname: string) {
           className={`annotation block rounded-[2px] px-3 py-2 transition ${
             isActive
               ? "text-primary"
-              : "text-base-content/55 hover:text-base-content"
+              : "text-base-content/70 hover:text-base-content"
           }`}
         >
           {isActive ? <span aria-hidden="true">■&nbsp;</span> : null}

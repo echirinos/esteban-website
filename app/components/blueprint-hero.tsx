@@ -322,7 +322,7 @@ export function BlueprintContact() {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center justify-between gap-5 border-t border-white/20 pt-6">
-          <p className="annotation text-white/45">
+          <p className="annotation text-white/55">
             &copy; {new Date().getFullYear()}
             {" · Esteban Chirinos · Miami, FL"}
           </p>
@@ -340,7 +340,7 @@ export function BlueprintContact() {
               </a>
             ))}
           </div>
-          <p className="annotation text-white/45">Sheet A-06 / 06 &middot; End of set</p>
+          <p className="annotation text-white/55">Sheet A-06 / 06 &middot; End of set</p>
         </div>
       </div>
     </section>

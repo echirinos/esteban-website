@@ -99,7 +99,7 @@ export function ModernPortfolioPage() {
                   index === workExperiences.length - 1 ? "border-b" : ""
                 }`}
               >
-                <p className="annotation pt-1.5 text-base-content/50">
+                <p className="annotation pt-1.5 text-base-content/65">
                   {company.period.replace(" - ", " — ")}
                 </p>
                 <div className="min-w-0">
@@ -117,7 +117,7 @@ export function ModernPortfolioPage() {
                       <h3 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">
                         {company.name}
                       </h3>
-                      <p className="basis-full text-sm text-base-content/55 sm:basis-auto">
+                      <p className="basis-full text-sm text-base-content/65 sm:basis-auto">
                         {company.role}
                       </p>
                     </div>
@@ -132,7 +132,7 @@ export function ModernPortfolioPage() {
                       </p>
                     </>
                   ) : (
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-base-content/60">
+                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-base-content/65">
                       {company.summary}
                     </p>
                   )}
@@ -163,7 +163,7 @@ export function ModernPortfolioPage() {
             const plate = (
               <>
                 <div className="flex items-center justify-between">
-                  <span className="annotation text-base-content/40">
+                  <span className="annotation text-base-content/65">
                     P-0{index + 1}
                   </span>
                   <span className="annotation text-primary">
@@ -177,7 +177,7 @@ export function ModernPortfolioPage() {
                   {project.description}
                 </p>
                 <div className="mt-auto flex items-start justify-between gap-3 border-t pt-4 hairline">
-                  <span className="min-w-0 pt-0.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-base-content/45">
+                  <span className="min-w-0 pt-0.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-base-content/65">
                     {project.tags.slice(0, 2).join(" · ")}
                   </span>
                   {project.href ? (
@@ -216,7 +216,7 @@ export function ModernPortfolioPage() {
             >
               <div>
                 <div className="flex items-center justify-between">
-                  <span className="annotation text-base-content/40">
+                  <span className="annotation text-base-content/65">
                     P-0{featuredProjects.length + 1}
                   </span>
                   <span className="annotation text-primary">Index</span>
@@ -230,7 +230,7 @@ export function ModernPortfolioPage() {
                 </p>
               </div>
               <div className="mt-5 border-t pt-4 hairline">
-                <span className="annotation text-base-content/40 transition group-hover:text-primary">
+                <span className="annotation text-base-content/65 transition group-hover:text-primary">
                   All projects →
                 </span>
               </div>
@@ -258,7 +258,7 @@ export function ModernPortfolioPage() {
       >
         <div className="mt-10 grid gap-10 lg:grid-cols-2">
           <DraftReveal>
-            <p className="annotation text-base-content/50">Capabilities</p>
+            <p className="annotation text-base-content/65">Capabilities</p>
             <div className="mt-4 flex flex-wrap gap-2">
               {strengthAreas.map((item) => (
                 <span
@@ -270,22 +270,22 @@ export function ModernPortfolioPage() {
               ))}
             </div>
 
-            <p className="annotation mt-8 text-base-content/50">Stack</p>
+            <p className="annotation mt-8 text-base-content/65">Stack</p>
             <p className="mt-3 max-w-xl font-mono text-[13px] leading-relaxed text-base-content/65">
               {techStack.map((tech) => tech.name).join(" · ")}
             </p>
           </DraftReveal>
 
           <DraftReveal delay={0.06}>
-            <p className="annotation text-base-content/50">Training</p>
+            <p className="annotation text-base-content/65">Training</p>
             <div className="mt-4 grid gap-px border hairline bg-[var(--hairline)]">
               {educationCredentials.map((item) => (
                 <div key={item.school} className="bg-base-100 p-4">
-                  <p className="annotation text-base-content/45">{item.school}</p>
+                  <p className="annotation text-base-content/65">{item.school}</p>
                   <p className="mt-1.5 font-display text-xl font-semibold uppercase tracking-[0.02em]">
                     {item.credential}
                   </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-base-content/60">
+                  <p className="mt-1.5 text-sm leading-relaxed text-base-content/65">
                     {item.emphasis}
                   </p>
                 </div>
