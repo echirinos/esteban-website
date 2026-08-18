@@ -30,7 +30,7 @@ export default function ContactPage() {
         />
       </SurfaceCard>
 
-      <SurfaceCard className="overflow-hidden bg-[linear-gradient(135deg,rgba(255,255,255,0.94),rgba(236,242,248,0.92))]">
+      <SurfaceCard className="overflow-hidden">
         <div className="grid gap-8 md:grid-cols-[minmax(0,1fr)_220px] md:items-center">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">

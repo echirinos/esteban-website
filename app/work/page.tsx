@@ -121,7 +121,7 @@ export default function WorkPage() {
         </div>
       </section>
 
-      <SurfaceCard className="mt-12 bg-[linear-gradient(135deg,rgba(15,118,110,0.08),rgba(191,219,254,0.38),rgba(255,255,255,0.92))]">
+      <SurfaceCard className="mt-12">
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
           <div>
             <h2 className="text-2xl font-bold tracking-tight">

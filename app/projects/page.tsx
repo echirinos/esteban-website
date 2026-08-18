@@ -36,7 +36,7 @@ export default function ProjectsPage() {
         <div className="grid gap-5 lg:grid-cols-2">
           {featuredProjects.map((project) => (
             <SurfaceCard key={project.name} className="overflow-hidden p-0">
-              <div className="grid h-40 place-items-center border-b border-base-content/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.35),rgba(224,233,242,0.7))] p-6">
+              <div className="grid h-40 place-items-center border-b border-base-content/10 bg-base-200/60 p-6">
                 {project.image ? (
                   <Image
                     alt={`${project.name} image`}
