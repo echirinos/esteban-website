@@ -72,7 +72,7 @@ export default function WorkPage() {
               <div className="mt-5 space-y-3">
                 {company.impact.map((item) => (
                   <div key={item} className="flex gap-3 text-sm text-base-content/70">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-primary" />
                     <span>{item}</span>
                   </div>
                 ))}
