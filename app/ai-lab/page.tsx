@@ -54,7 +54,7 @@ export default function AILabPage() {
           <h1 className="font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
             Ask the portfolio.
           </h1>
-          <p className="mt-5 max-w-3xl text-base leading-relaxed text-base-content/68 md:text-lg">
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-base-content/70 md:text-lg">
             This page turns the portfolio into a focused AI assistant. Ask about
             Coinbase work, AI product fit, technical depth, product judgment,
             or what a hiring team should know first.
@@ -66,7 +66,7 @@ export default function AILabPage() {
           <h2 className="mt-3 font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
             A working demo, not a generic chatbot.
           </h2>
-          <p className="mt-3 text-sm leading-relaxed text-base-content/64">
+          <p className="mt-3 text-sm leading-relaxed text-base-content/65">
             The assistant is scoped to Esteban's public portfolio. It should
             help someone understand fit, evidence, and next questions quickly.
           </p>
@@ -105,7 +105,7 @@ export default function AILabPage() {
                   <h2 className="text-sm font-bold text-base-content">
                     {signal.title}
                   </h2>
-                  <p className="mt-1 text-sm leading-relaxed text-base-content/62">
+                  <p className="mt-1 text-sm leading-relaxed text-base-content/65">
                     {signal.description}
                   </p>
                 </div>
@@ -124,7 +124,7 @@ export default function AILabPage() {
           {labTracks.map((track) => (
             <SurfaceCard key={track.title}>
               <h2 className="text-xl font-semibold leading-tight">{track.title}</h2>
-              <p className="mt-3 text-sm leading-relaxed text-base-content/68">
+              <p className="mt-3 text-sm leading-relaxed text-base-content/70">
                 {track.description}
               </p>
               <TagList items={track.outputs} className="mt-5" />
@@ -143,7 +143,7 @@ export default function AILabPage() {
             <SurfaceCard key={principle} className="p-5">
               <div className="flex gap-3">
                 <span className="mt-1 h-2 w-2 shrink-0 bg-primary" />
-                <p className="text-sm leading-relaxed text-base-content/72">
+                <p className="text-sm leading-relaxed text-base-content/70">
                   {principle}
                 </p>
               </div>

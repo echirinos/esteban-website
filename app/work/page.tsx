@@ -60,18 +60,18 @@ export default function WorkPage() {
                 </div>
                 <div>
                   <h2 className="text-2xl font-semibold">{company.name}</h2>
-                  <p className="mt-1 text-sm text-base-content/58">
+                  <p className="mt-1 text-sm text-base-content/65">
                     {company.role} • {company.period}
                   </p>
                 </div>
               </div>
-              <p className="mt-5 leading-relaxed text-base-content/68">
+              <p className="mt-5 leading-relaxed text-base-content/70">
                 {company.summary}
               </p>
               <TagList items={company.tags} className="mt-5" />
               <div className="mt-5 space-y-3">
                 {company.impact.map((item) => (
-                  <div key={item} className="flex gap-3 text-sm text-base-content/72">
+                  <div key={item} className="flex gap-3 text-sm text-base-content/70">
                     <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" />
                     <span>{item}</span>
                   </div>
@@ -110,10 +110,10 @@ export default function WorkPage() {
                 />
               </div>
               <h3 className="text-lg font-semibold">{company.name}</h3>
-              <p className="mt-1 text-sm text-base-content/58">
+              <p className="mt-1 text-sm text-base-content/65">
                 {company.role} • {company.period}
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-base-content/66">
+              <p className="mt-3 text-sm leading-relaxed text-base-content/65">
                 {company.summary}
               </p>
             </SurfaceCard>
@@ -127,7 +127,7 @@ export default function WorkPage() {
             <h2 className="text-2xl font-bold tracking-tight">
               Want the recruiter scan?
             </h2>
-            <p className="mt-3 max-w-2xl text-base-content/68">
+            <p className="mt-3 max-w-2xl text-base-content/70">
               The modern portfolio condenses the same work into applied AI,
               DevEx, product, platform, education, and shipping signals, while
               the resume page keeps the role-fit summary short.

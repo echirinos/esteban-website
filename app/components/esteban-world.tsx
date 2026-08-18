@@ -1010,13 +1010,13 @@ function LensFrame({ phase }: { phase: ExperiencePhase }) {
           <div className="absolute left-[-7rem] top-[-5%] h-[110%] w-48 rounded-r-[50%] bg-black/[0.58] blur-md md:w-64" />
           <div className="absolute right-[-7rem] top-[-5%] h-[110%] w-48 rounded-l-[50%] bg-black/[0.58] blur-md md:w-64" />
           <motion.div
-            className="absolute left-[7%] top-[8%] h-36 w-[47%] rotate-[-9deg] rounded-[999px] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),rgba(255,255,255,0.02)_58%,transparent_72%)] blur-[1px]"
+            className="absolute left-[7%] top-[8%] h-36 w-[47%] rotate-[-9deg] rounded-[999px] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),rgba(255,255,255,0.02)_58%,transparent_72%)] blur-[1px]"
             initial={{ opacity: 0, x: reduceMotion ? 0 : -18, y: reduceMotion ? 0 : 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
           />
           <motion.div
-            className="absolute right-[8%] top-[12%] h-28 w-[34%] rotate-[-11deg] rounded-[999px] border border-white/12 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_56%,transparent_76%)] blur-[1px]"
+            className="absolute right-[8%] top-[12%] h-28 w-[34%] rotate-[-11deg] rounded-[999px] border border-white/10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_56%,transparent_76%)] blur-[1px]"
             initial={{ opacity: 0, x: reduceMotion ? 0 : 18, y: reduceMotion ? 0 : 10 }}
             animate={{ opacity: 1, x: 0, y: 0 }}
             transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.12, ease: "easeOut" }}
@@ -1124,7 +1124,7 @@ function GoggleLift({ active }: { active: boolean }) {
               }
               transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
             >
-              <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
+              <div className="absolute inset-[8%] rounded-[50%] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
               <motion.div
                 className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
                 initial={{ x: "-30%" }}
@@ -1147,7 +1147,7 @@ function GoggleLift({ active }: { active: boolean }) {
               }
               transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
             >
-              <div className="absolute inset-[8%] rounded-[50%] border border-white/18 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
+              <div className="absolute inset-[8%] rounded-[50%] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
               <motion.div
                 className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
                 initial={{ x: "-30%" }}
@@ -1162,7 +1162,7 @@ function GoggleLift({ active }: { active: boolean }) {
               transition={{ duration: reduceMotion ? 0.22 : 0.42, delay: reduceMotion ? 0 : 0.26, ease: "easeOut" }}
             />
             <motion.div
-              className="absolute left-1/2 top-[46%] h-7 w-[10%] -translate-x-1/2 rounded-full bg-white/12 blur-md"
+              className="absolute left-1/2 top-[46%] h-7 w-[10%] -translate-x-1/2 rounded-full bg-white/10 blur-md"
               initial={{ opacity: 0, scaleX: 0.4 }}
               animate={{ opacity: [0, 0.65, 0.18], scaleX: [0.4, 1.16, 1] }}
               transition={{ duration: reduceMotion ? 0.22 : 0.48, delay: reduceMotion ? 0 : 0.46, ease: "easeOut" }}
@@ -1521,7 +1521,7 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
             href={item.href}
             target={item.external ? "_blank" : undefined}
             rel={item.external ? "noopener noreferrer" : undefined}
-            className="shrink-0 rounded-[2px] px-1.5 py-2 font-mono text-[9px] font-semibold uppercase leading-none tracking-[0.1em] text-white/75 transition hover:bg-white/12 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:px-2 sm:text-[11px] md:px-3"
+            className="shrink-0 rounded-[2px] px-1.5 py-2 font-mono text-[9px] font-semibold uppercase leading-none tracking-[0.1em] text-white/75 transition hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70 sm:px-2 sm:text-[11px] md:px-3"
           >
             {item.label}
           </a>
@@ -1666,7 +1666,7 @@ function WorldSelector({
                       <span className="block text-xs font-semibold leading-none">
                         {world.shortName}
                       </span>
-                      <span className="mt-1 block text-[10px] leading-none text-white/48">
+                      <span className="mt-1 block text-[10px] leading-none text-white/65">
                         {world.description}
                       </span>
                     </span>
@@ -1723,7 +1723,7 @@ function ArrivalBloom({ active }: { active: boolean }) {
             transition={{ duration: reduceMotion ? 0.3 : 0.78, ease: "easeOut" }}
           />
           <motion.div
-            className="absolute left-1/2 top-1/2 h-[54vh] w-[78vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/22 shadow-[0_0_110px_rgba(210,240,255,0.26),inset_0_0_60px_rgba(255,255,255,0.12)]"
+            className="absolute left-1/2 top-1/2 h-[54vh] w-[78vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/20 shadow-[0_0_110px_rgba(210,240,255,0.26),inset_0_0_60px_rgba(255,255,255,0.12)]"
             initial={{ scale: 0.82, opacity: 0 }}
             animate={{
               scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.12, 1.22],
@@ -2003,7 +2003,7 @@ function ProjectsView() {
             </span>
             <div>
               <p className="text-sm font-black leading-tight">{project.title}</p>
-              <p className="mt-1 text-xs leading-relaxed text-black/68">
+              <p className="mt-1 text-xs leading-relaxed text-black/70">
                 {project.detail}
               </p>
             </div>
@@ -2034,7 +2034,7 @@ function AILabView() {
         {labRows.map((item) => (
           <div key={item.label} className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]">
             <p className="text-sm font-black">{item.label}</p>
-            <p className="mt-1 text-xs leading-relaxed text-black/68">
+            <p className="mt-1 text-xs leading-relaxed text-black/70">
               {item.detail}
             </p>
             <div className="mt-3 h-2 border border-black bg-white">
@@ -2101,7 +2101,7 @@ function ResumeView() {
             <span className="h-2 w-2 shrink-0 bg-black" />
             <span>
               <span className="block text-sm font-black">{strength.label}</span>
-              <span className="mt-1 block text-xs leading-relaxed text-black/68">
+              <span className="mt-1 block text-xs leading-relaxed text-black/70">
                 {strength.detail}
               </span>
             </span>
@@ -2133,7 +2133,7 @@ function ProofPointsView() {
             <p className="mt-1 text-[11px] font-black uppercase tracking-[0.12em]">
               {row.label}
             </p>
-            <p className="mt-2 text-xs leading-relaxed text-black/72">
+            <p className="mt-2 text-xs leading-relaxed text-black/70">
               {row.detail}
             </p>
           </article>
@@ -2160,11 +2160,11 @@ function EducationView() {
             key={row.label}
             className="border border-black bg-[#f7f7f7] p-3 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)]"
           >
-            <p className="text-[11px] font-black uppercase tracking-[0.14em] text-black/58">
+            <p className="text-[11px] font-black uppercase tracking-[0.14em] text-black/65">
               {row.label}
             </p>
             <p className="mt-1 text-lg font-black">{row.value}</p>
-            <p className="mt-2 text-xs leading-relaxed text-black/72">
+            <p className="mt-2 text-xs leading-relaxed text-black/70">
               {row.detail}
             </p>
           </article>
@@ -2196,7 +2196,7 @@ function AIShippingView() {
             </span>
             <div>
               <p className="text-sm font-black">{row.label}</p>
-              <p className="mt-1 text-xs leading-relaxed text-black/72">
+              <p className="mt-1 text-xs leading-relaxed text-black/70">
                 {row.detail}
               </p>
             </div>

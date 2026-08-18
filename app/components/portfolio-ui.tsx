@@ -57,7 +57,7 @@ export function PageIntro({
         <h1 className="max-w-4xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
           {title}
         </h1>
-        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/68">
+        <p className="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/70">
           {description}
         </p>
       </div>
@@ -101,7 +101,7 @@ export function SectionHeading({
           {title}
         </h2>
         {description ? (
-          <p className="mt-3 max-w-2xl text-base leading-relaxed text-base-content/62">
+          <p className="mt-3 max-w-2xl text-base leading-relaxed text-base-content/65">
             {description}
           </p>
         ) : null}

@@ -47,14 +47,14 @@ export default function ResumePage() {
           <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Career snapshot</h2>
           <div className="mt-5 space-y-4">
             {snapshot.map((item) => (
-              <div key={item} className="flex gap-3 text-base-content/74">
+              <div key={item} className="flex gap-3 text-base-content/75">
                 <span className="mt-2 h-2 w-2 shrink-0 bg-primary" />
                 <span>{item}</span>
               </div>
             ))}
           </div>
           <div className="mt-8 rounded-[2px] border p-4 hairline bg-base-200/45">
-            <p className="text-sm font-semibold text-base-content/78">
+            <p className="text-sm font-semibold text-base-content/80">
               Experience timeline
             </p>
             <div className="mt-4 space-y-3">
@@ -62,9 +62,9 @@ export default function ResumePage() {
                 <div key={company.name} className="flex items-start justify-between gap-3">
                   <div>
                     <p className="font-medium">{company.name}</p>
-                    <p className="text-sm text-base-content/58">{company.role}</p>
+                    <p className="text-sm text-base-content/65">{company.role}</p>
                   </div>
-                  <p className="text-xs text-base-content/48">{company.period}</p>
+                  <p className="text-xs text-base-content/65">{company.period}</p>
                 </div>
               ))}
             </div>
@@ -82,11 +82,11 @@ export default function ResumePage() {
             <div className="mt-5 space-y-4">
               {educationCredentials.map((item) => (
                 <div key={item.school}>
-                  <p className="text-sm font-semibold text-base-content/52">
+                  <p className="text-sm font-semibold text-base-content/65">
                     {item.school}
                   </p>
                   <p className="mt-1 font-medium">{item.credential}</p>
-                  <p className="mt-1 text-sm leading-relaxed text-base-content/62">
+                  <p className="mt-1 text-sm leading-relaxed text-base-content/65">
                     {item.emphasis}
                   </p>
                 </div>

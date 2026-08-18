@@ -109,35 +109,35 @@ export default function ContactForm({ deliveryMode }: ContactFormProps) {
 
       <div className="grid gap-5 md:grid-cols-2">
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-base-content/72">Name</span>
+          <span className="text-sm font-medium text-base-content/70">Name</span>
           <input
             type="text"
             name="name"
             placeholder="Jane Doe"
-            className="input input-bordered h-12 rounded-2xl border-base-content/12 bg-base-100/85"
+            className="input input-bordered h-12 rounded-2xl border-base-content/10 bg-base-100/85"
             required
           />
         </label>
 
         <label className="grid gap-2">
-          <span className="text-sm font-medium text-base-content/72">Email</span>
+          <span className="text-sm font-medium text-base-content/70">Email</span>
           <input
             type="email"
             name="email"
             placeholder="jane@company.com"
-            className="input input-bordered h-12 rounded-2xl border-base-content/12 bg-base-100/85"
+            className="input input-bordered h-12 rounded-2xl border-base-content/10 bg-base-100/85"
             required
           />
         </label>
       </div>
 
       <label className="grid gap-2">
-        <span className="text-sm font-medium text-base-content/72">Message</span>
+        <span className="text-sm font-medium text-base-content/70">Message</span>
         <textarea
           name="message"
           rows={7}
           placeholder="What are you hiring for, building, or exploring?"
-          className="textarea textarea-bordered rounded-2xl border-base-content/12 bg-base-100/85"
+          className="textarea textarea-bordered rounded-2xl border-base-content/10 bg-base-100/85"
           required
         />
       </label>

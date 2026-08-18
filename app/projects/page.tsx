@@ -36,7 +36,7 @@ export default function ProjectsPage() {
         <div className="grid gap-5 lg:grid-cols-2">
           {featuredProjects.map((project) => (
             <SurfaceCard key={project.name} className="overflow-hidden p-0">
-              <div className="grid h-40 place-items-center border-b border-base-content/8 bg-[linear-gradient(180deg,rgba(255,255,255,0.35),rgba(224,233,242,0.7))] p-6">
+              <div className="grid h-40 place-items-center border-b border-base-content/10 bg-[linear-gradient(180deg,rgba(255,255,255,0.35),rgba(224,233,242,0.7))] p-6">
                 {project.image ? (
                   <Image
                     alt={`${project.name} image`}
@@ -52,13 +52,13 @@ export default function ProjectsPage() {
                 )}
               </div>
               <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/65">
                   {project.category}
                 </p>
                 <h2 className="mt-2 text-2xl font-semibold leading-tight">
                   {project.name}
                 </h2>
-                <p className="mt-3 leading-relaxed text-base-content/68">
+                <p className="mt-3 leading-relaxed text-base-content/70">
                   {project.description}
                 </p>
                 <TagList items={project.tags} className="mt-5" />
@@ -88,13 +88,13 @@ export default function ProjectsPage() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {supportingProjects.map((project) => (
             <SurfaceCard key={project.name} className="p-5">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/42">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/65">
                 {project.category}
               </p>
               <h3 className="mt-2 text-lg font-semibold leading-tight">
                 {project.name}
               </h3>
-              <p className="mt-3 text-sm leading-relaxed text-base-content/66">
+              <p className="mt-3 text-sm leading-relaxed text-base-content/65">
                 {project.description}
               </p>
               <TagList items={project.tags} className="mt-4" />

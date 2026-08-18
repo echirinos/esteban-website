@@ -39,11 +39,11 @@ export default function ContactPage() {
             <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-tight md:text-4xl">
               Send a LinkedIn message with the role, team, and context.
             </h2>
-            <p className="mt-4 max-w-2xl text-base leading-relaxed text-base-content/64">
+            <p className="mt-4 max-w-2xl text-base leading-relaxed text-base-content/65">
               No contact form or extra channels here. LinkedIn keeps the
               conversation clear and easy to follow up on.
             </p>
-            <ul className="mt-6 grid gap-3 text-sm leading-relaxed text-base-content/68">
+            <ul className="mt-6 grid gap-3 text-sm leading-relaxed text-base-content/70">
               {outreachNotes.map((note) => (
                 <li key={note} className="flex gap-3">
                   <span className="mt-2 h-1.5 w-1.5 shrink-0 bg-primary" />

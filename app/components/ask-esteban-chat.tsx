@@ -272,7 +272,7 @@ export function AskEstebanChat({
             disabled={isPending}
           />
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-base-content/10 px-2 pt-2">
-            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-base-content/42">
+            <span className="text-[10px] font-bold uppercase tracking-[0.16em] text-base-content/65">
               Public portfolio context + source labels
             </span>
             <button
@@ -384,9 +384,9 @@ export function AskEstebanChat({
         className={cx(
           "max-w-2xl leading-relaxed",
           isLab
-            ? "text-sm text-base-content/68"
+            ? "text-sm text-base-content/70"
             : isHome
-              ? "text-sm text-base-content/64"
+              ? "text-sm text-base-content/65"
               : "hidden text-xs text-black/75 sm:block"
         )}
       >
@@ -438,9 +438,9 @@ export function AskEstebanChat({
                         ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
                         : "ml-auto max-w-[86%] bg-black text-white"
                     : isLab
-                      ? "mr-auto max-w-[96%] border-base-content/12 bg-base-100 text-base-content"
+                      ? "mr-auto max-w-[96%] border-base-content/10 bg-base-100 text-base-content"
                       : isHome
-                        ? "mr-auto max-w-[96%] border-base-content/12 bg-base-100 text-base-content"
+                        ? "mr-auto max-w-[96%] border-base-content/10 bg-base-100 text-base-content"
                         : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
                 )}
               >
@@ -493,7 +493,7 @@ export function AskEstebanChat({
           {isLab ? (
             <div className="rounded-[2px] border border-primary/40 bg-primary/5 px-4 py-3">
               <p className="annotation text-primary">Question templates</p>
-              <p className="mt-1.5 text-xs leading-relaxed text-base-content/62">
+              <p className="mt-1.5 text-xs leading-relaxed text-base-content/65">
                 Start with the questions hiring teams usually ask first.
               </p>
             </div>
