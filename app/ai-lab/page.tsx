@@ -102,7 +102,7 @@ export default function AILabPage() {
                   key={signal.title}
                   className="border-t border-base-content/10 pt-4 first:border-t-0 first:pt-0"
                 >
-                  <h2 className="text-sm font-bold text-base-content">
+                  <h2 className="annotation text-base-content">
                     {signal.title}
                   </h2>
                   <p className="mt-1 text-sm leading-relaxed text-base-content/65">
@@ -123,7 +123,7 @@ export default function AILabPage() {
         <div className="grid gap-5 md:grid-cols-3">
           {labTracks.map((track) => (
             <SurfaceCard key={track.title}>
-              <h2 className="text-xl font-semibold leading-tight">{track.title}</h2>
+              <h2 className="font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">{track.title}</h2>
               <p className="mt-3 text-sm leading-relaxed text-base-content/70">
                 {track.description}
               </p>

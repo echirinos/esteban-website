@@ -36,7 +36,7 @@ export default function ContactPage() {
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-primary">
               Preferred contact
             </p>
-            <h2 className="mt-3 max-w-2xl text-3xl font-bold leading-tight md:text-4xl">
+            <h2 className="mt-3 max-w-2xl font-display text-3xl font-semibold uppercase leading-[1.02] tracking-[0.02em] md:text-4xl">
               Send a LinkedIn message with the role, team, and context.
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-relaxed text-base-content/65">

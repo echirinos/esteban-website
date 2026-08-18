@@ -73,12 +73,12 @@ export default function ResumePage() {
 
         <div className="grid gap-5">
           <SurfaceCard>
-            <h2 className="text-2xl font-semibold">Role fit</h2>
+            <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Role fit</h2>
             <TagList items={roleFit} className="mt-5" />
           </SurfaceCard>
 
           <SurfaceCard>
-            <h2 className="text-2xl font-semibold">Education</h2>
+            <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Education</h2>
             <div className="mt-5 space-y-4">
               {educationCredentials.map((item) => (
                 <div key={item.school}>
@@ -95,12 +95,12 @@ export default function ResumePage() {
           </SurfaceCard>
 
           <SurfaceCard>
-            <h2 className="text-2xl font-semibold">Certifications</h2>
+            <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Certifications</h2>
             <TagList items={certificationHighlights} className="mt-5" />
           </SurfaceCard>
 
           <SurfaceCard>
-            <h2 className="text-2xl font-semibold">Strengths</h2>
+            <h2 className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">Strengths</h2>
             <TagList items={strengthAreas} className="mt-5" />
             <div className="mt-6 flex flex-wrap gap-3">
               <Link href="/work" className="draft-btn draft-btn-fill">

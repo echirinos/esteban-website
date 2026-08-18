@@ -59,7 +59,7 @@ export default function WorkPage() {
                   />
                 </div>
                 <div>
-                  <h2 className="text-2xl font-semibold">{company.name}</h2>
+                  <h2 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">{company.name}</h2>
                   <p className="mt-1 text-sm text-base-content/65">
                     {company.role} • {company.period}
                   </p>
@@ -109,7 +109,7 @@ export default function WorkPage() {
                   className="max-h-9 w-auto object-contain"
                 />
               </div>
-              <h3 className="text-lg font-semibold">{company.name}</h3>
+              <h3 className="font-display text-2xl font-semibold uppercase leading-none tracking-[0.02em]">{company.name}</h3>
               <p className="mt-1 text-sm text-base-content/65">
                 {company.role} • {company.period}
               </p>
@@ -124,7 +124,7 @@ export default function WorkPage() {
       <SurfaceCard className="mt-12">
         <div className="grid gap-5 md:grid-cols-[1fr_auto] md:items-center">
           <div>
-            <h2 className="text-2xl font-bold tracking-tight">
+            <h2 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">
               Want the recruiter scan?
             </h2>
             <p className="mt-3 max-w-2xl text-base-content/70">

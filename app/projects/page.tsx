@@ -55,7 +55,7 @@ export default function ProjectsPage() {
                 <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/65">
                   {project.category}
                 </p>
-                <h2 className="mt-2 text-2xl font-semibold leading-tight">
+                <h2 className="mt-2 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
                   {project.name}
                 </h2>
                 <p className="mt-3 leading-relaxed text-base-content/70">
@@ -91,7 +91,7 @@ export default function ProjectsPage() {
               <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/65">
                 {project.category}
               </p>
-              <h3 className="mt-2 text-lg font-semibold leading-tight">
+              <h3 className="mt-2 font-display text-xl font-semibold uppercase leading-[1.05] tracking-[0.02em]">
                 {project.name}
               </h3>
               <p className="mt-3 text-sm leading-relaxed text-base-content/65">
