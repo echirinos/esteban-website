@@ -64,7 +64,7 @@ function PendingStatus() {
   return (
     <p className="mt-2 text-xs font-bold">
       {pendingStages[stage]}
-      <span className="ml-1 inline-block h-3 w-1.5 translate-y-[2px] animate-pulse bg-current opacity-70" />
+      <span className="ml-1 inline-block h-3 w-1.5 translate-y-[2px] animate-pulse bg-current opacity-70 motion-reduce:animate-none" />
     </p>
   );
 }

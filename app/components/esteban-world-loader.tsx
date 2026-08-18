@@ -23,7 +23,7 @@ const EstebanWorld = dynamic(
             Esteban Chirinos
           </h1>
           <div className="mx-auto mt-8 h-1 max-w-52 overflow-hidden border border-white/25 bg-white/10">
-            <div className="h-full w-2/3 animate-[pulse_1.1s_ease-in-out_infinite] bg-[#ff7e4b]" />
+            <div className="h-full w-2/3 animate-[pulse_1.1s_ease-in-out_infinite] bg-[#ff7e4b] motion-reduce:animate-none" />
           </div>
         </div>
       </section>

@@ -1414,7 +1414,7 @@ function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
         whileTap={reduceMotion ? undefined : { y: 1, scale: 0.985 }}
         transition={{ type: "spring", stiffness: 520, damping: 30 }}
       >
-        <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse bg-white shadow-[0_0_14px_rgba(255,255,255,0.85)] transition group-hover:scale-125" />
+        <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse bg-white shadow-[0_0_14px_rgba(255,255,255,0.85)] transition group-hover:scale-125 motion-reduce:animate-none" />
         Enter lens
       </motion.button>
     </motion.div>
