@@ -108,6 +108,10 @@ export default function RootLayout({
             __html: `(function(){try{var t=localStorage.getItem("theme");if(t!=="light"&&t!=="dark"){t=window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light"}document.documentElement.dataset.theme=t}catch(e){}})();`,
           }}
         />
+        {/* Draft-reveal elements ship opacity:0 in SSR HTML; without JS they must render visible */}
+        <noscript>
+          <style>{`[data-draft]{opacity:1 !important;transform:none !important}`}</style>
+        </noscript>
       </head>
       <body className="antialiased relative">
         <LenisProvider />

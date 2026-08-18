@@ -43,6 +43,7 @@ export function DraftReveal({
 
   return (
     <motion.div
+      data-draft=""
       className={className}
       initial={reduceMotion ? false : { opacity: 0, y: 22 }}
       whileInView={reduceMotion ? undefined : { opacity: 1, y: 0 }}
@@ -84,7 +85,7 @@ export function DraftItem({
   className?: string;
 }) {
   return (
-    <motion.div className={className} variants={staggerItem}>
+    <motion.div data-draft="" className={className} variants={staggerItem}>
       {children}
     </motion.div>
   );
@@ -96,6 +97,7 @@ export function RuleDraw({ className }: { className?: string }) {
 
   return (
     <motion.span
+      data-draft=""
       aria-hidden="true"
       className={className ?? "block h-px w-full bg-[var(--hairline)]"}
       style={{ originX: 0 }}
@@ -128,6 +130,7 @@ export function DimensionRule({
   return (
     <div className={`relative flex items-center gap-3 ${className ?? ""}`}>
       <motion.span
+        data-draft=""
         aria-hidden="true"
         className={`h-3 w-px shrink-0 ${lineColor}`}
         initial={reduceMotion ? false : { opacity: 0 }}
@@ -135,6 +138,7 @@ export function DimensionRule({
         transition={{ duration: 0.3, delay }}
       />
       <motion.span
+        data-draft=""
         aria-hidden="true"
         className={`h-px flex-1 ${lineColor}`}
         style={{ originX: 0 }}
@@ -143,6 +147,7 @@ export function DimensionRule({
         transition={{ duration: 0.9, delay, ease: draftEase }}
       />
       <motion.span
+        data-draft=""
         className={`annotation shrink-0 ${textColor}`}
         initial={reduceMotion ? false : { opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -151,6 +156,7 @@ export function DimensionRule({
         {label}
       </motion.span>
       <motion.span
+        data-draft=""
         aria-hidden="true"
         className={`h-px flex-1 ${lineColor}`}
         style={{ originX: 1 }}
@@ -159,6 +165,7 @@ export function DimensionRule({
         transition={{ duration: 0.9, delay, ease: draftEase }}
       />
       <motion.span
+        data-draft=""
         aria-hidden="true"
         className={`h-3 w-px shrink-0 ${lineColor}`}
         initial={reduceMotion ? false : { opacity: 0 }}

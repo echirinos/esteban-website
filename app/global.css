@@ -335,3 +335,11 @@ table {
 .title {
   text-wrap: balance;
 }
+
+/* Draft-reveal content must never be invisible on paper */
+@media print {
+  [data-draft] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}

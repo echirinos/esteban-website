@@ -82,6 +82,7 @@ export function BlueprintHero() {
 
       {/* Sheet frame with registration marks */}
       <motion.div
+        data-draft=""
         aria-hidden="true"
         className="pointer-events-none absolute inset-3 border border-white/25 sm:inset-5"
         initial={reduceMotion ? false : { opacity: 0 }}
@@ -101,6 +102,7 @@ export function BlueprintHero() {
         style={reduceMotion ? undefined : { y: contentY, opacity: contentOpacity }}
       >
         <motion.p
+          data-draft=""
           className="annotation text-white/60"
           variants={riseIn}
           custom={0.05}
@@ -116,6 +118,7 @@ export function BlueprintHero() {
         >
           <span className="block overflow-hidden">
             <motion.span
+              data-draft=""
               className="block text-[clamp(4.5rem,19vw,12.5rem)]"
               variants={lineRise}
               custom={0.12}
@@ -125,6 +128,7 @@ export function BlueprintHero() {
           </span>
           <span className="block overflow-hidden">
             <motion.span
+              data-draft=""
               className="block text-[clamp(4.5rem,19vw,12.5rem)]"
               variants={lineRise}
               custom={0.22}
@@ -139,6 +143,7 @@ export function BlueprintHero() {
         </div>
 
         <motion.p
+          data-draft=""
           className="mt-8 max-w-xl text-lg leading-relaxed text-white/80"
           variants={riseIn}
           custom={0.5}
@@ -149,6 +154,7 @@ export function BlueprintHero() {
         </motion.p>
 
         <motion.div
+          data-draft=""
           className="mt-9 flex flex-wrap items-center gap-3"
           variants={riseIn}
           custom={0.62}
@@ -168,7 +174,7 @@ export function BlueprintHero() {
         </motion.div>
 
         {/* Title block */}
-        <motion.div className="mt-14 lg:mt-20" variants={riseIn} custom={0.74}>
+        <motion.div data-draft="" className="mt-14 lg:mt-20" variants={riseIn} custom={0.74}>
           <div className="grid grid-cols-2 gap-px border border-white/25 bg-white/25 sm:grid-cols-3 lg:grid-cols-6">
             <div className={`${HERO_FIELD} col-span-2 flex items-center gap-4 p-4 sm:col-span-3 lg:col-span-2`}>
               <Image
