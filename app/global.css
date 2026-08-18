@@ -10,7 +10,7 @@
 :root {
   --accent-1: #2343b4;
   --accent-2: #14276b;
-  --accent-3: #d9530b;
+  --accent-3: #c24a08;
   --subtle-glow: rgba(35, 67, 180, 0.14);
   --grid-line: rgba(35, 67, 180, 0.09);
   --grid-line-major: rgba(35, 67, 180, 0.16);
@@ -25,7 +25,7 @@
   --rgb-primary-content: 255 255 255;
   --rgb-secondary: 20 39 107;
   --rgb-secondary-content: 237 241 255;
-  --rgb-accent: 217 83 11;
+  --rgb-accent: 194 74 8;
   --rgb-accent-content: 255 255 255;
 }
 
@@ -43,10 +43,10 @@
   --color-secondary: #14276b;
   --color-secondary-content: #edf1ff;
 
-  --accent: #d9530b;
+  --accent: #c24a08;
   --accent-focus: #b34209;
   --accent-content: #ffffff;
-  --color-accent: #d9530b;
+  --color-accent: #c24a08;
   --color-accent-content: #ffffff;
 
   --base-100: #f4f4ef;
