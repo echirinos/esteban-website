@@ -138,13 +138,12 @@
   --sh-entity: #e25a1c;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --sh-class: #4c97f8;
-    --sh-identifier: white;
-    --sh-keyword: #f47067;
-    --sh-string: #0fa295;
-  }
+/* Code colors follow the site theme toggle, not the OS preference */
+:is(:root:has(input.theme-controller[value="dark"]:checked), [data-theme="dark"]) {
+  --sh-class: #4c97f8;
+  --sh-identifier: white;
+  --sh-keyword: #f47067;
+  --sh-string: #0fa295;
 }
 
 html {
