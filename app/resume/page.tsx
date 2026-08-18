@@ -55,17 +55,19 @@ export default function ResumePage() {
             ))}
           </div>
           <div className="mt-8 rounded-[2px] border p-4 hairline bg-base-200/45">
-            <p className="text-sm font-semibold text-base-content/80">
+            <p className="font-display text-2xl font-semibold uppercase tracking-[0.02em]">
               Experience timeline
             </p>
             <div className="mt-4 space-y-3">
               {workExperiences.map((company) => (
                 <div key={company.name} className="flex items-start justify-between gap-3">
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium">{company.name}</p>
                     <p className="text-sm text-base-content/65">{company.role}</p>
                   </div>
-                  <p className="text-xs text-base-content/65">{company.period}</p>
+                  <p className="annotation max-w-[45%] pt-1 text-right leading-relaxed text-base-content/65">
+                    {company.period.replace(" - ", " — ")}
+                  </p>
                 </div>
               ))}
             </div>
