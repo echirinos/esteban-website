@@ -35,28 +35,26 @@ export default function ProjectsPage() {
           description="The strongest portfolio signal is the shipped work that combines product clarity, technical implementation, and audience adoption."
         />
         <div className="grid gap-5 lg:grid-cols-2">
-          {featuredProjects.map((project) => (
-            <SurfaceCard key={project.name} className="overflow-hidden p-0">
-              <div className="grid h-40 place-items-center border-b border-base-content/10 bg-base-200/60 p-6">
-                {project.image ? (
-                  <Image
-                    alt={`${project.name} image`}
-                    src={project.image}
-                    width={360}
-                    height={160}
-                    className="max-h-24 w-auto object-contain"
-                  />
-                ) : (
-                  <span className="text-sm font-semibold text-base-content/50">
-                    {project.category}
-                  </span>
-                )}
-              </div>
-              <div className="p-6">
-                <p className="text-xs font-semibold uppercase tracking-[0.18em] text-base-content/65">
+          {featuredProjects.map((project, index) => (
+            <SurfaceCard
+              key={project.name}
+              className="flex h-full flex-col overflow-hidden p-0"
+            >
+              {/* Numbered plate header: five cards shared the same logo art,
+                  so the drafting device carries the variety instead */}
+              <div className="sheet-grid flex h-40 items-end justify-between border-b p-6 hairline">
+                <span
+                  aria-hidden="true"
+                  className="font-display text-6xl font-semibold uppercase leading-none text-base-content/15"
+                >
+                  P-0{index + 1}
+                </span>
+                <span className="annotation text-primary">
                   {project.category}
-                </p>
-                <h2 className="mt-2 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
+                </span>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <h2 className="font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
                   {project.name}
                 </h2>
                 <p className="mt-3 leading-relaxed text-base-content/70">
@@ -64,7 +62,7 @@ export default function ProjectsPage() {
                 </p>
                 <TagList items={project.tags} className="mt-5" />
                 {project.href ? (
-                  <div className="mt-6">
+                  <div className="mt-auto pt-6">
                     <a
                       href={project.href}
                       target="_blank"
