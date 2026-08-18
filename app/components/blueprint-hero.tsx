@@ -38,7 +38,7 @@ const titleBlockCells = [
   { label: "Location", value: "Miami, FL", detail: "Open to SF Bay + remote" },
   { label: "Education", value: "Berkeley Haas", detail: "MBA, expected 2028" },
   { label: "Focus", value: "Applied AI", detail: "DevEx / technical product" },
-  { label: "Rev", value: "2026.07", detail: "Portfolio revision" },
+  { label: "Rev", value: "2026.08", detail: "Portfolio revision" },
   { label: "Sheet", value: "A-01 / 06", detail: "Title sheet" },
 ];
 

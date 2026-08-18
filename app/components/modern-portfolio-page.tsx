@@ -193,7 +193,7 @@ export function ModernPortfolioPage() {
                     {project.tags.slice(0, 2).join(" · ")}
                   </span>
                   {project.href ? (
-                    <span className="annotation shrink-0 text-base-content/40 transition group-hover:text-primary">
+                    <span className="annotation shrink-0 text-base-content/65 transition group-hover:text-primary">
                       Open ↗
                     </span>
                   ) : null}
