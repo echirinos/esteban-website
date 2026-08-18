@@ -105,13 +105,22 @@ export function ModernPortfolioPage() {
                 <div className="min-w-0">
                   <div className="flex items-center gap-3 sm:gap-4">
                     <span className="grid h-10 w-10 shrink-0 place-items-center border hairline bg-white p-1.5">
-                      <Image
-                        alt={`${company.name} logo`}
-                        src={company.logo}
-                        width={48}
-                        height={48}
-                        className="max-h-6 w-auto max-w-full object-contain"
-                      />
+                      {company.monogram ? (
+                        <span
+                          aria-hidden="true"
+                          className="font-display text-[13px] font-bold uppercase leading-none text-[#131c3b]"
+                        >
+                          {company.monogram}
+                        </span>
+                      ) : (
+                        <Image
+                          alt={`${company.name} logo`}
+                          src={company.logo}
+                          width={48}
+                          height={48}
+                          className="max-h-6 w-auto max-w-full object-contain"
+                        />
+                      )}
                     </span>
                     <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
                       <h3 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">

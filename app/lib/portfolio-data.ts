@@ -12,6 +12,9 @@ export type EducationCredential = {
 export type WorkExperience = {
   name: string;
   logo: string;
+  /* Display monogram instead of the logo image when the only available
+     asset is a wide wordmark that turns illegible in a square box. */
+  monogram?: string;
   role: string;
   period: string;
   url: string;
@@ -173,6 +176,7 @@ export const workExperiences: WorkExperience[] = [
   {
     name: "JPMorgan Chase",
     logo: "/images/J_P_Morgan_Logo_2008.svg",
+    monogram: "JPM",
     role: "Software Engineering Intern",
     period: "May 2019 - August 2019",
     url: "https://www.jpmorganchase.com/",

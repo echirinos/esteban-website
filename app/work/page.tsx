@@ -50,13 +50,22 @@ export default function WorkPage() {
             <SurfaceCard key={company.name}>
               <div className="flex items-start gap-4">
                 <div className="grid h-16 w-16 shrink-0 place-items-center rounded-[2px] border p-3 hairline bg-white">
-                  <Image
-                    alt={`${company.name} logo`}
-                    src={company.logo}
-                    width={72}
-                    height={72}
-                    className="max-h-11 w-auto object-contain"
-                  />
+                  {company.monogram ? (
+                    <span
+                      aria-hidden="true"
+                      className="font-display text-xl font-bold uppercase leading-none text-[#131c3b]"
+                    >
+                      {company.monogram}
+                    </span>
+                  ) : (
+                    <Image
+                      alt={`${company.name} logo`}
+                      src={company.logo}
+                      width={72}
+                      height={72}
+                      className="max-h-11 w-auto object-contain"
+                    />
+                  )}
                 </div>
                 <div>
                   <h2 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">{company.name}</h2>
@@ -101,13 +110,22 @@ export default function WorkPage() {
           {supportingWork.map((company) => (
             <SurfaceCard key={company.name} className="p-5">
               <div className="mb-4 grid h-14 w-14 place-items-center rounded-[2px] border p-3 hairline bg-white">
-                <Image
-                  alt={`${company.name} logo`}
-                  src={company.logo}
-                  width={72}
-                  height={72}
-                  className="max-h-9 w-auto object-contain"
-                />
+                {company.monogram ? (
+                  <span
+                    aria-hidden="true"
+                    className="font-display text-lg font-bold uppercase leading-none text-[#131c3b]"
+                  >
+                    {company.monogram}
+                  </span>
+                ) : (
+                  <Image
+                    alt={`${company.name} logo`}
+                    src={company.logo}
+                    width={72}
+                    height={72}
+                    className="max-h-9 w-auto object-contain"
+                  />
+                )}
               </div>
               <h3 className="font-display text-2xl font-semibold uppercase leading-none tracking-[0.02em]">{company.name}</h3>
               <p className="mt-1 text-sm text-base-content/65">
