@@ -334,7 +334,7 @@ export function BlueprintContact() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={social.label}
-                className="text-white/50 transition-colors hover:text-white"
+                className="grid h-11 w-11 place-items-center text-white/50 transition-colors hover:text-white"
               >
                 <social.icon className="h-[18px] w-[18px]" aria-hidden="true" />
               </a>

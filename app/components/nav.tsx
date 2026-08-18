@@ -28,7 +28,7 @@ function renderMenuItems(pathname: string) {
         <Link
           href={href}
           {...linkProps}
-          className={`annotation block rounded-[2px] px-3 py-2 transition ${
+          className={`annotation flex min-h-11 items-center rounded-[2px] px-3 py-2 transition ${
             isActive
               ? "text-primary"
               : "text-base-content/70 hover:text-base-content"

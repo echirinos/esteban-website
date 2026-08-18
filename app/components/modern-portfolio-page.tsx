@@ -63,7 +63,7 @@ function SheetLink({
   external?: boolean;
 }) {
   const className =
-    "annotation text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current";
+    "annotation inline-flex min-h-11 items-center text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current";
 
   if (external) {
     return (
