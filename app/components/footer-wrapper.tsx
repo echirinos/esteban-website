@@ -49,13 +49,13 @@ export function FooterWrapper() {
         </nav>
         <div className="flex gap-4">
           <a
-            href="https://x.com/estebano_c"
+            href="https://www.linkedin.com/in/esteban-chirinos/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Twitter"
+            aria-label="LinkedIn"
             className="grid h-11 w-11 place-items-center text-base-content/60 transition-colors hover:text-primary"
           >
-            <FaXTwitter className="h-[18px] w-[18px]" aria-hidden="true" />
+            <FaLinkedin className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>
           <a
             href="https://github.com/echirinos"
@@ -67,13 +67,13 @@ export function FooterWrapper() {
             <FaGithub className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>
           <a
-            href="https://www.linkedin.com/in/esteban-chirinos/"
+            href="https://x.com/estebano_c"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="LinkedIn"
+            aria-label="Twitter"
             className="grid h-11 w-11 place-items-center text-base-content/60 transition-colors hover:text-primary"
           >
-            <FaLinkedin className="h-[18px] w-[18px]" aria-hidden="true" />
+            <FaXTwitter className="h-[18px] w-[18px]" aria-hidden="true" />
           </a>
         </div>
       </div>
