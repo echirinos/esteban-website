@@ -107,3 +107,39 @@ test('mobile homepage has no horizontal overflow', async ({ page }) => {
 
   expect(overflow.scrollWidth).toBeLessThanOrEqual(overflow.clientWidth + 1);
 });
+
+test('mobile menu opens, reports state, and closes on Escape', async ({
+  page,
+  isMobile,
+}) => {
+  test.skip(!isMobile, 'hamburger menu only exists below md');
+
+  await page.goto('/');
+
+  const trigger = page.getByRole('button', { name: 'Open navigation' });
+
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await trigger.click();
+  await expect(trigger).toHaveAttribute('aria-expanded', 'true');
+  await expect(page.locator('#mobile-nav-menu')).toBeVisible();
+
+  await page.keyboard.press('Escape');
+  await expect(trigger).toHaveAttribute('aria-expanded', 'false');
+  await expect(page.locator('#mobile-nav-menu')).toHaveCount(0);
+});
+
+test.describe('draft reveals without JavaScript', () => {
+  test.use({ javaScriptEnabled: false });
+
+  test('homepage sections are visible when JS never runs', async ({ page }) => {
+    await page.goto('/');
+
+    await expect(
+      page.getByRole('heading', { name: 'Selected work' })
+    ).toBeVisible();
+    await expect(
+      page.getByRole('heading', { name: 'What I have built' })
+    ).toBeVisible();
+    await expect(page.getByRole('heading', { name: 'How I work' })).toBeVisible();
+  });
+});
