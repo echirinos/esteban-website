@@ -115,9 +115,8 @@ export default function RootLayout({
       </head>
       <body className="antialiased relative">
         <LenisProvider />
+        <NavbarWrapper />
         <main className="flex-auto min-w-0 flex flex-col relative z-10">
-          <NavbarWrapper />
-
           {children}
           <Analytics />
           <SpeedInsights />
