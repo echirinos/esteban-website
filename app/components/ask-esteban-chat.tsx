@@ -267,7 +267,7 @@ export function AskEstebanChat({
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder="Ask about Coinbase, role fit, proof points, or technical depth..."
-            className="min-h-28 w-full resize-none rounded-md bg-transparent px-3 py-3 text-sm font-semibold leading-relaxed outline-none placeholder:text-base-content/35 disabled:opacity-50"
+            className="min-h-28 w-full resize-none rounded-[2px] bg-transparent px-3 py-3 text-sm font-semibold leading-relaxed outline-none placeholder:text-base-content/35 disabled:opacity-50"
             maxLength={500}
             disabled={isPending}
           />
