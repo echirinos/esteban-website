@@ -208,7 +208,7 @@ body {
  * directly to guarantee a real background over dark sections.
  */
 .site-header {
-  background-color: color-mix(in srgb, var(--base-100) 92%, transparent);
+  background-color: color-mix(in srgb, var(--base-100) 97%, transparent);
 }
 
 /* Drafting buttons: rectangular, mono caps labels */
