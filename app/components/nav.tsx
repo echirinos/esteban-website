@@ -2,8 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { motion, useScroll, useSpring } from "framer-motion";
-import { useEffect, useState } from "react";
+import { motion, useReducedMotion, useScroll, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 
 const navItems = [
   { href: "/", name: "Home" },
@@ -28,6 +28,7 @@ function renderMenuItems(pathname: string) {
         <Link
           href={href}
           {...linkProps}
+          aria-current={isActive ? "page" : undefined}
           className={`annotation flex min-h-11 items-center rounded-[2px] px-3 py-2 transition ${
             isActive
               ? "text-primary"
@@ -43,8 +44,9 @@ function renderMenuItems(pathname: string) {
 }
 
 function ScrollProgress() {
+  const reduceMotion = useReducedMotion();
   const { scrollYProgress } = useScroll();
-  const scaleX = useSpring(scrollYProgress, {
+  const springX = useSpring(scrollYProgress, {
     stiffness: 150,
     damping: 28,
     mass: 0.4,
@@ -54,8 +56,77 @@ function ScrollProgress() {
     <motion.span
       aria-hidden="true"
       className="absolute bottom-[-1px] left-0 right-0 h-[2px] origin-left bg-primary"
-      style={{ scaleX }}
+      style={{ scaleX: reduceMotion ? scrollYProgress : springX }}
     />
+  );
+}
+
+function MobileMenu({ pathname }: { pathname: string }) {
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement | null>(null);
+
+  // Close when the route changes (link taps) so the panel never lingers.
+  useEffect(() => {
+    setOpen(false);
+  }, [pathname]);
+
+  useEffect(() => {
+    if (!open) return;
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") setOpen(false);
+    };
+    const onPointerDown = (event: PointerEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setOpen(false);
+      }
+    };
+    document.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={containerRef} className="relative md:hidden">
+      <button
+        type="button"
+        className="btn btn-ghost h-11 min-h-11 w-11 rounded-[2px] px-2"
+        aria-label="Open navigation"
+        aria-expanded={open}
+        aria-controls="mobile-nav-menu"
+        onClick={() => setOpen((value) => !value)}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="1.5"
+            d="M4 6h16M4 12h8m-8 6h16"
+          />
+        </svg>
+      </button>
+      {open ? (
+        <nav aria-label="Primary navigation">
+          <ul
+            id="mobile-nav-menu"
+            className="menu absolute left-0 top-full z-[50] mt-2 w-56 gap-0.5 rounded-[2px] border hairline bg-base-100 p-2"
+          >
+            {renderMenuItems(pathname)}
+          </ul>
+        </nav>
+      ) : null}
+    </div>
   );
 }
 
@@ -82,35 +153,7 @@ export function Navbar() {
     <header className="site-header sticky top-0 z-40 border-b hairline backdrop-blur-md">
       <div className="mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
         <div className="flex items-center gap-1">
-          <div className="dropdown md:hidden">
-            <div
-              tabIndex={0}
-              role="button"
-              className="btn btn-ghost h-11 min-h-11 w-11 rounded-[2px] px-2"
-              aria-label="Open navigation"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="1.5"
-                  d="M4 6h16M4 12h8m-8 6h16"
-                />
-              </svg>
-            </div>
-            <ul
-              tabIndex={0}
-              className="dropdown-content menu z-[50] mt-3 w-56 gap-0.5 rounded-[2px] border hairline bg-base-100 p-2 shadow-xl"
-            >
-              {renderMenuItems(pathname)}
-            </ul>
-          </div>
+          <MobileMenu pathname={pathname} />
           <Link
             href="/"
             className="px-1 font-display text-lg font-semibold uppercase tracking-[0.06em] text-base-content transition hover:text-primary sm:px-2"
