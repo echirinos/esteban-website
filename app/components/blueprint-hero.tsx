@@ -34,7 +34,7 @@ const lineRise: Variants = {
 };
 
 const titleBlockCells = [
-  { label: "Current", value: "Coinbase", detail: "Sr. Technical Solutions Engineer" },
+  { label: "Current", value: "Privy · Stripe", detail: "Founding Solutions Engineer" },
   { label: "Location", value: "Miami, FL", detail: "Open to SF Bay + remote" },
   { label: "Education", value: "Berkeley Haas", detail: "MBA, expected 2028" },
   { label: "Focus", value: "Applied AI", detail: "DevEx / technical product" },
@@ -43,7 +43,7 @@ const titleBlockCells = [
 ];
 
 const heroQuantities = [
-  "$20M revenue supported",
+  "$30M revenue supported",
   "30+ partner integrations",
   "2,000+ monthly demo users",
 ];

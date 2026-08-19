@@ -269,10 +269,16 @@ const reducedTransitionDurationMs = 540;
 
 const workRows = [
   {
+    title: "Privy · Stripe",
+    meta: "Founding Solutions Engineer",
+    detail:
+      "Privy's first SE, building the solutions engineering function from the ground up as Privy scales inside Stripe — embedded wallets and crypto infrastructure for teams shipping onchain.",
+  },
+  {
     title: "Coinbase",
     meta: "Developer platform / AI workflows",
     detail:
-      "Owns partner integrations and developer friction across Onramp, wallets, trading, x402, AgentKit, and CDP, then turns repeated questions into demos, docs, tools, and product recommendations.",
+      "Owned partner integrations and developer friction across Onramp, wallets, trading, x402, AgentKit, and CDP, then turned repeated questions into demos, docs, tools, and product recommendations.",
   },
   {
     title: "TRM Labs",
@@ -369,7 +375,7 @@ const resumeRows = [
 
 const proofPointRows = [
   {
-    value: "$20M",
+    value: "$30M",
     label: "revenue impact supported",
     detail: "Strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade.",
   },
@@ -419,9 +425,9 @@ const proofPointRows = [
     detail: "Internal and customer-facing tools to make workflows easier to operate.",
   },
   {
-    value: "7+",
+    value: "8+",
     label: "companies shipped at",
-    detail: "Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.",
+    detail: "Privy (Stripe), Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.",
   },
 ];
 

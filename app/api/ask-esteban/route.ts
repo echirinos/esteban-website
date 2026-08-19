@@ -57,7 +57,8 @@ function hasTextSignal(text: string, signal: string) {
 
 const estebanContext = [
   "Identity: Esteban Chirinos.",
-  "Current role: Senior Technical Solutions Engineer at Coinbase Developer Platform, April 2024 to present.",
+  "Current role: Founding Solutions Engineer at Privy (acquired by Stripe), July 2026 to present — Privy's first SE, building the solutions engineering function from the ground up as Privy scales inside Stripe.",
+  "Previous role: Senior Technical Solutions Engineer at Coinbase Developer Platform, April 2024 to June 2026.",
   `Role fit: ${roleFit.join(", ")}.`,
   `Portfolio metrics: ${portfolioMetrics.map((metric) => `${metric.value} ${metric.label}`).join("; ")}.`,
   `Strength areas: ${strengthAreas.join(", ")}.`,
@@ -79,11 +80,11 @@ const estebanContext = [
 
 const sourceMap = [
   {
-    keywords: ["coinbase", "cdp", "onramp", "wallet", "agentkit", "x402"],
+    keywords: ["privy", "stripe", "coinbase", "cdp", "onramp", "wallet", "agentkit", "x402"],
     source: "Platform Work",
   },
   {
-    keywords: ["metric", "proof", "number", "revenue", "impact", "$20m"],
+    keywords: ["metric", "proof", "number", "revenue", "impact", "$30m", "$20m"],
     source: "Receipts.txt",
   },
   {
@@ -218,6 +219,8 @@ function guardQuestion(question: string) {
     "interview",
     "strengths",
     "skills",
+    "privy",
+    "stripe",
     "coinbase",
     "trm",
     "polygon",
@@ -291,8 +294,12 @@ function pickSources(question: string) {
 function localAnswer(question: string) {
   const normalized = question.toLowerCase();
 
+  if (normalized.includes("privy") || normalized.includes("stripe")) {
+    return "Esteban is the Founding Solutions Engineer at Privy, which was acquired by Stripe. He joined in July 2026 as Privy's first SE and is building the solutions engineering function from the ground up as Privy scales inside Stripe, helping teams integrate embedded wallets and crypto infrastructure.";
+  }
+
   if (normalized.includes("coinbase") || normalized.includes("onramp")) {
-    return "Esteban is a Senior Technical Solutions Engineer at Coinbase Developer Platform. The strongest proof points are 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, $20M in supported revenue impact, 58,000+ lines of demo and integration tooling, and AI-enabled workflows that helped reduce escalations by 30%.";
+    return "Esteban was a Senior Technical Solutions Engineer at Coinbase Developer Platform from April 2024 to June 2026. The strongest proof points are 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, $30M in supported revenue impact, 58,000+ lines of demo and integration tooling, and AI-enabled workflows that helped reduce escalations by 30%.";
   }
 
   if (normalized.includes("hire") && (normalized.includes("pm") || normalized.includes("product"))) {
@@ -315,7 +322,7 @@ function localAnswer(question: string) {
     return "Representative builds include the Coinbase Onramp Demo App with 2,000+ monthly users, Onramp Asset Checker, x402 / AgentKit / CDP reference demos, NFT deployment workflows, True Rank Pickleball, and operator automations for roofing and construction businesses.";
   }
 
-  return "Esteban is strongest at the intersection of applied AI, developer experience, technical product, demo engineering, partner solutions, and customer-facing platform work. The quick proof: Senior Technical Solutions Engineer at Coinbase, $20M revenue impact supported, 30+ strategic partner integrations, 100+ developer insights translated, and experience across Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.";
+  return "Esteban is strongest at the intersection of applied AI, developer experience, technical product, demo engineering, partner solutions, and customer-facing platform work. The quick proof: Founding Solutions Engineer at Privy (a Stripe company), previously Senior Technical Solutions Engineer at Coinbase with $30M revenue impact supported, 30+ strategic partner integrations, 100+ developer insights translated, and experience across Privy, Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.";
 }
 
 function localFallbackResponse(question: string) {

@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     template: "%s | Esteban Chirinos",
   },
   description:
-    "Senior Technical Solutions Engineer at Coinbase focused on AI-ready demos, developer experience, API architecture, product feedback loops, customer deployments, and platform adoption.",
+    "Founding Solutions Engineer at Privy (a Stripe company), previously Coinbase — focused on AI-ready demos, developer experience, API architecture, product feedback loops, customer deployments, and platform adoption.",
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "64x64" },

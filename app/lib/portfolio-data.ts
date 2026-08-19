@@ -41,7 +41,7 @@ export type LabTrack = {
 };
 
 export const portfolioMetrics: Metric[] = [
-  { value: "$20M", label: "Revenue impact supported" },
+  { value: "$30M", label: "Revenue impact supported" },
   { value: "30+", label: "Strategic partner integrations" },
   { value: "2,000+", label: "Monthly demo users" },
   { value: "100+", label: "Developer insights translated" },
@@ -80,16 +80,30 @@ export const certificationHighlights = [
 
 export const workExperiences: WorkExperience[] = [
   {
+    name: "Privy",
+    logo: "/images/privy.png",
+    role: "Founding Solutions Engineer",
+    period: "July 2026 - Present",
+    url: "https://www.privy.io/",
+    summary:
+      "Privy's first Solutions Engineer, building the solutions engineering function from the ground up as Privy scales inside Stripe — helping teams integrate embedded wallets and crypto infrastructure.",
+    tags: ["Solutions engineering", "Embedded wallets", "Stripe"],
+    impact: [
+      "First SE hire — standing up the solutions engineering function from zero as Privy scales inside Stripe.",
+    ],
+    featured: true,
+  },
+  {
     name: "Coinbase",
     logo: "/images/coinbase.svg",
     role: "Senior Technical Solutions Engineer",
-    period: "April 2024 - Present",
+    period: "April 2024 - June 2026",
     url: "https://www.coinbase.com/developer-platform",
     summary:
       "Customer-facing platform work for Coinbase Developer Platform across Onramp, Embedded Wallets, Advanced Trade, x402, AgentKit, and CDP products, turning developer pain points into demos, onboarding systems, technical guidance, AI workflows, and product feedback.",
     tags: ["Developer platform", "AI workflows", "Partner integrations"],
     impact: [
-      "Led 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, supporting $20M in revenue impact.",
+      "Led 30+ strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade, supporting $30M in revenue impact.",
       "Built AI-enabled workflows across Salesforce, Slack, developer docs, and support operations, helping reduce escalations by 30%.",
       "Developed production-grade demos, reference implementations, and integration tooling across Onramp, x402, Embedded Wallets, AgentKit, and CDP Wallets, totaling 58,000+ lines of code.",
       "Delivered 100+ developer documentation updates across API tutorials, SDK migrations, onboarding guides, and sample apps.",

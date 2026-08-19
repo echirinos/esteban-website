@@ -21,8 +21,8 @@ export const metadata: Metadata = {
 };
 
 const snapshot = [
-  "Senior Technical Solutions Engineer at Coinbase Developer Platform",
-  "30+ strategic partner integrations and $20M revenue impact supported",
+  "Founding Solutions Engineer at Privy (acquired by Stripe)",
+  "Ex-Coinbase: 30+ strategic partner integrations and $30M revenue impact supported",
   "AI-enabled support workflows that helped reduce escalations by 30%",
   "Staff Solutions Architect experience at TRM Labs",
   "Developer Relations and Product experience at OpenSea",
