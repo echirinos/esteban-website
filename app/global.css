@@ -201,6 +201,30 @@ body {
   border-color: var(--hairline);
 }
 
+/* Chat message list: always-visible thin scrollbar so scrollability is
+   discoverable, and contained overscroll. Pairs with data-lenis-prevent on
+   the list — without that attribute Lenis swallows wheel events over
+   nested scroll areas. */
+.chat-scroll {
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--base-300) transparent;
+}
+
+.chat-scroll::-webkit-scrollbar {
+  display: block;
+  width: 8px;
+}
+
+.chat-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.chat-scroll::-webkit-scrollbar-thumb {
+  background-color: var(--base-300);
+  border-radius: 2px;
+}
+
 /*
  * DaisyUI 5 theme colors are full color values, so Tailwind alpha modifiers
  * (bg-base-100/90) cannot compose with them. The header uses color-mix

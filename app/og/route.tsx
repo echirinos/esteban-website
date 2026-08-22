@@ -3,13 +3,11 @@ import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
 
+/* Whiteprint OG card: blueprint field, sheet frame, white title — no more
+   hotlinked leerob.io background. */
 export async function GET(req: NextRequest) {
   const { searchParams } = req.nextUrl;
-  const postTitle = searchParams.get('title');
-  const font = fetch(
-    new URL('../../public/fonts/kaisei-tokumin-bold.ttf', import.meta.url)
-  ).then((res) => res.arrayBuffer());
-  const fontData = await font;
+  const postTitle = searchParams.get('title') ?? 'Esteban Chirinos';
 
   return new ImageResponse(
     (
@@ -18,40 +16,64 @@ export async function GET(req: NextRequest) {
           height: '100%',
           width: '100%',
           display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'flex-start',
-          justifyContent: 'center',
-          backgroundImage: 'url(https://leerob.io/og-bg.png)',
+          backgroundColor: '#101f58',
+          padding: 48,
         }}
       >
         <div
           style={{
-            marginLeft: 190,
-            marginRight: 190,
             display: 'flex',
-            fontSize: 130,
-            fontFamily: 'Kaisei Tokumin',
-            letterSpacing: '-0.05em',
-            fontStyle: 'normal',
-            color: 'white',
-            lineHeight: '120px',
-            whiteSpace: 'pre-wrap',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+            width: '100%',
+            height: '100%',
+            border: '2px solid rgba(255,255,255,0.3)',
+            padding: 96,
           }}
         >
-          {postTitle}
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 34,
+              color: 'rgba(255,255,255,0.6)',
+              textTransform: 'uppercase',
+              letterSpacing: 8,
+            }}
+          >
+            Sht A-01 · Esteban Chirinos
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              fontSize: 110,
+              fontWeight: 700,
+              color: '#ffffff',
+              lineHeight: 1.1,
+              letterSpacing: -2,
+              whiteSpace: 'pre-wrap',
+            }}
+          >
+            {postTitle}
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              fontSize: 34,
+              color: 'rgba(255,255,255,0.6)',
+              textTransform: 'uppercase',
+              letterSpacing: 8,
+            }}
+          >
+            <span>estebanchirinos.xyz</span>
+            <span>Est. 2019 — Present</span>
+          </div>
         </div>
       </div>
     ),
     {
       width: 1920,
       height: 1080,
-      fonts: [
-        {
-          name: 'Kaisei Tokumin',
-          data: fontData,
-          style: 'normal',
-        },
-      ],
     }
   );
 }

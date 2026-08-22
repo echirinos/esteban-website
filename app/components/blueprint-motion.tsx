@@ -9,7 +9,14 @@ import {
 import type { ReactNode } from "react";
 
 export const draftEase = [0.16, 1, 0.3, 1] as const;
-const draftViewport: ViewportOptions = { once: true, amount: 0.08 };
+/* Bottom margin extends the trigger zone below the viewport so sections
+   start drafting in before the reader reaches them — no blank paper while
+   scrolling at normal speed. */
+const draftViewport: ViewportOptions = {
+  once: true,
+  amount: 0.05,
+  margin: "0px 0px 15% 0px",
+};
 
 const staggerContainer: Variants = {
   hidden: {},

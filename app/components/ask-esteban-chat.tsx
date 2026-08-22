@@ -267,7 +267,7 @@ export function AskEstebanChat({
             value={input}
             onChange={(event) => setInput(event.target.value)}
             placeholder="Ask about Coinbase, role fit, proof points, or technical depth..."
-            className="min-h-28 w-full resize-none rounded-[2px] bg-transparent px-3 py-3 text-sm font-semibold leading-relaxed outline-none placeholder:text-base-content/35 disabled:opacity-50"
+            className="min-h-24 w-full resize-none rounded-[2px] bg-transparent px-3 py-3 text-sm font-semibold leading-relaxed outline-none placeholder:text-base-content/35 disabled:opacity-50"
             maxLength={500}
             disabled={isPending}
           />
@@ -314,203 +314,212 @@ export function AskEstebanChat({
                 : "border border-black bg-black px-4 py-2 text-sm font-black text-white shadow-[2px_2px_0_rgba(0,0,0,0.32)] hover:bg-white hover:text-black"
             )}
           >
-            Send
+            {isHome ? "Ask AI" : "Send"}
           </button>
         </>
       )}
     </form>
   );
 
-  return (
+  /* data-lenis-prevent: without it, Lenis swallows wheel events over the
+     nested list and the chat cannot be scrolled. */
+  const messageList = (
     <div
+      ref={messageListRef}
+      data-lenis-prevent=""
+      role="log"
+      aria-live="polite"
+      aria-label="Chat messages"
       className={cx(
-        isLab || isHome ? "space-y-3" : "space-y-2 sm:space-y-3",
-        isLab && "rounded-[2px] border p-4 hairline bg-base-100 md:p-5 lg:p-6",
-        isHome && "border p-4 hairline bg-base-100 sm:p-5",
-        className
+        "chat-scroll space-y-2 overflow-y-auto",
+        isLab
+          ? "min-h-[200px] max-h-[640px] rounded-[2px] border hairline bg-base-200/40 p-4 sm:min-h-[260px] lg:min-h-[300px]"
+          : isHome
+            ? "min-h-[150px] max-h-[340px] rounded-[2px] border hairline bg-base-200/40 p-3"
+            : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
       )}
     >
-      <div
-        className={cx(
-          isLab && "grid gap-4 md:grid-cols-[1fr_auto] md:items-start"
-        )}
-      >
-        <div>
-          <p
-            className={cx(
-              isLab || isHome
-                ? "annotation"
-                : "text-[10px] uppercase tracking-[0.18em]",
-              isLab || isHome ? "text-primary" : "text-black/60"
-            )}
-          >
-            {isLab
-              ? "Portfolio AI chat"
-              : isHome
-                ? "Portfolio assistant"
-                : "Ask Esteban OS"}
+      {messages.map((message, index) => (
+        <article
+          key={`${message.role}-${index}`}
+          className={cx(
+            isLab || isHome
+              ? "rounded-[2px] border p-3"
+              : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
+            message.role === "user"
+              ? isLab || isHome
+                ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
+                : "ml-auto max-w-[86%] bg-black text-white"
+              : isLab || isHome
+                ? "mr-auto max-w-[96%] border-base-content/10 bg-base-100 text-base-content"
+                : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
+          )}
+        >
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
+            {message.role === "user" ? "You" : "Portfolio Assistant"}
           </p>
-          <h3
-            className={cx(
-              "mt-1 max-w-2xl leading-tight",
-              isLab
-                ? "mt-2 font-display text-2xl font-semibold uppercase tracking-[0.02em] text-base-content md:text-3xl"
-                : isHome
-                  ? "mt-2 font-display text-2xl font-semibold uppercase tracking-[0.02em] text-base-content"
-                  : "text-base font-black sm:text-xl"
-            )}
-          >
-            {isLab
-              ? "Ask for the hiring signal."
-              : isHome
-                ? "Turn the portfolio into a recruiter-ready answer."
-                : "Skip the browsing. Ask for the signal directly."}
-          </h3>
-        </div>
-        {isLab ? (
-          <div className="flex flex-wrap gap-2 md:justify-end">
-            {["Portfolio-grounded", "Sources shown", "Recruiter-ready"].map((item) => (
-              <span
-                key={item}
-                className="border px-2.5 py-1 hairline font-mono text-[10px] uppercase tracking-[0.1em] text-base-content/65"
-              >
-                {item}
-              </span>
-            ))}
-          </div>
-        ) : null}
-      </div>
-      <p
-        className={cx(
-          "max-w-2xl leading-relaxed",
-          isLab
-            ? "text-sm text-base-content/70"
-            : isHome
-              ? "text-sm text-base-content/65"
-              : "hidden text-xs text-black/75 sm:block"
-        )}
-      >
-        This is a focused portfolio assistant, not a general chatbot. It answers
-        from Esteban's work history, projects, metrics, role-fit notes, and
-        source labels.
-      </p>
+          <MessageBody content={message.content} />
+          {message.sources?.length ? (
+            <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
+              Sources: {message.sources.join(", ")}
+            </p>
+          ) : null}
+          {message.setup ? (
+            <p className="mt-2 border-t border-current/20 pt-2 text-[10px] leading-relaxed opacity-70">
+              {message.setup}
+            </p>
+          ) : null}
+        </article>
+      ))}
+      {isPending ? (
+        <article
+          className={cx(
+            "mr-auto max-w-[92%] p-2",
+            isLab || isHome
+              ? "rounded-[2px] border hairline bg-base-100 text-base-content"
+              : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
+          )}
+        >
+          <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
+            Portfolio Assistant
+          </p>
+          <PendingStatus />
+        </article>
+      ) : null}
+    </div>
+  );
 
+  if (isHome) {
+    return (
+      <div
+        className={cx("border p-4 hairline bg-base-100 sm:p-5", className)}
+      >
+        <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-1">
+          <p className="annotation text-primary">Portfolio assistant</p>
+          <span className="annotation flex items-center gap-1.5 text-base-content/65">
+            <span
+              aria-hidden="true"
+              className="h-1.5 w-1.5 rounded-full bg-primary"
+            />
+            Live · grounded in this portfolio
+          </span>
+        </div>
+        <h3 className="mt-2 max-w-2xl font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em]">
+          Turn the portfolio into a recruiter-ready answer.
+        </h3>
+        <div className="mt-4">{messageList}</div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          {askEstebanPrompts.slice(0, 4).map((prompt) => (
+            <button
+              key={prompt}
+              type="button"
+              onClick={() => void submitQuestion(prompt)}
+              className="inline-flex min-h-11 items-center rounded-[2px] border px-3.5 hairline bg-base-100 text-left text-xs font-medium leading-snug text-base-content/75 transition hover:border-primary hover:text-base-content disabled:opacity-50"
+              disabled={isPending}
+            >
+              {prompt}
+            </button>
+          ))}
+        </div>
+        <div className="mt-3">{chatForm}</div>
+      </div>
+    );
+  }
+
+  if (isLab) {
+    return (
       <div
         className={cx(
-          "grid gap-3",
-          isLab
-            ? "lg:grid-cols-[minmax(0,1fr)_300px]"
-            : isHome
-              ? "lg:grid-cols-[minmax(0,1fr)_220px]"
-              : "lg:grid-cols-[0.78fr_1.22fr]"
+          "space-y-3 rounded-[2px] border p-4 hairline bg-base-100 md:p-5 lg:p-6",
+          className
         )}
       >
-        <div
-          className={cx(
-            "space-y-2",
-            isLab || isHome ? "order-1" : "order-1 lg:order-2"
-          )}
-        >
-          {isLab ? <div className="pb-1">{chatForm}</div> : null}
-          {isHome ? chatForm : null}
-          <div
-            ref={messageListRef}
-            className={cx(
-              "space-y-2 overflow-y-auto",
-              isLab
-                ? "min-h-[280px] max-h-[760px] rounded-[2px] border hairline bg-base-200/40 p-4 sm:min-h-[420px] md:min-h-[500px] lg:min-h-[560px]"
-                : isHome
-                  ? "min-h-[180px] max-h-[260px] rounded-[2px] border hairline bg-base-200/40 p-3"
-                  : "max-h-[102px] border border-black bg-[#efefef] p-2 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:max-h-[172px] lg:max-h-[214px]"
+        <div className="grid gap-4 md:grid-cols-[1fr_auto] md:items-start">
+          <div>
+            <p className="annotation text-primary">Portfolio AI chat</p>
+            <h3 className="mt-2 max-w-2xl font-display text-2xl font-semibold uppercase leading-tight tracking-[0.02em] text-base-content md:text-3xl">
+              Ask for the hiring signal.
+            </h3>
+          </div>
+          <div className="flex flex-wrap gap-2 md:justify-end">
+            {["Portfolio-grounded", "Sources shown", "Recruiter-ready"].map(
+              (item) => (
+                <span
+                  key={item}
+                  className="border px-2.5 py-1 hairline font-mono text-[10px] uppercase tracking-[0.1em] text-base-content/65"
+                >
+                  {item}
+                </span>
+              )
             )}
-          >
-            {messages.map((message, index) => (
-              <article
-                key={`${message.role}-${index}`}
-                className={cx(
-                  isLab || isHome
-                    ? "rounded-[2px] border p-3"
-                    : "border border-black p-2 shadow-[2px_2px_0_rgba(0,0,0,0.28)]",
-                  message.role === "user"
-                    ? isLab
-                      ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
-                      : isHome
-                        ? "ml-auto max-w-[86%] border-primary/25 bg-primary text-primary-content"
-                        : "ml-auto max-w-[86%] bg-black text-white"
-                    : isLab
-                      ? "mr-auto max-w-[96%] border-base-content/10 bg-base-100 text-base-content"
-                      : isHome
-                        ? "mr-auto max-w-[96%] border-base-content/10 bg-base-100 text-base-content"
-                        : "mr-auto max-w-[96%] bg-[#f7f7f7] text-black"
-                )}
-              >
-                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  {message.role === "user" ? "You" : "Portfolio Assistant"}
-                </p>
-                <MessageBody content={message.content} />
-                {message.sources?.length ? (
-                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.12em] opacity-60">
-                    Sources: {message.sources.join(", ")}
-                  </p>
-                ) : null}
-                {message.setup ? (
-                  <p className="mt-2 border-t border-current/20 pt-2 text-[10px] leading-relaxed opacity-70">
-                    {message.setup}
-                  </p>
-                ) : null}
-              </article>
-            ))}
-            {isPending ? (
-              <article
-                className={cx(
-                  "mr-auto max-w-[92%] p-2",
-                  isLab || isHome
-                    ? "rounded-[2px] border hairline bg-base-100 text-base-content"
-                    : "border border-black bg-[#f7f7f7] text-black shadow-[2px_2px_0_rgba(0,0,0,0.28)]"
-                )}
-              >
-                <p className="text-[10px] font-black uppercase tracking-[0.14em] opacity-65">
-                  Portfolio Assistant
-                </p>
-                <PendingStatus />
-              </article>
-            ) : null}
+          </div>
+        </div>
+        <p className="max-w-2xl text-sm leading-relaxed text-base-content/70">
+          This is a focused portfolio assistant, not a general chatbot. It
+          answers from Esteban's work history, projects, metrics, role-fit
+          notes, and source labels.
+        </p>
+
+        <div className="grid gap-3 lg:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="order-1 space-y-3">
+            {messageList}
+            {chatForm}
           </div>
 
-          {!isLab && !isHome ? chatForm : null}
-        </div>
-
-        <div
-          className={cx(
-            "grid gap-2",
-            isLab
-              ? "order-2 sm:grid-cols-2 lg:grid-cols-1"
-              : isHome
-                ? "order-2 grid-cols-1"
-                : "order-2 sm:grid-cols-2 lg:order-1 lg:grid-cols-1"
-          )}
-        >
-          {isLab ? (
+          <div className="order-2 grid content-start gap-2 sm:grid-cols-2 lg:grid-cols-1">
             <div className="rounded-[2px] border border-primary/40 bg-primary/5 px-4 py-3">
               <p className="annotation text-primary">Question templates</p>
               <p className="mt-1.5 text-xs leading-relaxed text-base-content/65">
                 Start with the questions hiring teams usually ask first.
               </p>
             </div>
-          ) : null}
+            {askEstebanPrompts.map((prompt) => (
+              <button
+                key={prompt}
+                type="button"
+                onClick={() => void submitQuestion(prompt)}
+                className="rounded-[2px] border hairline bg-base-100 px-4 py-3 text-left text-xs font-medium leading-snug text-base-content/75 transition hover:border-primary hover:text-base-content disabled:opacity-50"
+                disabled={isPending}
+              >
+                {prompt}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* classic: the retro-OS chat rendered inside the /goggles world */
+  return (
+    <div className={cx("space-y-2 sm:space-y-3", className)}>
+      <div>
+        <p className="text-[10px] uppercase tracking-[0.18em] text-black/60">
+          Ask Esteban OS
+        </p>
+        <h3 className="mt-1 max-w-2xl text-base font-black leading-tight sm:text-xl">
+          Skip the browsing. Ask for the signal directly.
+        </h3>
+      </div>
+      <p className="hidden max-w-2xl text-xs leading-relaxed text-black/75 sm:block">
+        This is a focused portfolio assistant, not a general chatbot. It answers
+        from Esteban's work history, projects, metrics, role-fit notes, and
+        source labels.
+      </p>
+
+      <div className="grid gap-3 lg:grid-cols-[0.78fr_1.22fr]">
+        <div className="order-1 space-y-2 lg:order-2">
+          {messageList}
+          {chatForm}
+        </div>
+
+        <div className="order-2 grid gap-2 sm:grid-cols-2 lg:order-1 lg:grid-cols-1">
           {askEstebanPrompts.map((prompt) => (
             <button
               key={prompt}
               type="button"
               onClick={() => void submitQuestion(prompt)}
-              className={cx(
-                "text-left text-xs leading-snug transition disabled:opacity-50",
-                isLab
-                  ? "rounded-[2px] border hairline bg-base-100 px-4 py-3 font-medium text-base-content/75 hover:border-primary hover:text-base-content"
-                  : isHome
-                    ? "rounded-[2px] border hairline bg-base-100 px-4 py-3 font-medium text-base-content/75 hover:border-primary hover:text-base-content"
-                    : "border border-black bg-[#f7f7f7] px-3 py-2 font-black shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] hover:bg-black hover:text-white"
-              )}
+              className="border border-black bg-[#f7f7f7] px-3 py-2 text-left text-xs font-black leading-snug shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)] transition hover:bg-black hover:text-white disabled:opacity-50"
               disabled={isPending}
             >
               {prompt}
