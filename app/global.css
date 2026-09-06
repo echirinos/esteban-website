@@ -1328,3 +1328,173 @@ a {
     margin-block: 12px;
   }
 }
+
+/* The headset is a real mesh. These layers control what the wearer can see. */
+.lens-experience[data-phase="outside"] {
+  background: #080e16;
+}
+.lens-experience[data-phase="outside"] .lens-photo-fallback {
+  opacity: 0;
+}
+.lens-experience[data-phase="outside"] .lens-intro {
+  top: 10%;
+}
+.lens-experience[data-phase="outside"] .lens-intro h1 {
+  font-family: var(--font-body), sans-serif;
+  font-size: clamp(2.25rem, 4.5vw, 4rem);
+  font-weight: 600;
+  letter-spacing: -0.06em;
+}
+.lens-experience[data-phase="outside"] .lens-intro > p:first-child {
+  color: #a9bfcf;
+  font-size: 0.875rem;
+}
+.lens-experience[data-phase="outside"] .lens-intro > p:last-child {
+  color: #a9bfcf;
+  max-width: 360px;
+}
+.lens-experience[data-phase="outside"] .lens-enter-button {
+  background: #daeee7;
+  color: #16281f;
+}
+.visor-transition {
+  position: absolute;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+}
+.visor-blackout {
+  position: absolute;
+  inset: 0;
+  background: #020508;
+}
+.visor-opening {
+  position: absolute;
+  box-shadow: 0 0 0 100vmax #020508;
+}
+.visor-calibration {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22vw;
+}
+.visor-calibration > span {
+  height: 32px;
+  width: 32px;
+  border: 1px solid #a9d2dd88;
+  border-radius: 50%;
+}
+.visor-calibration > p {
+  position: absolute;
+  top: calc(50% + 70px);
+  font-size: 0.8125rem;
+  color: #b8ced8;
+  text-align: center;
+  padding-inline: 20px;
+}
+.visor-skip {
+  position: absolute;
+  bottom: 25px;
+  right: 25px;
+  padding: 12px 20px;
+  min-height: 44px;
+  border: 1px solid #ffffff40;
+  border-radius: 30px;
+  color: #e4edf2;
+  background: #080e16b3;
+  font-size: 0.875rem;
+  pointer-events: auto;
+}
+.world-arrival {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  pointer-events: none;
+  text-shadow: 0 2px 35px #000b;
+  padding: 130px 25px 150px;
+}
+.world-arrival > p:first-child {
+  font-size: 1rem;
+  margin-bottom: 20px;
+}
+.world-arrival h1 {
+  font-family: var(--font-display), Georgia, serif;
+  font-size: clamp(2.75rem, 6vw, 5.5rem);
+  line-height: 1.15;
+  letter-spacing: -0.055em;
+}
+.world-arrival > p:last-child {
+  margin-top: 24px;
+  font-size: 1rem;
+  line-height: 1.7;
+  max-width: 360px;
+}
+.career-row:last-child {
+  border-bottom: 1px solid var(--hairline);
+}
+.career-logo {
+  width: 60px;
+  height: 60px;
+  padding: 9px;
+}
+.career-logo img {
+  max-height: 38px;
+  max-width: 100%;
+}
+.career-row {
+  grid-template-columns: 60px 1.1fr 1.25fr;
+}
+@media (max-width: 767px) {
+  .career-row {
+    grid-template-columns: 48px 1fr;
+  }
+  .career-logo {
+    width: 48px;
+    height: 48px;
+    padding: 6px;
+  }
+  .lens-tools {
+    gap: 5px;
+    width: calc(100% - 28px);
+    justify-content: center;
+  }
+  .lens-tools button {
+    padding: 10px 11px;
+    font-size: 0.75rem;
+  }
+  .lens-experience[data-phase="outside"] .lens-intro {
+    top: 8%;
+  }
+  .lens-experience[data-phase="outside"] .lens-intro h1 {
+    max-width: 330px;
+    margin-inline: auto;
+  }
+  .world-arrival h1 {
+    font-size: 2.8rem;
+  }
+}
+@media (max-height: 650px) and (min-width: 768px) {
+  .lens-experience[data-phase="outside"] .lens-intro {
+    top: 7%;
+  }
+  .lens-experience[data-phase="outside"] .lens-intro > p:last-child {
+    margin-top: 10px;
+  }
+}
+.world-arrival::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(ellipse at center, #07121966, transparent 70%);
+}
+.lens-experience canvas {
+  touch-action: none;
+}

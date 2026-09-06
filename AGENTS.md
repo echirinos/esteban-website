@@ -30,10 +30,16 @@ uses a real photo, a short personal note, work and project lists, and a scenic
 invitation into the goggles. Avoid reintroducing the old blueprint sheet codes.
 
 Goggles are a browser-rendered Three.js experience with ten scenic worlds,
-a portfolio desk, an image fallback, motion controls, and mobile navigation.
+a locally modeled 3D headset and visor entry, a portfolio desk, an image
+fallback, motion controls, and mobile navigation. Enter into the scenery first;
+the desk opens on request. Keep keyboard skip, replay, and focus restoration
+working. Entry geometry and timing live in `app/components/goggle-entry.tsx`.
 Keep the heavy renderer off the homepage. Do not preload every world texture.
 Respect reduced motion, stop rendering while the page is hidden, and keep
 all portfolio controls usable if WebGL or browser storage is unavailable.
+
+The homepage work list shows all eight companies from the shared experience
+data, each with its existing logo, role, dates, and impact description.
 
 Tailwind alpha shorthand only compiles for multiples of 5 (`/65` works,
 `/62` silently generates no CSS). Use bracket values for other opacities.
@@ -49,7 +55,10 @@ components.
 When overriding DaisyUI 5 themes, match the generated selector specificity:
 
 ```css
-:is(:root:has(input.theme-controller[value="light"]:checked), [data-theme="light"]) {
+:is(
+  :root:has(input.theme-controller[value="light"]:checked),
+  [data-theme="light"]
+) {
   --color-primary: #0f766e;
   --color-primary-content: #ffffff;
 }

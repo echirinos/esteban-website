@@ -105,7 +105,7 @@ export function ModernPortfolioPage() {
           </Link>
         </div>
         <div className="career-list">
-          {workExperiences.slice(0, 3).map((company) => (
+          {workExperiences.map((company) => (
             <a
               className="career-row"
               key={company.name}
@@ -114,7 +114,12 @@ export function ModernPortfolioPage() {
               rel="noopener noreferrer"
             >
               <span className="career-logo">
-                <Image src={company.logo} alt="" width={48} height={48} />
+                <Image
+                  src={company.logo}
+                  alt={`${company.name} logo`}
+                  width={64}
+                  height={64}
+                />
               </span>
               <div className="career-role">
                 <h3>{company.name}</h3>
@@ -127,21 +132,6 @@ export function ModernPortfolioPage() {
               </span>
             </a>
           ))}
-        </div>
-        <div className="earlier-work">
-          <span>Before that, a few familiar faces:</span>
-          <div>
-            {workExperiences.slice(3).map((company) => (
-              <a
-                key={company.name}
-                href={company.url}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {company.name}
-              </a>
-            ))}
-          </div>
         </div>
       </section>
 

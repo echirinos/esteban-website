@@ -15,6 +15,14 @@ import {
 } from "react";
 import * as THREE from "three";
 import { AskEstebanChat } from "./ask-esteban-chat";
+import {
+  Headset,
+  EntryBackdrop,
+  VisorTransition,
+  WorldArrival,
+  ENTRY_DURATION_MS,
+  REDUCED_ENTRY_DURATION_MS,
+} from "./goggle-entry";
 
 type ExperiencePhase = "outside" | "transition" | "inside";
 type IconKind =
@@ -277,8 +285,8 @@ const featuredWorldIds: WorldId[] = [
   "orbital",
 ];
 const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
-const transitionDurationMs = 1800;
-const reducedTransitionDurationMs = 540;
+const transitionDurationMs = ENTRY_DURATION_MS;
+const reducedTransitionDurationMs = REDUCED_ENTRY_DURATION_MS;
 
 const workRows = [
   {
@@ -526,7 +534,85 @@ function CameraRig({
   gogglesOn: boolean;
   phase: ExperiencePhase;
 }) {
-  const { camera, pointer } = useThree();
+  const { camera } = useThree();
+  const pointer = useRef({ x: 0, y: 0 });
+  useEffect(() => {
+    if (phase !== "inside") {
+      pointer.current = { x: 0, y: 0 };
+      return;
+    }
+    let touch: { x: number; y: number } | null = null;
+    const down = (event: PointerEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        event.pointerType !== "mouse" &&
+        !target.closest(
+          "button,a,.lens-workspace,[aria-label='World selector']",
+        )
+      )
+        touch = { x: event.clientX, y: event.clientY };
+    };
+    const up = () => {
+      touch = null;
+    };
+    const move = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") {
+        if (!touch) return;
+        pointer.current.x = THREE.MathUtils.clamp(
+          pointer.current.x + (event.clientX - touch.x) / 180,
+          -1,
+          1,
+        );
+        pointer.current.y = THREE.MathUtils.clamp(
+          pointer.current.y - (event.clientY - touch.y) / 180,
+          -1,
+          1,
+        );
+        touch = { x: event.clientX, y: event.clientY };
+        return;
+      }
+      pointer.current.x = (event.clientX / window.innerWidth - 0.5) * 2;
+      pointer.current.y = -(event.clientY / window.innerHeight - 0.5) * 2;
+    };
+    const keys = (event: KeyboardEvent) => {
+      const target = event.target as HTMLElement;
+      if (
+        target.closest("button,a,input,textarea,[role=dialog],.lens-workspace")
+      )
+        return;
+      const offsets: Record<string, [number, number]> = {
+        ArrowLeft: [-0.25, 0],
+        ArrowRight: [0.25, 0],
+        ArrowUp: [0, 0.25],
+        ArrowDown: [0, -0.25],
+      };
+      const offset = offsets[event.key];
+      if (!offset) return;
+      event.preventDefault();
+      pointer.current.x = THREE.MathUtils.clamp(
+        pointer.current.x + offset[0],
+        -1,
+        1,
+      );
+      pointer.current.y = THREE.MathUtils.clamp(
+        pointer.current.y + offset[1],
+        -1,
+        1,
+      );
+    };
+    window.addEventListener("pointermove", move, { passive: true });
+    window.addEventListener("pointerdown", down, { passive: true });
+    window.addEventListener("pointerup", up);
+    window.addEventListener("pointercancel", up);
+    window.addEventListener("keydown", keys);
+    return () => {
+      window.removeEventListener("pointermove", move);
+      window.removeEventListener("pointerdown", down);
+      window.removeEventListener("pointerup", up);
+      window.removeEventListener("pointercancel", up);
+      window.removeEventListener("keydown", keys);
+    };
+  }, [phase]);
   const targetPosition = useMemo(() => new THREE.Vector3(), []);
   const targetLookAt = useMemo(() => new THREE.Vector3(), []);
   const currentLookAt = useMemo(() => new THREE.Vector3(0, 1.62, -8.2), []);
@@ -540,11 +626,15 @@ function CameraRig({
     const targetZ = phase === "transition" ? 3.58 : gogglesOn ? 4.03 : 4.18;
 
     targetPosition.set(
-      pointer.x * 0.18,
-      1.18 + pointer.y * 0.08 + drift,
+      pointer.current.x * 0.28,
+      1.18 + pointer.current.y * 0.13 + drift,
       targetZ,
     );
-    targetLookAt.set(pointer.x * 0.32, 1.62 + pointer.y * 0.12, -8.2);
+    targetLookAt.set(
+      pointer.current.x * 1.15,
+      1.62 + pointer.current.y * 0.48,
+      -8.2,
+    );
 
     // Frame-rate independent smoothing (identical feel at 60Hz and 120Hz).
     const lambda = 2.8;
@@ -715,19 +805,31 @@ function WorldScene({
   phase,
   world,
   onReady,
+  reducedMotion,
 }: {
   gogglesOn: boolean;
   phase: ExperiencePhase;
   world: WorldOption;
   onReady: () => void;
+  reducedMotion: boolean;
 }) {
   return (
     <>
       <CameraRig gogglesOn={gogglesOn} phase={phase} />
       <Suspense fallback={null}>
-        <WorldBackdrop key={world.id} world={world} onReady={onReady} />
-        <DepthParticles world={world} gogglesOn={gogglesOn} />
+        <group visible={phase !== "outside"}>
+          <WorldBackdrop key={world.id} world={world} onReady={onReady} />
+          <DepthParticles world={world} gogglesOn={gogglesOn} />
+        </group>
+        {phase !== "inside" ? (
+          <Headset
+            phase={phase}
+            image={world.image}
+            reducedMotion={reducedMotion}
+          />
+        ) : null}
       </Suspense>
+      <EntryBackdrop phase={phase} />
     </>
   );
 }
@@ -791,9 +893,9 @@ function LensIntroPanel({ phase }: { phase: ExperiencePhase }) {
   if (phase !== "outside") return null;
   return (
     <div className="lens-intro">
-      <p>Esteban’s little escape</p>
-      <h1>A change of scenery.</h1>
-      <p>Ten worlds. A few things I’ve built. Room to look around.</p>
+      <p>A different kind of portfolio</p>
+      <h1>Your next world is waiting.</h1>
+      <p>Put on the goggles. Leave this side of the screen behind.</p>
     </div>
   );
 }
@@ -1547,7 +1649,10 @@ export function EstebanWorld() {
   const [sceneReady, setSceneReady] = useState(false);
   const [paused, setPaused] = useState(false);
   const [pageVisible, setPageVisible] = useState(true);
-  const [deskVisible, setDeskVisible] = useState(true);
+  const [deskVisible, setDeskVisible] = useState(false);
+  const openDeskButton = useRef<HTMLButtonElement>(null);
+  const enterButtonRegion = useRef<HTMLElement>(null);
+  const previousPhase = useRef<ExperiencePhase>("outside");
   const motionEnabled = !reduceMotion && !paused && pageVisible;
   const handleSceneReady = useCallback(() => setSceneReady(true), []);
   const handleSceneError = useCallback(() => {
@@ -1574,6 +1679,26 @@ export function EstebanWorld() {
 
     return () => window.clearTimeout(timeout);
   }, [phase, reduceMotion]);
+
+  const finishEntry = useCallback(() => {
+    setPhase("inside");
+    setDeskVisible(false);
+  }, []);
+  const takeOffGoggles = () => {
+    setPhase("outside");
+    setDeskVisible(false);
+    setWorldPickerOpen(false);
+  };
+
+  useEffect(() => {
+    if (phase === "inside")
+      openDeskButton.current?.focus({ preventScroll: true });
+    if (phase === "outside" && previousPhase.current !== "outside")
+      enterButtonRegion.current
+        ?.querySelector<HTMLButtonElement>(".lens-enter-button")
+        ?.focus({ preventScroll: true });
+    previousPhase.current = phase;
+  }, [phase]);
 
   useEffect(() => {
     const updateDpr = () => {
@@ -1609,10 +1734,11 @@ export function EstebanWorld() {
   useEffect(() => {
     const onKey = (event: KeyboardEvent) => {
       if (event.key === "Escape" && worldPickerOpen) setWorldPickerOpen(false);
+      else if (event.key === "Escape" && phase === "transition") finishEntry();
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [worldPickerOpen]);
+  }, [worldPickerOpen, phase, finishEntry]);
 
   useEffect(() => {
     return () => {
@@ -1674,6 +1800,8 @@ export function EstebanWorld() {
   return (
     <section
       className="lens-experience"
+      ref={enterButtonRegion}
+      data-phase={phase}
       data-motion={motionEnabled ? "on" : "off"}
       data-renderer={
         sceneFailed ? "fallback" : sceneReady ? "ready" : "loading"
@@ -1684,26 +1812,7 @@ export function EstebanWorld() {
         style={{ backgroundImage: `url(${selectedWorld.image})` }}
         aria-hidden="true"
       />
-      <motion.div
-        className="absolute inset-0 z-0"
-        animate={
-          phase === "transition" && !reduceMotion
-            ? {
-                scale: [1, 1.085, 1.015],
-                filter: [
-                  "blur(0px) saturate(1) contrast(1)",
-                  "blur(14px) saturate(1.3) contrast(1.1)",
-                  "blur(1px) saturate(1.08) contrast(1.03)",
-                ],
-              }
-            : { scale: 1, filter: "blur(0px) saturate(1) contrast(1)" }
-        }
-        transition={
-          phase === "transition" && !reduceMotion
-            ? { duration: 1.62, times: [0, 0.52, 1], ease: cinematicEase }
-            : { duration: reduceMotion ? 0.24 : 0.62, ease: cinematicEase }
-        }
-      >
+      <div className="absolute inset-0 z-0">
         {!sceneFailed ? (
           <SceneBoundary onError={handleSceneError}>
             <Canvas
@@ -1720,7 +1829,7 @@ export function EstebanWorld() {
                 near: 0.1,
                 far: 70,
               }}
-              gl={{ antialias: false, alpha: true, powerPreference: "default" }}
+              gl={{ antialias: true, alpha: true, powerPreference: "default" }}
               onCreated={({ camera }) => camera.lookAt(0, 1.62, -8.2)}
               fallback={<span>Scenic image mode</span>}
             >
@@ -1730,11 +1839,12 @@ export function EstebanWorld() {
                 phase={phase}
                 world={selectedWorld}
                 onReady={handleSceneReady}
+                reducedMotion={!!reduceMotion}
               />
             </Canvas>
           </SceneBoundary>
         ) : null}
-      </motion.div>
+      </div>
 
       <AmbientHud />
 
@@ -1742,9 +1852,18 @@ export function EstebanWorld() {
       <WorldChangeWash active={worldWashActive} />
 
       {phase === "transition" ? (
-        <div className="lens-arrival" role="status">
-          Welcome to {selectedWorld.name}.
-        </div>
+        <VisorTransition
+          reducedMotion={!!reduceMotion}
+          worldName={selectedWorld.name}
+          onSkip={finishEntry}
+        />
+      ) : null}
+      {phase === "inside" && !deskVisible && !worldPickerOpen ? (
+        <WorldArrival
+          key={selectedWorld.id}
+          worldName={selectedWorld.name}
+          reducedMotion={!!reduceMotion}
+        />
       ) : null}
 
       <WorldSelector
@@ -1760,7 +1879,10 @@ export function EstebanWorld() {
         {phase === "outside" ? (
           <PutOnGogglesPrompt
             key="prompt"
-            onClick={() => setPhase("transition")}
+            onClick={() => {
+              setDeskVisible(false);
+              setPhase("transition");
+            }}
           />
         ) : null}
       </AnimatePresence>
@@ -1775,7 +1897,8 @@ export function EstebanWorld() {
         <div className="lens-tools">
           <button
             type="button"
-            aria-pressed={!deskVisible}
+            ref={openDeskButton}
+            aria-expanded={deskVisible}
             onClick={() => setDeskVisible((visible) => !visible)}
           >
             {deskVisible ? "Enjoy the view" : "Open my desk"}
@@ -1787,6 +1910,9 @@ export function EstebanWorld() {
             onClick={() => setPaused((value) => !value)}
           >
             {paused || reduceMotion ? "Motion paused" : "Pause motion"}
+          </button>
+          <button type="button" onClick={takeOffGoggles}>
+            Take off goggles
           </button>
         </div>
       ) : null}

@@ -8,7 +8,7 @@ const EstebanWorld = dynamic(
   {
     ssr: false,
     loading: () => (
-      <section className="lens-experience">
+      <section className="lens-experience" data-phase="outside">
         <div
           className="lens-photo-fallback"
           style={{
@@ -17,9 +17,9 @@ const EstebanWorld = dynamic(
         />
         <div className="lens-vignette" />
         <div className="lens-intro">
-          <p role="status">Opening the goggles…</p>
-          <h1>A change of scenery.</h1>
-          <p>One moment. Somewhere good is just around the corner.</p>
+          <p role="status">Preparing your goggles…</p>
+          <h1>Your next world is waiting.</h1>
+          <p>Ten worlds. One small step away.</p>
           <Link
             href="/"
             className="draft-btn lens-enter-button"

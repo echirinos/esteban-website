@@ -88,6 +88,7 @@ test("immersive goggles route remains available", async ({ page }) => {
   await expect(
     page.getByRole("navigation", { name: "Lens navigation" }),
   ).toBeVisible();
+  await page.getByRole("button", { name: "Open my desk" }).click();
   await expect(
     page.getByRole("region", { name: "Portfolio explorer" }),
   ).toBeVisible();
@@ -178,14 +179,15 @@ test("goggles render a scene, switch worlds, and keep the desk optional", async 
     timeout: 20_000,
   });
   await page.getByRole("button", { name: "Put on goggles" }).click();
-  await page.getByRole("button", { name: "Enjoy the view" }).click();
   await expect(
     page.getByRole("region", { name: "Portfolio explorer" }),
   ).toHaveCount(0);
   await page.getByRole("button", { name: "Change", exact: true }).click();
   await page.getByRole("button", { name: "Space Earthrise ridge" }).click();
   await expect(
-    page.getByText("Orbital Horizon", { exact: true }),
+    page
+      .getByLabel("World selector")
+      .getByText("Orbital Horizon", { exact: true }),
   ).toBeVisible();
   await expect(scene).toHaveAttribute("data-renderer", "ready");
   await page.getByRole("button", { name: "Open my desk" }).click();
@@ -198,7 +200,9 @@ test("goggles render a scene, switch worlds, and keep the desk optional", async 
   await page.reload();
   await page.getByRole("button", { name: "Put on goggles" }).click();
   await expect(
-    page.getByText("Orbital Horizon", { exact: true }),
+    page
+      .getByLabel("World selector")
+      .getByText("Orbital Horizon", { exact: true }),
   ).toBeVisible();
 });
 
@@ -217,7 +221,12 @@ test("goggles keep working when browser storage is unavailable", async ({
   await page.getByRole("button", { name: "Put on goggles" }).click();
   await page.getByRole("button", { name: "Change", exact: true }).click();
   await page.getByRole("button", { name: "Alpine lake and peaks" }).click();
-  await expect(page.getByText("Alpine Glass", { exact: true })).toBeVisible();
+  await expect(
+    page
+      .getByLabel("World selector")
+      .getByText("Alpine Glass", { exact: true }),
+  ).toBeVisible();
+  await page.getByRole("button", { name: "Open my desk" }).click();
   await expect(
     page.getByRole("region", { name: "Portfolio explorer" }),
   ).toBeVisible();
@@ -240,6 +249,7 @@ test("goggles recover to a usable scenic fallback after WebGL context loss", asy
     "fallback",
   );
   await page.getByRole("button", { name: "Put on goggles" }).click();
+  await page.getByRole("button", { name: "Open my desk" }).click();
   await expect(
     page.getByRole("region", { name: "Portfolio explorer" }),
   ).toBeVisible();
@@ -268,4 +278,65 @@ test("goggles honor reduced motion and keep mobile controls inside the viewport"
   expect(nav!.x).toBeGreaterThanOrEqual(0);
   expect(nav!.x + nav!.width).toBeLessThanOrEqual(viewport.width);
   expect(nav!.y + nav!.height).toBeLessThanOrEqual(viewport.height);
+});
+
+test("headset entry can be skipped and replayed without opening the desk", async ({
+  page,
+}) => {
+  await page.goto("/goggles");
+  await page.getByRole("button", { name: "Put on goggles" }).click();
+  await expect(page.getByTestId("visor-transition")).toBeVisible();
+  await expect(page.getByRole("button", { name: "Skip intro" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  await expect(page.locator(".lens-experience")).toHaveAttribute(
+    "data-phase",
+    "inside",
+  );
+  await expect(
+    page.getByRole("region", { name: "Portfolio explorer" }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: "Open my desk" }),
+  ).toBeFocused();
+  await page.getByRole("button", { name: "Take off goggles" }).click();
+  await expect(
+    page.getByRole("button", { name: "Put on goggles" }),
+  ).toBeFocused();
+  await page.getByRole("button", { name: "Put on goggles" }).click();
+  await expect(page.locator(".lens-experience")).toHaveAttribute(
+    "data-phase",
+    "inside",
+    { timeout: 10_000 },
+  );
+  await expect(
+    page.getByRole("heading", { name: "El Capitan Valley" }),
+  ).toBeVisible();
+});
+
+test("the homepage lists every company with its logo and role", async ({
+  page,
+}) => {
+  await page.goto("/");
+  const companies = [
+    "Privy",
+    "Coinbase",
+    "TRM Labs",
+    "Polygon Labs",
+    "OpenSea",
+    "Google",
+    "Microsoft",
+    "JPMorgan Chase",
+  ];
+  await expect(page.locator(".career-row")).toHaveCount(companies.length);
+  for (const company of companies) {
+    const row = page.locator(".career-row").filter({
+      has: page.getByRole("heading", { name: company, exact: true }),
+    });
+    await expect(
+      row.getByRole("img", { name: `${company} logo` }),
+    ).toBeVisible();
+    await expect(row.locator(".career-role p")).not.toBeEmpty();
+    await expect(row.locator(".career-impact")).not.toBeEmpty();
+    await expect(row.locator(".career-date")).not.toBeEmpty();
+  }
 });
