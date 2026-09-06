@@ -22,37 +22,23 @@ The GitHub remote used for the active site is `echirinos/esteban-website`.
 
 ## Design Direction
 
-The site uses a "whiteprint" drafting identity: Esteban is a solutions
-architect and certified roofing contractor, so the visual language is the
-technical drawing — vellum paper (`--base-100`), drafting-blue linework and
-links (`--primary`), a deep blueprint-blue field for the hero and contact
-bookend (`#101f58`), and safety orange reserved for primary CTAs
-(`--accent`). Dark mode is full blueprint mode (blue field site-wide).
+The portfolio uses a warm editorial identity inspired by HEY, Basecamp,
+and 37signals: paper backgrounds, forest-green links and buttons, expressive
+Kaisei Tokumin headlines, and clear Geist body text. Preserve factual content,
+readable sentence case, generous spacing, and the personal tone. The homepage
+uses a real photo, a short personal note, work and project lists, and a scenic
+invitation into the goggles. Avoid reintroducing the old blueprint sheet codes.
 
-- Type: Barlow Condensed (display, uppercase, `font-display`), Archivo
-  (body, `font-sans`), IBM Plex Mono (annotations, `font-mono` and the
-  `.annotation` utility).
-- Structure devices: sections are labeled as drawing sheets
-  (`SHT A-02 · WORK`), work history is a hairline schedule table (no cards),
-  projects are numbered plates (P-01…), the chat section is the RFI.
-- Corners are square (2px max radius); borders use `.hairline`
-  (`--hairline`); the drafting grid utilities are `.sheet-grid` /
-  `.sheet-grid-field`.
-- Motion: Lenis smooth scroll (`app/components/lenis-provider.tsx`),
-  framer-motion draft-in reveals (`app/components/blueprint-motion.tsx`),
-  hero load sequence + parallax (`app/components/blueprint-hero.tsx`).
-  Everything respects `prefers-reduced-motion`.
-- Any motion element whose SSR initial state is hidden (`opacity: 0`,
-  offscreen transform) MUST carry `data-draft=""` — layout.tsx ships a
-  noscript override and global.css a print override so content is never
-  permanently invisible. A no-JS smoke test enforces this.
-- Tailwind alpha shorthand only compiles for multiples of 5 (`/65` works,
-  `/62` silently generates no CSS). Light-mode muted text floor is `/65`
-  (4.5:1 on vellum); the light accent is `#c24a08` (white label passes AA).
+Goggles are a browser-rendered Three.js experience with ten scenic worlds,
+a portfolio desk, an image fallback, motion controls, and mobile navigation.
+Keep the heavy renderer off the homepage. Do not preload every world texture.
+Respect reduced motion, stop rendering while the page is hidden, and keep
+all portfolio controls usable if WebGL or browser storage is unavailable.
 
-Keep it proof-led: direct hero copy, visible metrics ("quantities"),
-scannable schedule rows, clear CTAs. Avoid rounded-card grids, drop shadows,
-gradients, and marketing filler — they break the drafting language.
+Tailwind alpha shorthand only compiles for multiples of 5 (`/65` works,
+`/62` silently generates no CSS). Use bracket values for other opacities.
+Any motion element hidden in SSR must carry `data-draft=""` so the no-JS
+and print overrides expose its content.
 
 ## DaisyUI Theme Notes
 

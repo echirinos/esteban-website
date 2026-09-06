@@ -15,7 +15,7 @@ export function PageShell({
     <section
       className={cx(
         "mx-auto w-full max-w-6xl px-5 pb-16 pt-8 sm:px-8",
-        className
+        className,
       )}
     >
       {children}
@@ -33,8 +33,8 @@ export function SurfaceCard({
   return (
     <div
       className={cx(
-        "rounded-[2px] border p-6 hairline bg-base-100 md:p-8",
-        className
+        "surface-card border p-6 hairline bg-base-100 md:p-8",
+        className,
       )}
     >
       {children}
@@ -56,8 +56,12 @@ export function PageIntro({
   return (
     <div className="grid gap-5 py-4 md:grid-cols-[minmax(0,1fr)_260px] md:items-end">
       <div>
-        {code ? <p className="annotation text-primary">{code}</p> : null}
-        <h1 className="mt-4 max-w-4xl font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
+        {code ? (
+          <p className="annotation text-primary">
+            {code.replace(/^Sht [^·]+· /, "")}
+          </p>
+        ) : null}
+        <h1 className="mt-4 max-w-4xl font-display text-4xl font-semibold leading-tight md:text-5xl">
           {title}
         </h1>
         <p className="mt-5 max-w-3xl text-lg leading-relaxed text-base-content/70">
@@ -126,7 +130,7 @@ export function TagList({
       {items.map((item) => (
         <span
           key={item}
-          className="border px-2.5 py-1 hairline font-mono text-[10px] uppercase tracking-[0.1em] text-base-content/65"
+          className="border px-2.5 py-1 hairline text-sm text-base-content/65"
         >
           {item}
         </span>
@@ -149,7 +153,12 @@ export function InlineLink({
 
   if (external) {
     return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
+      <a
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className={className}
+      >
         {children}
       </a>
     );

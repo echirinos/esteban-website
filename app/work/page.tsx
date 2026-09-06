@@ -25,7 +25,7 @@ export default function WorkPage() {
     <PageShell>
       <SurfaceCard className="mb-8">
         <PageIntro
-          code="Sht W-01 · Work history"
+          code="Work history"
           title="Applied AI, DevEx, and product work."
           description="I’ve spent my career where technical products meet customers: developer platforms, API integrations, cloud architecture, discovery calls, product feedback loops, documentation, workshops, and demos that make complex systems easier to adopt."
           aside={

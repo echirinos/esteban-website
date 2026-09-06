@@ -25,7 +25,7 @@ export default function ContactPage() {
     <PageShell className="max-w-4xl">
       <SurfaceCard className="mb-5">
         <PageIntro
-          code="Sht C-01 · Contact"
+          code="Contact"
           title="Reach out on LinkedIn."
           description="LinkedIn is the best place to start a recruiting, applied AI, developer experience, platform, or partner solutions conversation."
         />

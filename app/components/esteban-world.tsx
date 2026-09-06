@@ -2,18 +2,11 @@
 
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  AnimatePresence,
-  motion,
-  useMotionTemplate,
-  useMotionValue,
-  useReducedMotion,
-  useSpring,
-  useTransform,
-  type MotionValue,
-} from "framer-motion";
-import {
+  Component,
   Suspense,
+  useCallback,
   useEffect,
   useMemo,
   useRef,
@@ -24,8 +17,8 @@ import * as THREE from "three";
 import { AskEstebanChat } from "./ask-esteban-chat";
 
 type ExperiencePhase = "outside" | "transition" | "inside";
-type IconKind = "folder" | "disk" | "lab" | "contact" | "document" | "assistant";
-type PointerMotion = { x: MotionValue<number>; y: MotionValue<number> };
+type IconKind =
+  "folder" | "disk" | "lab" | "contact" | "document" | "assistant";
 type SectionId =
   | "ask"
   | "work"
@@ -78,9 +71,24 @@ const portfolioItems: Array<{
   { id: "projects", label: "Build Log", href: "/projects", kind: "folder" },
   { id: "ai-lab", label: "AI Workbench", href: "/ai-lab", kind: "lab" },
   { id: "resume", label: "Role Fit", href: "/resume", kind: "document" },
-  { id: "proof-points", label: "Receipts.txt", href: "#proof-points", kind: "document" },
-  { id: "education", label: "Credentials.txt", href: "#education", kind: "document" },
-  { id: "ai-shipping", label: "Shipping Notes.txt", href: "#ai-shipping", kind: "document" },
+  {
+    id: "proof-points",
+    label: "Receipts.txt",
+    href: "#proof-points",
+    kind: "document",
+  },
+  {
+    id: "education",
+    label: "Credentials.txt",
+    href: "#education",
+    kind: "document",
+  },
+  {
+    id: "ai-shipping",
+    label: "Shipping Notes.txt",
+    href: "#ai-shipping",
+    kind: "document",
+  },
   { id: "contact", label: "Contact", href: "/contact", kind: "contact" },
 ];
 
@@ -262,7 +270,12 @@ const worldOptions: WorldOption[] = [
   },
 ];
 
-const featuredWorldIds: WorldId[] = ["yosemite", "biolume", "skyreef", "orbital"];
+const featuredWorldIds: WorldId[] = [
+  "yosemite",
+  "biolume",
+  "skyreef",
+  "orbital",
+];
 const cinematicEase: [number, number, number, number] = [0.16, 1, 0.3, 1];
 const transitionDurationMs = 1800;
 const reducedTransitionDurationMs = 540;
@@ -303,73 +316,89 @@ const workRows = [
 const projectRows = [
   {
     title: "Coinbase Onramp Demo App",
-    detail: "2,000+ monthly developer users evaluating fiat-to-crypto flows before they integrate.",
+    detail:
+      "2,000+ monthly developer users evaluating fiat-to-crypto flows before they integrate.",
   },
   {
     title: "Onramp Asset Checker",
-    detail: "A preflight tool that makes asset, region, payment, and eligibility issues easier to debug.",
+    detail:
+      "A preflight tool that makes asset, region, payment, and eligibility issues easier to debug.",
   },
   {
     title: "x402 / AgentKit / CDP demos",
-    detail: "Reference paths for teams trying to understand what new Coinbase developer primitives can actually ship.",
+    detail:
+      "Reference paths for teams trying to understand what new Coinbase developer primitives can actually ship.",
   },
   {
     title: "NFT Deployment Workflow",
-    detail: "A practical reference implementation for minting, deployment, and marketplace-adjacent use cases.",
+    detail:
+      "A practical reference implementation for minting, deployment, and marketplace-adjacent use cases.",
   },
   {
     title: "True Rank Pickleball",
-    detail: "A founder project turned acquired product, with ranking logic and local-market operations behind it.",
+    detail:
+      "A founder project turned acquired product, with ranking logic and local-market operations behind it.",
   },
   {
     title: "Roofing ops automation",
-    detail: "Internal software for a real service business, built around estimates, follow-up, and operator speed.",
+    detail:
+      "Internal software for a real service business, built around estimates, follow-up, and operator speed.",
   },
 ];
 
 const labRows = [
   {
     label: "Current-model product fit",
-    detail: "Design flows around what the model reliably does today, not what a future model might solve.",
+    detail:
+      "Design flows around what the model reliably does today, not what a future model might solve.",
   },
   {
     label: "Developer experience agents",
-    detail: "Use agents where they reduce integration ambiguity: setup, docs, debugging, migration, and support loops.",
+    detail:
+      "Use agents where they reduce integration ambiguity: setup, docs, debugging, migration, and support loops.",
   },
   {
     label: "Customer workflow automation",
-    detail: "Move repeated Salesforce, Slack, docs, and support work into workflows that can be measured and improved.",
+    detail:
+      "Move repeated Salesforce, Slack, docs, and support work into workflows that can be measured and improved.",
   },
   {
     label: "Launchable prototypes",
-    detail: "Build demos as product probes: fast enough to test, polished enough to teach, concrete enough to sell.",
+    detail:
+      "Build demos as product probes: fast enough to test, polished enough to teach, concrete enough to sell.",
   },
 ];
 
 const resumeRows = [
   {
     label: "Applied AI Architect",
-    detail: "Can turn fuzzy AI use cases into working demos, workflow automations, and evaluation criteria.",
+    detail:
+      "Can turn fuzzy AI use cases into working demos, workflow automations, and evaluation criteria.",
   },
   {
     label: "Technical Product Manager",
-    detail: "Already converts weekly developer signal into product recommendations, prioritization, and launch feedback.",
+    detail:
+      "Already converts weekly developer signal into product recommendations, prioritization, and launch feedback.",
   },
   {
     label: "Developer Experience",
-    detail: "Has owned docs, SDK migration guidance, sample apps, onboarding paths, and developer support loops.",
+    detail:
+      "Has owned docs, SDK migration guidance, sample apps, onboarding paths, and developer support loops.",
   },
   {
     label: "Demo Engineering",
-    detail: "Ships reference implementations that make complex APIs understandable before a sales or partner call.",
+    detail:
+      "Ships reference implementations that make complex APIs understandable before a sales or partner call.",
   },
   {
     label: "Partner Solutions",
-    detail: "Has led partner integrations where technical architecture, customer context, and revenue impact all matter.",
+    detail:
+      "Has led partner integrations where technical architecture, customer context, and revenue impact all matter.",
   },
   {
     label: "AI Deployment",
-    detail: "Comfortable connecting LLM workflows to real operations instead of keeping prototypes in a sandbox.",
+    detail:
+      "Comfortable connecting LLM workflows to real operations instead of keeping prototypes in a sandbox.",
   },
 ];
 
@@ -377,57 +406,68 @@ const proofPointRows = [
   {
     value: "$30M",
     label: "revenue impact supported",
-    detail: "Strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade.",
+    detail:
+      "Strategic partner integrations across Onramp, Embedded Wallets, and Advanced Trade.",
   },
   {
     value: "30+",
     label: "strategic partner integrations",
-    detail: "Coinbase partner launches across payments, wallets, trading, and developer-platform products.",
+    detail:
+      "Coinbase partner launches across payments, wallets, trading, and developer-platform products.",
   },
   {
     value: "30%",
     label: "escalation reduction",
-    detail: "AI-enabled workflows across Salesforce, Slack, developer docs, and support operations.",
+    detail:
+      "AI-enabled workflows across Salesforce, Slack, developer docs, and support operations.",
   },
   {
     value: "2,000+",
     label: "monthly demo users",
-    detail: "Coinbase Onramp demo app usage from developers evaluating fiat-to-crypto flows.",
+    detail:
+      "Coinbase Onramp demo app usage from developers evaluating fiat-to-crypto flows.",
   },
   {
     value: "100+",
     label: "developer insights translated",
-    detail: "Weekly developer signals converted into product recommendations and documentation improvements.",
+    detail:
+      "Weekly developer signals converted into product recommendations and documentation improvements.",
   },
   {
     value: "35%",
     label: "checkout-time reduction",
-    detail: "Apple Pay optimization recommendation that reduced Onramp checkout time.",
+    detail:
+      "Apple Pay optimization recommendation that reduced Onramp checkout time.",
   },
   {
     value: "58k+",
     label: "demo and tooling LOC",
-    detail: "Production-grade demos, reference implementations, and integration tooling across Coinbase developer products.",
+    detail:
+      "Production-grade demos, reference implementations, and integration tooling across Coinbase developer products.",
   },
   {
     value: "60+",
     label: "technical discovery sessions",
-    detail: "TRM Labs customer discovery across financial institutions and public sector teams.",
+    detail:
+      "TRM Labs customer discovery across financial institutions and public sector teams.",
   },
   {
     value: "40+",
     label: "custom API solutions delivered",
-    detail: "Regulated customer integrations, rollout paths, and implementation guidance.",
+    detail:
+      "Regulated customer integrations, rollout paths, and implementation guidance.",
   },
   {
     value: "10+",
     label: "dashboard tools built",
-    detail: "Internal and customer-facing tools to make workflows easier to operate.",
+    detail:
+      "Internal and customer-facing tools to make workflows easier to operate.",
   },
   {
     value: "8+",
     label: "companies shipped at",
-    detail: "Privy (Stripe), Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.",
+    detail:
+      "Privy (Stripe), Coinbase, TRM Labs, Polygon Labs, OpenSea, Google, Microsoft, and JPMorgan Chase.",
   },
 ];
 
@@ -435,17 +475,20 @@ const educationRows = [
   {
     label: "Berkeley Haas",
     value: "MBA, expected 2028",
-    detail: "The product and leadership layer: strategy, customer judgment, markets, and go-to-market execution.",
+    detail:
+      "The product and leadership layer: strategy, customer judgment, markets, and go-to-market execution.",
   },
   {
     label: "Florida International University",
     value: "B.S. Computer Science, 2019",
-    detail: "The engineering layer: enough CS depth to reason about APIs, platforms, cloud architecture, and AI systems.",
+    detail:
+      "The engineering layer: enough CS depth to reason about APIs, platforms, cloud architecture, and AI systems.",
   },
   {
     label: "Certifications",
     value: "GCP PCA / AWS SA / Azure Fundamentals",
-    detail: "Cloud credentials plus Hack Reactor training, useful for technical discovery with engineering teams.",
+    detail:
+      "Cloud credentials plus Hack Reactor training, useful for technical discovery with engineering teams.",
   },
 ];
 
@@ -476,41 +519,6 @@ const aiShippingRows = [
  * Pointer parallax as motion values: spring-smoothed and applied via style
  * transforms, so pointer movement never re-renders the React tree.
  */
-function usePointerParallax(): PointerMotion {
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const x = useSpring(rawX, { stiffness: 60, damping: 18, mass: 0.55 });
-  const y = useSpring(rawY, { stiffness: 60, damping: 18, mass: 0.55 });
-
-  useEffect(() => {
-    const updatePointer = (clientX: number, clientY: number) => {
-      rawX.set((clientX / window.innerWidth - 0.5) * 2);
-      rawY.set((clientY / window.innerHeight - 0.5) * 2);
-    };
-
-    const onPointerMove = (event: PointerEvent) => {
-      updatePointer(event.clientX, event.clientY);
-    };
-
-    const onTouchMove = (event: TouchEvent) => {
-      const touch = event.touches[0];
-      if (touch) {
-        updatePointer(touch.clientX, touch.clientY);
-      }
-    };
-
-    window.addEventListener("pointermove", onPointerMove, { passive: true });
-    window.addEventListener("touchmove", onTouchMove, { passive: true });
-
-    return () => {
-      window.removeEventListener("pointermove", onPointerMove);
-      window.removeEventListener("touchmove", onTouchMove);
-    };
-  }, [rawX, rawY]);
-
-  return { x, y };
-}
-
 function CameraRig({
   gogglesOn,
   phase,
@@ -525,6 +533,8 @@ function CameraRig({
   const elapsed = useRef(0);
 
   useFrame((_state, delta) => {
+    if (_state.frameloop !== "always") return;
+    delta = Math.min(delta, 0.05);
     elapsed.current += delta;
     const drift = Math.sin(elapsed.current * 0.26) * 0.018;
     const targetZ = phase === "transition" ? 3.58 : gogglesOn ? 4.03 : 4.18;
@@ -532,19 +542,49 @@ function CameraRig({
     targetPosition.set(
       pointer.x * 0.18,
       1.18 + pointer.y * 0.08 + drift,
-      targetZ
+      targetZ,
     );
     targetLookAt.set(pointer.x * 0.32, 1.62 + pointer.y * 0.12, -8.2);
 
     // Frame-rate independent smoothing (identical feel at 60Hz and 120Hz).
     const lambda = 2.8;
-    camera.position.x = THREE.MathUtils.damp(camera.position.x, targetPosition.x, lambda, delta);
-    camera.position.y = THREE.MathUtils.damp(camera.position.y, targetPosition.y, lambda, delta);
-    camera.position.z = THREE.MathUtils.damp(camera.position.z, targetPosition.z, lambda, delta);
+    camera.position.x = THREE.MathUtils.damp(
+      camera.position.x,
+      targetPosition.x,
+      lambda,
+      delta,
+    );
+    camera.position.y = THREE.MathUtils.damp(
+      camera.position.y,
+      targetPosition.y,
+      lambda,
+      delta,
+    );
+    camera.position.z = THREE.MathUtils.damp(
+      camera.position.z,
+      targetPosition.z,
+      lambda,
+      delta,
+    );
 
-    currentLookAt.x = THREE.MathUtils.damp(currentLookAt.x, targetLookAt.x, lambda, delta);
-    currentLookAt.y = THREE.MathUtils.damp(currentLookAt.y, targetLookAt.y, lambda, delta);
-    currentLookAt.z = THREE.MathUtils.damp(currentLookAt.z, targetLookAt.z, lambda, delta);
+    currentLookAt.x = THREE.MathUtils.damp(
+      currentLookAt.x,
+      targetLookAt.x,
+      lambda,
+      delta,
+    );
+    currentLookAt.y = THREE.MathUtils.damp(
+      currentLookAt.y,
+      targetLookAt.y,
+      lambda,
+      delta,
+    );
+    currentLookAt.z = THREE.MathUtils.damp(
+      currentLookAt.z,
+      targetLookAt.z,
+      lambda,
+      delta,
+    );
 
     if (camera instanceof THREE.PerspectiveCamera) {
       const targetFov = phase === "transition" ? 40 : 50;
@@ -558,220 +598,50 @@ function CameraRig({
   return null;
 }
 
-function WorldBackdrop({ world }: { world: WorldOption }) {
+function WorldBackdrop({
+  world,
+  onReady,
+}: {
+  world: WorldOption;
+  onReady: () => void;
+}) {
   const texture = useTexture(world.image);
-  const { size } = useThree();
-  const portrait = size.width < size.height;
+  const { viewport, camera, gl } = useThree();
+  const distance = camera.position.z + 8.9;
+  const visibleHeight =
+    2 * Math.tan(THREE.MathUtils.degToRad(50 / 2)) * distance;
+  const source = texture.image as HTMLImageElement;
+  const aspect = source.width / source.height;
+  const height =
+    Math.max(visibleHeight, (visibleHeight * viewport.aspect) / aspect) * 1.16;
 
   useEffect(() => {
     texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-  }, [texture]);
+    texture.anisotropy = Math.min(4, gl.capabilities.getMaxAnisotropy());
+    texture.needsUpdate = true;
+    onReady();
+    // Each world owns its texture; release GPU memory when switching worlds.
+    return () => {
+      useTexture.clear(world.image);
+      texture.dispose();
+    };
+  }, [texture, gl, onReady, world.image]);
 
   return (
-    <mesh position={portrait ? world.portraitPosition : world.desktopPosition}>
-      <planeGeometry args={[24, 13.5]} />
+    <mesh position={[0, 1.62, -8.9]}>
+      <planeGeometry args={[height * aspect, height]} />
       <meshBasicMaterial map={texture} toneMapped={false} fog={false} />
     </mesh>
   );
 }
 
-type DepthMaskKind = "foreground" | "sky" | "center";
-
-function useDepthAlphaMask(kind: DepthMaskKind) {
-  const texture = useMemo(() => {
-    const canvas = document.createElement("canvas");
-    canvas.width = 512;
-    canvas.height = 512;
-
-    const context = canvas.getContext("2d");
-    if (!context) return null;
-
-    const gradient = context.createLinearGradient(0, 0, 0, canvas.height);
-
-    if (kind === "foreground") {
-      gradient.addColorStop(0, "rgba(0,0,0,0)");
-      gradient.addColorStop(0.52, "rgba(0,0,0,0)");
-      gradient.addColorStop(0.7, "rgba(255,255,255,0.26)");
-      gradient.addColorStop(0.88, "rgba(255,255,255,0.56)");
-      gradient.addColorStop(1, "rgba(255,255,255,0.32)");
-    } else if (kind === "sky") {
-      gradient.addColorStop(0, "rgba(255,255,255,0.82)");
-      gradient.addColorStop(0.34, "rgba(255,255,255,0.34)");
-      gradient.addColorStop(0.58, "rgba(0,0,0,0)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
-    } else {
-      gradient.addColorStop(0, "rgba(0,0,0,0)");
-      gradient.addColorStop(0.28, "rgba(255,255,255,0.16)");
-      gradient.addColorStop(0.58, "rgba(255,255,255,0.58)");
-      gradient.addColorStop(0.84, "rgba(0,0,0,0)");
-      gradient.addColorStop(1, "rgba(0,0,0,0)");
-    }
-
-    context.fillStyle = gradient;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-    context.globalCompositeOperation = "destination-in";
-
-    const horizontalFade = context.createLinearGradient(0, 0, canvas.width, 0);
-    horizontalFade.addColorStop(0, "rgba(0,0,0,0)");
-    horizontalFade.addColorStop(0.12, "rgba(255,255,255,0.82)");
-    horizontalFade.addColorStop(0.5, "rgba(255,255,255,1)");
-    horizontalFade.addColorStop(0.88, "rgba(255,255,255,0.82)");
-    horizontalFade.addColorStop(1, "rgba(0,0,0,0)");
-    context.fillStyle = horizontalFade;
-    context.fillRect(0, 0, canvas.width, canvas.height);
-
-    if (kind === "foreground") {
-      const ovalFade = context.createRadialGradient(
-        canvas.width * 0.5,
-        canvas.height * 0.92,
-        canvas.width * 0.08,
-        canvas.width * 0.5,
-        canvas.height * 0.92,
-        canvas.width * 0.72
-      );
-      ovalFade.addColorStop(0, "rgba(255,255,255,0.96)");
-      ovalFade.addColorStop(0.56, "rgba(255,255,255,0.72)");
-      ovalFade.addColorStop(1, "rgba(0,0,0,0)");
-      context.fillStyle = ovalFade;
-      context.fillRect(0, 0, canvas.width, canvas.height);
-    }
-
-    context.globalCompositeOperation = "source-over";
-
-    const mask = new THREE.CanvasTexture(canvas);
-    mask.needsUpdate = true;
-    return mask;
-  }, [kind]);
-
-  useEffect(() => {
-    return () => {
-      texture?.dispose();
-    };
-  }, [texture]);
-
-  return texture;
-}
-
-function DepthImageLayer({
+function DepthParticles({
   world,
-  mask,
-  position,
-  scale,
-  opacity,
-  parallax,
+  gogglesOn,
 }: {
   world: WorldOption;
-  mask: DepthMaskKind;
-  position: [number, number, number];
-  scale: number;
-  opacity: number;
-  parallax: number;
+  gogglesOn: boolean;
 }) {
-  const texture = useTexture(world.image);
-  const alphaMap = useDepthAlphaMask(mask);
-  const mesh = useRef<THREE.Mesh>(null);
-  const { pointer } = useThree();
-  const elapsed = useRef(0);
-
-  useEffect(() => {
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 8;
-  }, [texture]);
-
-  useFrame((_state, delta) => {
-    elapsed.current += delta;
-    if (!mesh.current) return;
-
-    const targetX =
-      position[0] + pointer.x * parallax + Math.sin(elapsed.current * 0.18) * 0.015;
-    const targetY =
-      position[1] + pointer.y * parallax * 0.45 + Math.cos(elapsed.current * 0.22) * 0.012;
-
-    mesh.current.position.x = THREE.MathUtils.damp(mesh.current.position.x, targetX, 4.5, delta);
-    mesh.current.position.y = THREE.MathUtils.damp(mesh.current.position.y, targetY, 4.5, delta);
-  });
-
-  if (!alphaMap) return null;
-
-  return (
-    <mesh ref={mesh} position={position}>
-      <planeGeometry args={[24 * scale, 13.5 * scale]} />
-      <meshBasicMaterial
-        map={texture}
-        alphaMap={alphaMap}
-        transparent
-        opacity={opacity}
-        depthWrite={false}
-        depthTest={false}
-        fog={false}
-        toneMapped={false}
-      />
-    </mesh>
-  );
-}
-
-function DepthRidge({
-  world,
-  position,
-  opacity,
-  speed,
-  width,
-}: {
-  world: WorldOption;
-  position: [number, number, number];
-  opacity: number;
-  speed: number;
-  width: number;
-}) {
-  const mesh = useRef<THREE.Mesh>(null);
-  const { pointer } = useThree();
-  const elapsed = useRef(0);
-  const shape = useMemo(() => {
-    const ridge = new THREE.Shape();
-    ridge.moveTo(-width / 2, -1.15);
-    ridge.lineTo(-width / 2, -0.18);
-    ridge.bezierCurveTo(-width * 0.32, 0.15, -width * 0.22, -0.42, -width * 0.08, -0.06);
-    ridge.bezierCurveTo(width * 0.08, 0.36, width * 0.2, -0.34, width * 0.36, -0.05);
-    ridge.bezierCurveTo(width * 0.46, 0.08, width * 0.5, -0.12, width / 2, -0.02);
-    ridge.lineTo(width / 2, -1.15);
-    ridge.lineTo(-width / 2, -1.15);
-    return ridge;
-  }, [width]);
-
-  const geometry = useMemo(() => new THREE.ShapeGeometry(shape, 36), [shape]);
-
-  useEffect(() => {
-    return () => {
-      geometry.dispose();
-    };
-  }, [geometry]);
-
-  useFrame((_state, delta) => {
-    elapsed.current += delta;
-    if (!mesh.current) return;
-    const targetX = position[0] + pointer.x * speed;
-    const targetY =
-      position[1] + pointer.y * speed * 0.18 + Math.sin(elapsed.current * 0.16) * 0.012;
-    mesh.current.position.x = THREE.MathUtils.damp(mesh.current.position.x, targetX, 4.5, delta);
-    mesh.current.position.y = THREE.MathUtils.damp(mesh.current.position.y, targetY, 4.5, delta);
-  });
-
-  return (
-    <mesh ref={mesh} geometry={geometry} position={position}>
-      <meshBasicMaterial
-        color={world.background}
-        transparent
-        opacity={opacity}
-        depthWrite={false}
-        depthTest={false}
-        fog={false}
-      />
-    </mesh>
-  );
-}
-
-function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: boolean }) {
   const points = useRef<THREE.Points>(null);
   const { pointer } = useThree();
   const elapsed = useRef(0);
@@ -791,13 +661,30 @@ function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: b
   }, []);
 
   useFrame((_state, delta) => {
+    if (_state.frameloop !== "always") return;
+    delta = Math.min(delta, 0.05);
     elapsed.current += delta;
     if (!points.current) return;
     const targetX = pointer.x * 0.42;
     const targetY = pointer.y * 0.12 + Math.sin(elapsed.current * 0.24) * 0.025;
-    points.current.position.x = THREE.MathUtils.damp(points.current.position.x, targetX, 4, delta);
-    points.current.position.y = THREE.MathUtils.damp(points.current.position.y, targetY, 4, delta);
-    points.current.rotation.z = THREE.MathUtils.damp(points.current.rotation.z, pointer.x * 0.012, 4, delta);
+    points.current.position.x = THREE.MathUtils.damp(
+      points.current.position.x,
+      targetX,
+      4,
+      delta,
+    );
+    points.current.position.y = THREE.MathUtils.damp(
+      points.current.position.y,
+      targetY,
+      4,
+      delta,
+    );
+    points.current.rotation.z = THREE.MathUtils.damp(
+      points.current.rotation.z,
+      pointer.x * 0.012,
+      4,
+      delta,
+    );
   });
 
   return (
@@ -823,582 +710,55 @@ function DepthParticles({ world, gogglesOn }: { world: WorldOption; gogglesOn: b
   );
 }
 
-function WorldDepthStage({
-  gogglesOn,
-  world,
-}: {
-  gogglesOn: boolean;
-  world: WorldOption;
-}) {
-  const { size } = useThree();
-  const portrait = size.width < size.height;
-  const compact = size.width < 768;
-  const basePosition = portrait ? world.portraitPosition : world.desktopPosition;
-
-  return (
-    <>
-      <DepthImageLayer
-        world={world}
-        mask="sky"
-        position={[basePosition[0] - 0.06, basePosition[1] + 0.04, -10.15]}
-        scale={1.08}
-        opacity={gogglesOn ? 0.16 : 0.08}
-        parallax={-0.1}
-      />
-      {!compact ? (
-        <DepthImageLayer
-          world={world}
-          mask="center"
-          position={[basePosition[0] + 0.08, basePosition[1] + 0.02, -8.05]}
-          scale={0.98}
-          opacity={gogglesOn ? 0.14 : 0.06}
-          parallax={0.16}
-        />
-      ) : null}
-      {!compact ? (
-        <DepthImageLayer
-          world={world}
-          mask="foreground"
-          position={[basePosition[0], basePosition[1] - 0.06, -6.82]}
-          scale={0.92}
-          opacity={gogglesOn ? 0.08 : 0.03}
-          parallax={0.28}
-        />
-      ) : null}
-      <DepthRidge
-        world={world}
-        position={[-1.2, -0.98, -4.9]}
-        opacity={gogglesOn ? 0.08 : 0.04}
-        speed={0.42}
-        width={9.4}
-      />
-      <DepthRidge
-        world={world}
-        position={[1.1, -1.18, -3.9]}
-        opacity={gogglesOn ? 0.12 : 0.06}
-        speed={0.58}
-        width={8.2}
-      />
-      <DepthParticles world={world} gogglesOn={gogglesOn} />
-    </>
-  );
-}
-
-function HazeRibbon({
-  position,
-  rotation,
-  color,
-  opacity,
-  width,
-  speed,
-}: {
-  position: [number, number, number];
-  rotation: number;
-  color: string;
-  opacity: number;
-  width: number;
-  speed: number;
-}) {
-  const mesh = useRef<THREE.Mesh>(null);
-  const elapsed = useRef(0);
-
-  useFrame((_state, delta) => {
-    elapsed.current += delta;
-    if (!mesh.current) return;
-    mesh.current.position.y = position[1] + Math.sin(elapsed.current * speed) * 0.025;
-    mesh.current.rotation.z = rotation + Math.sin(elapsed.current * speed * 0.72) * 0.012;
-  });
-
-  return (
-    <mesh ref={mesh} position={position} rotation-z={rotation}>
-      <planeGeometry args={[width, 0.16]} />
-      <meshBasicMaterial
-        color={color}
-        transparent
-        opacity={opacity}
-        blending={THREE.AdditiveBlending}
-        depthWrite={false}
-        fog={false}
-      />
-    </mesh>
-  );
-}
-
-function Atmosphere({
-  gogglesOn,
-  world,
-}: {
-  gogglesOn: boolean;
-  world: WorldOption;
-}) {
-  const hazeOpacity = world.hazeOpacity ?? 0;
-
-  if (hazeOpacity <= 0) return null;
-
-  return (
-    <>
-      <HazeRibbon
-        position={[-1.7, 2.72, -4.35]}
-        rotation={0.06}
-        color={world.hazePrimary}
-        opacity={(gogglesOn ? 0.12 : 0.08) * hazeOpacity}
-        width={1.28}
-        speed={0.55}
-      />
-      <HazeRibbon
-        position={[2.0, 2.54, -4.7]}
-        rotation={-0.05}
-        color={world.hazeSecondary}
-        opacity={(gogglesOn ? 0.1 : 0.07) * hazeOpacity}
-        width={1.45}
-        speed={0.44}
-      />
-    </>
-  );
-}
-
 function WorldScene({
   gogglesOn,
   phase,
   world,
+  onReady,
 }: {
   gogglesOn: boolean;
   phase: ExperiencePhase;
   world: WorldOption;
+  onReady: () => void;
 }) {
   return (
     <>
-      <color attach="background" args={[world.background]} />
-      <fog attach="fog" args={[world.fog, 13, 25]} />
-      <ambientLight intensity={0.62} color={world.ambient} />
-      <directionalLight position={[4.5, 4.2, 2.8]} intensity={2.5} color={world.sun} />
-      <directionalLight position={[-4.8, 2.8, -2.6]} intensity={0.72} color={world.fill} />
-      <pointLight position={[2.9, 1.4, 1.8]} intensity={0.6} color={world.accent} distance={8} />
       <CameraRig gogglesOn={gogglesOn} phase={phase} />
       <Suspense fallback={null}>
-        <WorldDepthStage gogglesOn={gogglesOn} world={world} />
-        <WorldBackdrop world={world} />
+        <WorldBackdrop key={world.id} world={world} onReady={onReady} />
+        <DepthParticles world={world} gogglesOn={gogglesOn} />
       </Suspense>
-      <Atmosphere gogglesOn={gogglesOn} world={world} />
     </>
   );
 }
 
-function LensFrame({ phase }: { phase: ExperiencePhase }) {
-  const visible = phase === "inside";
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <AnimatePresence>
-      {visible ? (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-10 overflow-hidden"
-          initial={{ opacity: 0, filter: reduceMotion ? "blur(0px)" : "blur(5px)" }}
-          animate={{ opacity: 1, filter: "blur(0px)" }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0.22 : 0.58, ease: cinematicEase }}
-          aria-hidden="true"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,244,220,0.1)_0%,rgba(255,244,220,0.025)_34%,rgba(9,7,5,0.1)_58%,rgba(0,0,0,0.76)_100%)]" />
-          <div className="absolute inset-0 opacity-25 mix-blend-screen [background-image:linear-gradient(90deg,rgba(90,220,255,0.16),transparent_18%,transparent_82%,rgba(255,138,108,0.16)),linear-gradient(rgba(255,255,255,0.13)_1px,transparent_1px)] [background-size:100%_100%,100%_4px]" />
-          <motion.div
-            className="absolute inset-x-[-8%] top-[-6.5rem] h-40 rounded-b-[50%] bg-black/[0.78] blur-sm md:top-[-7.8rem] md:h-48"
-            initial={{ y: reduceMotion ? 0 : -22 }}
-            animate={{ y: 0 }}
-            transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
-          />
-          <motion.div
-            className="absolute inset-x-[-8%] bottom-[-6.2rem] h-40 rounded-t-[50%] bg-black/[0.82] blur-sm md:bottom-[-7.8rem] md:h-48"
-            initial={{ y: reduceMotion ? 0 : 22 }}
-            animate={{ y: 0 }}
-            transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
-          />
-          <div className="absolute left-[-7rem] top-[-5%] h-[110%] w-48 rounded-r-[50%] bg-black/[0.58] blur-md md:w-64" />
-          <div className="absolute right-[-7rem] top-[-5%] h-[110%] w-48 rounded-l-[50%] bg-black/[0.58] blur-md md:w-64" />
-          <motion.div
-            className="absolute left-[7%] top-[8%] h-36 w-[47%] rotate-[-9deg] rounded-[999px] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.1),rgba(255,255,255,0.02)_58%,transparent_72%)] blur-[1px]"
-            initial={{ opacity: 0, x: reduceMotion ? 0 : -18, y: reduceMotion ? 0 : 10 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute right-[8%] top-[12%] h-28 w-[34%] rotate-[-11deg] rounded-[999px] border border-white/10 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.08),rgba(255,255,255,0.02)_56%,transparent_76%)] blur-[1px]"
-            initial={{ opacity: 0, x: reduceMotion ? 0 : 18, y: reduceMotion ? 0 : 10 }}
-            animate={{ opacity: 1, x: 0, y: 0 }}
-            transition={{ duration: reduceMotion ? 0.22 : 0.62, delay: reduceMotion ? 0 : 0.12, ease: "easeOut" }}
-          />
-          {!reduceMotion ? (
-            <motion.div
-              className="absolute left-[-18%] top-[14%] h-32 w-[52%] rotate-[-18deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.16),transparent)] blur-md mix-blend-screen"
-              initial={{ x: "-24vw", opacity: 0 }}
-              animate={{ x: ["-24vw", "52vw", "118vw"], opacity: [0, 0.68, 0] }}
-              transition={{ duration: 2.4, delay: 0.7, repeat: Infinity, repeatDelay: 5.6, ease: "easeInOut" }}
-            />
-          ) : null}
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
-  );
+class SceneBoundary extends Component<
+  { children: ReactNode; onError: () => void },
+  { failed: boolean }
+> {
+  state = { failed: false };
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+  componentDidCatch() {
+    this.props.onError();
+  }
+  render() {
+    return this.state.failed ? null : this.props.children;
+  }
 }
 
-function GoggleLift({ active }: { active: boolean }) {
-  const reduceMotion = useReducedMotion();
-  const duration = reduceMotion ? 0.42 : 1.18;
-
-  return (
-    <AnimatePresence>
-      {active ? (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-40 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.18 }}
-          aria-hidden="true"
-        >
-          <motion.div
-            className="absolute inset-0 bg-black"
-            initial={{ opacity: 0 }}
-            animate={
-              reduceMotion
-                ? { opacity: [0, 0.42, 0] }
-                : { opacity: [0, 0.16, 0.68, 0.22, 0] }
-            }
-            transition={
-              reduceMotion
-                ? { duration, ease: "easeInOut" }
-                : { duration, times: [0, 0.28, 0.54, 0.78, 1], ease: "easeInOut" }
-            }
-          />
-          <motion.div
-            className="absolute inset-x-[-8%] top-[-18vh] h-[38vh] rounded-b-[50%] bg-black/[0.82] blur-[2px]"
-            initial={{ y: "-14vh" }}
-            animate={{ y: reduceMotion ? "-7vh" : ["-14vh", "-4vh", "-7vh"] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.84, times: [0, 0.62, 1], ease: cinematicEase }}
-          />
-          <motion.div
-            className="absolute inset-x-[-8%] bottom-[-18vh] h-[38vh] rounded-t-[50%] bg-black/[0.86] blur-[2px]"
-            initial={{ y: "14vh" }}
-            animate={{ y: reduceMotion ? "7vh" : ["14vh", "4vh", "7vh"] }}
-            transition={{ duration: reduceMotion ? 0.34 : 0.84, times: [0, 0.62, 1], ease: cinematicEase }}
-          />
-          <motion.div
-            className="absolute inset-x-[-10%] bottom-[-7vh] mx-auto h-[72vh] max-h-[650px] min-h-[370px] w-[122vw] max-w-[1180px]"
-            initial={{ y: "64vh", scale: 0.9, rotateX: 12, opacity: 0.1 }}
-            animate={
-              reduceMotion
-                ? { y: "2vh", scale: 1, rotateX: 0, opacity: 1 }
-                : {
-                    y: ["62vh", "11vh", "-0.75vh", "0vh"],
-                    scale: [0.92, 1.025, 0.996, 1],
-                    rotateX: [10, -1.2, 0, 0],
-                    opacity: [0.1, 1, 1, 1],
-                  }
-            }
-            exit={{ y: "-10vh", opacity: 0 }}
-            transition={
-              reduceMotion
-                ? { duration: 0.42, ease: "easeOut" }
-                : { duration: 0.98, times: [0, 0.58, 0.82, 1], ease: cinematicEase }
-            }
-            style={{ transformStyle: "preserve-3d" }}
-          >
-            <motion.div
-              className="absolute inset-x-[1%] top-[-12%] h-[29%] rounded-b-[50%] bg-[linear-gradient(180deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
-              initial={{ opacity: 0, y: -40 }}
-              animate={{ opacity: [0, 0.7, 0.96], y: [-40, -8, 0] }}
-              transition={{ duration: reduceMotion ? 0.24 : 0.58, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
-            />
-            <motion.div
-              className="absolute inset-x-[1%] bottom-[-8%] h-[29%] rounded-t-[50%] bg-[linear-gradient(0deg,rgba(0,0,0,0.98),rgba(0,0,0,0.86))] shadow-[0_-24px_90px_rgba(0,0,0,0.58)] blur-[2px]"
-              initial={{ opacity: 0, y: 34 }}
-              animate={{ opacity: [0, 0.76, 0.98], y: [34, 8, 0] }}
-              transition={{ duration: reduceMotion ? 0.24 : 0.58, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
-            />
-            <motion.div
-              className="absolute left-[5.5%] top-[16%] h-[60%] w-[42%] overflow-hidden rounded-[50%] border-[13px] border-black/[0.92] bg-[radial-gradient(ellipse_at_48%_42%,rgba(235,251,255,0.28),rgba(255,255,255,0.08)_34%,rgba(0,0,0,0.12)_68%,rgba(0,0,0,0.52)_100%)] shadow-[inset_0_0_54px_rgba(255,255,255,0.18),inset_0_-26px_44px_rgba(0,0,0,0.3),0_24px_72px_rgba(0,0,0,0.56)] sm:border-[17px]"
-              initial={{ x: -110, rotate: -7, opacity: 0, scale: 0.78 }}
-              animate={
-                reduceMotion
-                  ? { x: 0, rotate: 0, opacity: 0.9, scale: 1 }
-                  : {
-                      x: [-110, 8, -2, 0],
-                      rotate: [-7, 1.2, -0.4, 0],
-                      opacity: [0, 0.98, 0.9, 0.9],
-                      scale: [0.78, 1.055, 0.994, 1],
-                    }
-              }
-              transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
-            >
-              <div className="absolute inset-[8%] rounded-[50%] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
-              <motion.div
-                className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
-                initial={{ x: "-30%" }}
-                animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
-                transition={{ duration: reduceMotion ? 0.24 : 0.68, delay: reduceMotion ? 0 : 0.26, ease: "easeInOut" }}
-              />
-            </motion.div>
-            <motion.div
-              className="absolute right-[5.5%] top-[16%] h-[60%] w-[42%] overflow-hidden rounded-[50%] border-[13px] border-black/[0.92] bg-[radial-gradient(ellipse_at_52%_42%,rgba(235,251,255,0.28),rgba(255,255,255,0.08)_34%,rgba(0,0,0,0.12)_68%,rgba(0,0,0,0.52)_100%)] shadow-[inset_0_0_54px_rgba(255,255,255,0.18),inset_0_-26px_44px_rgba(0,0,0,0.3),0_24px_72px_rgba(0,0,0,0.56)] sm:border-[17px]"
-              initial={{ x: 110, rotate: 7, opacity: 0, scale: 0.78 }}
-              animate={
-                reduceMotion
-                  ? { x: 0, rotate: 0, opacity: 0.9, scale: 1 }
-                  : {
-                      x: [110, -8, 2, 0],
-                      rotate: [7, -1.2, 0.4, 0],
-                      opacity: [0, 0.98, 0.9, 0.9],
-                      scale: [0.78, 1.055, 0.994, 1],
-                    }
-              }
-              transition={{ duration: reduceMotion ? 0.32 : 0.78, delay: reduceMotion ? 0 : 0.03, times: [0, 0.65, 0.86, 1], ease: cinematicEase }}
-            >
-              <div className="absolute inset-[8%] rounded-[50%] border border-white/20 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12),transparent_62%)]" />
-              <motion.div
-                className="absolute left-[-18%] top-[12%] h-16 w-[72%] rotate-[-22deg] rounded-full bg-white/20 blur-md"
-                initial={{ x: "-30%" }}
-                animate={{ x: reduceMotion ? "30%" : ["-30%", "95%"] }}
-                transition={{ duration: reduceMotion ? 0.24 : 0.68, delay: reduceMotion ? 0 : 0.28, ease: "easeInOut" }}
-              />
-            </motion.div>
-            <motion.div
-              className="absolute left-1/2 top-[38%] h-[19%] w-[16%] -translate-x-1/2 rounded-b-[52%] border-b-[16px] border-black/[0.92] shadow-[0_12px_36px_rgba(0,0,0,0.34)]"
-              initial={{ opacity: 0, y: 24, scale: 0.8 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: reduceMotion ? 0.22 : 0.42, delay: reduceMotion ? 0 : 0.26, ease: "easeOut" }}
-            />
-            <motion.div
-              className="absolute left-1/2 top-[46%] h-7 w-[10%] -translate-x-1/2 rounded-full bg-white/10 blur-md"
-              initial={{ opacity: 0, scaleX: 0.4 }}
-              animate={{ opacity: [0, 0.65, 0.18], scaleX: [0.4, 1.16, 1] }}
-              transition={{ duration: reduceMotion ? 0.22 : 0.48, delay: reduceMotion ? 0 : 0.46, ease: "easeOut" }}
-            />
-          </motion.div>
-          <motion.div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.12)_0%,rgba(0,0,0,0.12)_40%,rgba(0,0,0,0.9)_100%)]"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: reduceMotion ? [0, 0.5, 0] : [0, 0, 0.68, 0.22, 0] }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: reduceMotion ? 0.4 : 1.02, times: [0, 0.42, 0.62, 0.84, 1], ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute left-[-26%] top-[18%] h-28 w-[64%] rotate-[-17deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(138,222,255,0.22),transparent)] blur-md mix-blend-screen"
-            initial={{ x: "-20vw", opacity: 0 }}
-            animate={{ x: reduceMotion ? "45vw" : ["-20vw", "48vw", "125vw"], opacity: reduceMotion ? [0, 0.45, 0] : [0, 1, 0] }}
-            transition={{ duration: reduceMotion ? 0.36 : 0.82, delay: reduceMotion ? 0 : 0.34, ease: "easeInOut" }}
-          />
-          <motion.div
-            className="absolute inset-0 bg-white"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: reduceMotion ? [0, 0.24, 0] : [0, 0, 0.42, 0] }}
-            transition={{ duration: reduceMotion ? 0.36 : 0.86, times: [0, 0.62, 0.72, 1], ease: "easeOut" }}
-          />
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
-  );
-}
-
-function LensBoot({
-  active,
-  worldName,
-}: {
-  active: boolean;
-  worldName: string;
-}) {
-  const reduceMotion = useReducedMotion();
-
-  const bootLines = [
-    "Esteban OS 8 // lens mode",
-    "Optics ........ calibrated",
-    `World ......... ${worldName}`,
-    "Depth rig ..... locked",
-    "Entering",
-  ];
-
-  return (
-    <AnimatePresence>
-      {active ? (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-50 overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.2 }}
-          aria-hidden="true"
-        >
-          {reduceMotion ? (
-            <motion.div
-              className="absolute inset-0 grid place-items-center bg-[#02040c]"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: [0, 0.92, 0] }}
-              transition={{ duration: 0.54, times: [0, 0.5, 1], ease: "easeInOut" }}
-            >
-              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#cfe0ff]">
-                Entering Esteban OS
-              </p>
-            </motion.div>
-          ) : (
-            <>
-              {/* Headset interior: black cover with a binocular iris that opens onto the world */}
-              <motion.div
-                className="absolute inset-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0, 1, 1] }}
-                transition={{ duration: 1.8, times: [0, 0.17, 0.26, 1] }}
-              >
-                <svg
-                  className="absolute inset-0 h-full w-full"
-                  viewBox="0 0 100 100"
-                  preserveAspectRatio="xMidYMid slice"
-                >
-                  <defs>
-                    <mask id="lens-iris-mask">
-                      <rect width="100" height="100" fill="white" />
-                      <motion.circle
-                        cx="39"
-                        cy="50"
-                        fill="black"
-                        initial={{ r: 0 }}
-                        animate={{ r: [0, 0, 4, 120] }}
-                        transition={{ duration: 1.8, times: [0, 0.6, 0.68, 0.97], ease: [0.72, 0, 0.16, 1] }}
-                      />
-                      <motion.circle
-                        cx="61"
-                        cy="50"
-                        fill="black"
-                        initial={{ r: 0 }}
-                        animate={{ r: [0, 0, 4, 120] }}
-                        transition={{ duration: 1.8, times: [0, 0.62, 0.7, 0.97], ease: [0.72, 0, 0.16, 1] }}
-                      />
-                    </mask>
-                  </defs>
-                  <rect width="100" height="100" fill="#02040c" mask="url(#lens-iris-mask)" />
-                </svg>
-              </motion.div>
-
-              {/* Wireframe grid floor rushing toward the viewer */}
-              <div className="absolute inset-0" style={{ perspective: "520px" }}>
-                <motion.div
-                  className="absolute left-1/2 top-[46%] h-[240%] w-[360%] -translate-x-1/2"
-                  style={{
-                    rotateX: 74,
-                    transformOrigin: "top center",
-                    backgroundImage:
-                      "linear-gradient(rgba(143,168,255,0.42) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(143,168,255,0.42) 1.5px, transparent 1.5px)",
-                    backgroundSize: "72px 72px",
-                    maskImage:
-                      "linear-gradient(180deg, transparent, black 18%, black 72%, transparent)",
-                    WebkitMaskImage:
-                      "linear-gradient(180deg, transparent, black 18%, black 72%, transparent)",
-                  }}
-                  initial={{ opacity: 0, backgroundPositionY: "0px" }}
-                  animate={{
-                    opacity: [0, 0, 0.95, 0.95, 0],
-                    backgroundPositionY: ["0px", "648px"],
-                  }}
-                  transition={{
-                    opacity: { duration: 1.8, times: [0, 0.22, 0.32, 0.62, 0.74] },
-                    backgroundPositionY: { duration: 1.35, delay: 0.4, ease: [0.3, 0, 0.9, 0.4] },
-                  }}
-                />
-                <motion.div
-                  className="absolute left-1/2 top-[8%] h-[160%] w-[360%] -translate-x-1/2"
-                  style={{
-                    rotateX: -74,
-                    transformOrigin: "bottom center",
-                    backgroundImage:
-                      "linear-gradient(rgba(143,168,255,0.22) 1.5px, transparent 1.5px), linear-gradient(90deg, rgba(143,168,255,0.22) 1.5px, transparent 1.5px)",
-                    backgroundSize: "72px 72px",
-                    maskImage:
-                      "linear-gradient(0deg, transparent, black 30%, black 78%, transparent)",
-                    WebkitMaskImage:
-                      "linear-gradient(0deg, transparent, black 30%, black 78%, transparent)",
-                  }}
-                  initial={{ opacity: 0, backgroundPositionY: "648px" }}
-                  animate={{
-                    opacity: [0, 0, 0.7, 0.7, 0],
-                    backgroundPositionY: ["648px", "0px"],
-                  }}
-                  transition={{
-                    opacity: { duration: 1.8, times: [0, 0.24, 0.34, 0.6, 0.72] },
-                    backgroundPositionY: { duration: 1.35, delay: 0.4, ease: [0.3, 0, 0.9, 0.4] },
-                  }}
-                />
-              </div>
-
-              {/* Horizon line */}
-              <motion.div
-                className="absolute left-0 right-0 top-[46%] h-px bg-[#8fa8ff] shadow-[0_0_28px_rgba(143,168,255,0.95)]"
-                initial={{ opacity: 0, scaleX: 0 }}
-                animate={{ opacity: [0, 0, 1, 1, 0], scaleX: [0, 0, 1, 1, 1] }}
-                transition={{ duration: 1.8, times: [0, 0.24, 0.34, 0.6, 0.72], ease: "easeOut" }}
-              />
-
-              {/* Boot readout */}
-              <div className="absolute left-1/2 top-1/2 w-[min(78vw,420px)] -translate-x-1/2 -translate-y-1/2">
-                {bootLines.map((line, index) => (
-                  <motion.p
-                    key={line}
-                    className="font-mono text-[11px] font-medium uppercase leading-[1.9] tracking-[0.18em] text-[#d4e2ff] sm:text-xs"
-                    style={{
-                      textShadow:
-                        "1.5px 0 rgba(255,64,128,0.5), -1.5px 0 rgba(84,240,255,0.5)",
-                    }}
-                    initial={{ opacity: 0, y: 5 }}
-                    animate={{ opacity: [0, 1, 1, 0], y: 0 }}
-                    transition={{
-                      duration: 0.92,
-                      delay: 0.46 + index * 0.1,
-                      times: [0, 0.14, 0.82, 1],
-                      ease: "easeOut",
-                    }}
-                  >
-                    {line}
-                    {index === bootLines.length - 1 ? (
-                      <motion.span
-                        className="ml-2 inline-block h-3 w-2 translate-y-[1px] bg-[#d4e2ff]"
-                        animate={{ opacity: [1, 0, 1] }}
-                        transition={{ duration: 0.3, repeat: 2 }}
-                      />
-                    ) : null}
-                  </motion.p>
-                ))}
-              </div>
-
-              {/* Warp spokes at punch-through */}
-              <motion.div
-                className="absolute left-1/2 top-1/2 h-[165vmax] w-[165vmax] -translate-x-1/2 -translate-y-1/2 rounded-full mix-blend-screen"
-                style={{
-                  background:
-                    "repeating-conic-gradient(from 0deg, rgba(255,255,255,0) 0deg 4deg, rgba(168,196,255,0.2) 5deg 6.5deg, rgba(255,255,255,0) 7.5deg 12deg)",
-                  maskImage:
-                    "radial-gradient(circle, transparent 6%, black 30%, black 62%, transparent 78%)",
-                  WebkitMaskImage:
-                    "radial-gradient(circle, transparent 6%, black 30%, black 62%, transparent 78%)",
-                }}
-                initial={{ opacity: 0, scale: 0.34, rotate: 0 }}
-                animate={{
-                  opacity: [0, 0, 0.9, 0],
-                  scale: [0.34, 0.34, 1.12, 1.38],
-                  rotate: 26,
-                }}
-                transition={{ duration: 1.8, times: [0, 0.52, 0.72, 0.94], ease: "easeInOut" }}
-              />
-
-              {/* Punch flash as the lenses light up */}
-              <motion.div
-                className="absolute inset-0 bg-white mix-blend-screen"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: [0, 0, 0.72, 0] }}
-                transition={{ duration: 1.8, times: [0, 0.58, 0.66, 0.8], ease: "easeOut" }}
-              />
-            </>
-          )}
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
-  );
+function SceneLifecycle({ onError }: { onError: () => void }) {
+  const gl = useThree((state) => state.gl);
+  useEffect(() => {
+    const onLost = (event: Event) => {
+      event.preventDefault();
+      onError();
+    };
+    gl.domElement.addEventListener("webglcontextlost", onLost);
+    return () => gl.domElement.removeEventListener("webglcontextlost", onLost);
+  }, [gl, onError]);
+  return null;
 }
 
 function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
@@ -1415,57 +775,26 @@ function PutOnGogglesPrompt({ onClick }: { onClick: () => void }) {
       <motion.button
         type="button"
         onClick={onClick}
-        className="draft-btn draft-btn-fill group px-6 py-4 shadow-[0_18px_60px_rgba(0,0,0,0.4)]"
+        className="draft-btn lens-enter-button"
         whileHover={reduceMotion ? undefined : { y: -2, scale: 1.025 }}
         whileTap={reduceMotion ? undefined : { y: 1, scale: 0.985 }}
         transition={{ type: "spring", stiffness: 520, damping: 30 }}
       >
         <span className="mr-1 inline-block h-1.5 w-1.5 animate-pulse bg-white shadow-[0_0_14px_rgba(255,255,255,0.85)] transition group-hover:scale-125 motion-reduce:animate-none" />
-        Enter lens
+        Put on goggles
       </motion.button>
     </motion.div>
   );
 }
 
 function LensIntroPanel({ phase }: { phase: ExperiencePhase }) {
-  const reduceMotion = useReducedMotion();
-
   if (phase !== "outside") return null;
-
   return (
-    <motion.aside
-      className="pointer-events-none absolute left-4 right-4 top-5 z-20 md:left-6 md:right-auto md:top-6 md:w-[25rem]"
-      initial={{ opacity: 0, y: reduceMotion ? 0 : -10, scale: reduceMotion ? 1 : 0.98 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-      transition={{ duration: reduceMotion ? 0.2 : 0.52, ease: cinematicEase }}
-    >
-      <div className="pointer-events-auto rounded-[2px] border border-white/25 bg-[#0b1533]/72 p-4 text-white shadow-[0_22px_70px_rgba(0,0,0,0.3)] backdrop-blur-xl sm:p-5">
-        <div className="flex items-center justify-between gap-4">
-          <p className="annotation text-white/60">Sht L-01 &middot; Lens mode</p>
-          <span className="annotation border border-white/25 px-2 py-1 text-white/80">
-            Live
-          </span>
-        </div>
-        <h1 className="mt-4 max-w-sm font-display text-4xl font-bold uppercase leading-[0.9] tracking-[0.02em] sm:text-5xl">
-          Step into the visual proof map.
-        </h1>
-        <p className="mt-3 max-w-sm text-sm leading-relaxed text-white/70">
-          Explore the same portfolio through worlds, proof points, projects,
-          role-fit signal, and Ask Esteban.
-        </p>
-        <div className="mt-4 flex flex-wrap gap-2">
-          {["AI product", "DevEx", "Demos", "Proof"].map((item) => (
-            <span
-              key={item}
-              className="border border-white/20 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-white/75"
-            >
-              {item}
-            </span>
-          ))}
-        </div>
-      </div>
-    </motion.aside>
+    <div className="lens-intro">
+      <p>Esteban’s little escape</p>
+      <h1>A change of scenery.</h1>
+      <p>Ten worlds. A few things I’ve built. Room to look around.</p>
+    </div>
   );
 }
 
@@ -1488,7 +817,11 @@ function ModernSiteLink({ phase }: { phase: ExperiencePhase }) {
   );
 }
 
-const goggleNavItems: Array<{ label: string; href: string; external?: boolean }> = [
+const goggleNavItems: Array<{
+  label: string;
+  href: string;
+  external?: boolean;
+}> = [
   { label: "Portfolio", href: "/" },
   { label: "Work", href: "/work" },
   { label: "Projects", href: "/projects" },
@@ -1505,10 +838,18 @@ function GoggleNav({ phase }: { phase: ExperiencePhase }) {
   return (
     <motion.nav
       className="pointer-events-none absolute bottom-3 left-16 right-2.5 z-30 flex justify-center md:inset-x-0 md:bottom-auto md:top-6"
-      initial={{ opacity: 0, y: reduceMotion ? 0 : -12, scale: reduceMotion ? 1 : 0.98 }}
+      initial={{
+        opacity: 0,
+        y: reduceMotion ? 0 : -12,
+        scale: reduceMotion ? 1 : 0.98,
+      }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
-      transition={{ duration: reduceMotion ? 0.2 : 0.36, delay: reduceMotion ? 0 : 0.08, ease: "easeOut" }}
+      transition={{
+        duration: reduceMotion ? 0.2 : 0.36,
+        delay: reduceMotion ? 0 : 0.08,
+        ease: "easeOut",
+      }}
       aria-label="Lens navigation"
     >
       <div className="pointer-events-auto flex w-full items-center justify-center gap-0.5 rounded-[2px] border border-white/25 bg-[#0b1533]/64 p-1 text-white shadow-[0_18px_50px_rgba(0,0,0,0.26)] backdrop-blur-xl md:w-auto md:max-w-none md:justify-start md:gap-1 md:p-1.5">
@@ -1555,7 +896,8 @@ function WorldSelector({
   if (phase !== "inside") return null;
 
   const selectedWorld =
-    worldOptions.find((world) => world.id === selectedWorldId) ?? worldOptions[0];
+    worldOptions.find((world) => world.id === selectedWorldId) ??
+    worldOptions[0];
   const quickWorlds = featuredWorldIds
     .map((worldId) => worldOptions.find((world) => world.id === worldId))
     .filter((world): world is WorldOption => Boolean(world));
@@ -1563,10 +905,15 @@ function WorldSelector({
   return (
     <motion.div
       className="absolute left-3 right-3 top-3 z-[60] md:left-6 md:right-auto md:top-6 md:w-[19rem]"
-      initial={{ opacity: 0, y: reduceMotion ? 0 : -12, scale: reduceMotion ? 1 : 0.98 }}
+      initial={{
+        opacity: 0,
+        y: reduceMotion ? 0 : -12,
+        scale: reduceMotion ? 1 : 0.98,
+      }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       exit={{ opacity: 0, y: reduceMotion ? 0 : -8 }}
       transition={{ duration: reduceMotion ? 0.2 : 0.36, ease: "easeOut" }}
+      data-lenis-prevent=""
       aria-label="World selector"
     >
       <div className="rounded-[2px] border border-white/25 bg-[#0b1533]/64 p-2 text-white shadow-[0_18px_50px_rgba(0,0,0,0.24)] backdrop-blur-xl md:p-2.5">
@@ -1587,6 +934,8 @@ function WorldSelector({
           <button
             type="button"
             onClick={onTogglePicker}
+            aria-expanded={pickerOpen}
+            aria-controls="world-browser"
             className="shrink-0 rounded-[2px] border border-white/25 px-3 py-2 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white/80 transition hover:border-white/55 hover:bg-white/10 hover:text-white focus:outline-none focus:ring-2 focus:ring-white/70"
           >
             {pickerOpen ? "Done" : "Change"}
@@ -1638,11 +987,25 @@ function WorldSelector({
       <AnimatePresence>
         {pickerOpen ? (
           <motion.div
+            id="world-browser"
+            role="region"
+            aria-label="Choose a world"
             className="absolute left-0 right-0 top-[calc(100%+0.5rem)] z-[61] max-h-[56svh] overflow-y-auto rounded-[2px] border border-white/25 bg-[#0a1330] p-2.5 text-white shadow-[0_22px_60px_rgba(0,0,0,0.5)] md:p-3"
-            initial={{ opacity: 0, y: reduceMotion ? 0 : -8, scale: reduceMotion ? 1 : 0.98 }}
+            initial={{
+              opacity: 0,
+              y: reduceMotion ? 0 : -8,
+              scale: reduceMotion ? 1 : 0.98,
+            }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: reduceMotion ? 0 : -6, scale: reduceMotion ? 1 : 0.985 }}
-            transition={{ duration: reduceMotion ? 0.16 : 0.24, ease: "easeOut" }}
+            exit={{
+              opacity: 0,
+              y: reduceMotion ? 0 : -6,
+              scale: reduceMotion ? 1 : 0.985,
+            }}
+            transition={{
+              duration: reduceMotion ? 0.16 : 0.24,
+              ease: "easeOut",
+            }}
           >
             <div className="annotation mb-2 px-1 text-white/55">
               Full world browser
@@ -1698,84 +1061,15 @@ function WorldChangeWash({ active }: { active: boolean }) {
           initial={{ opacity: 0 }}
           animate={{ opacity: reduceMotion ? [0, 0.24, 0] : [0, 0.5, 0.24, 0] }}
           exit={{ opacity: 0 }}
-          transition={{ duration: reduceMotion ? 0.22 : 0.52, times: reduceMotion ? [0, 0.5, 1] : [0, 0.24, 0.64, 1], ease: "easeInOut" }}
+          transition={{
+            duration: reduceMotion ? 0.22 : 0.52,
+            times: reduceMotion ? [0, 0.5, 1] : [0, 0.24, 0.64, 1],
+            ease: "easeInOut",
+          }}
           aria-hidden="true"
         />
       ) : null}
     </AnimatePresence>
-  );
-}
-
-function ArrivalBloom({ active }: { active: boolean }) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <AnimatePresence>
-      {active ? (
-        <motion.div
-          className="pointer-events-none absolute inset-0 z-[36] overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: [0, 1, 0] }}
-          transition={{ duration: reduceMotion ? 0.34 : 0.86, times: [0, 0.24, 1], ease: "easeOut" }}
-          aria-hidden="true"
-        >
-          <motion.div
-            className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(255,255,255,0.34)_0%,rgba(218,245,255,0.14)_24%,rgba(0,0,0,0)_66%)] mix-blend-screen"
-            initial={{ scale: 0.82, opacity: 0 }}
-            animate={{
-              scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.08, 1.18],
-              opacity: [0, 1, 0],
-            }}
-            transition={{ duration: reduceMotion ? 0.3 : 0.78, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute left-1/2 top-1/2 h-[54vh] w-[78vw] max-w-[860px] -translate-x-1/2 -translate-y-1/2 rounded-[50%] border border-white/20 shadow-[0_0_110px_rgba(210,240,255,0.26),inset_0_0_60px_rgba(255,255,255,0.12)]"
-            initial={{ scale: 0.82, opacity: 0 }}
-            animate={{
-              scale: reduceMotion ? [0.96, 1.02] : [0.82, 1.12, 1.22],
-              opacity: [0, 0.74, 0],
-            }}
-            transition={{ duration: reduceMotion ? 0.3 : 0.78, delay: reduceMotion ? 0 : 0.04, ease: "easeOut" }}
-          />
-          <motion.div
-            className="absolute left-[-28%] top-[20%] h-36 w-[70%] rotate-[-16deg] rounded-full bg-[linear-gradient(90deg,transparent,rgba(255,255,255,0.42),rgba(115,226,255,0.18),transparent)] blur-md mix-blend-screen"
-            initial={{ x: "-14vw", opacity: 0 }}
-            animate={{
-              x: reduceMotion ? "45vw" : ["-14vw", "48vw", "126vw"],
-              opacity: [0, 1, 0],
-            }}
-            transition={{ duration: reduceMotion ? 0.28 : 0.72, delay: reduceMotion ? 0 : 0.08, ease: "easeInOut" }}
-          />
-        </motion.div>
-      ) : null}
-    </AnimatePresence>
-  );
-}
-
-function ClassicTitleBar({ children }: { children: ReactNode }) {
-  return (
-    <div className="grid h-8 grid-cols-[56px_1fr_32px] items-center border-b-2 border-black bg-[#d8d8d8] px-1.5 font-mono text-[11px] text-black sm:grid-cols-[96px_1fr_96px] sm:px-3 sm:text-xs">
-      <div className="flex items-center gap-1.5 sm:gap-2">
-        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] text-[9px] leading-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
-          x
-        </span>
-        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] text-[11px] leading-none shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
-          -
-        </span>
-        <span className="hidden h-4 w-4 border border-black bg-[#f2f2f2] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:block" />
-      </div>
-      <div className="relative flex h-full items-center justify-center overflow-hidden font-bold">
-        <span className="absolute inset-x-1 top-1 bottom-1 [background-image:repeating-linear-gradient(0deg,rgba(0,0,0,0.34)_0_1px,transparent_1px_3px)]" />
-        <span className="relative max-w-full truncate bg-[#d8d8d8] px-3">
-          {children}
-        </span>
-      </div>
-      <div className="flex justify-end">
-        <span className="grid h-4 w-4 place-items-center border border-black bg-[#f2f2f2] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset]">
-          <span className="h-2 w-2 border-y border-black" />
-        </span>
-      </div>
-    </div>
   );
 }
 
@@ -1804,7 +1098,11 @@ function FinderIcon({ kind }: { kind: IconKind }) {
     return (
       <span className="finder-icon relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         {[0, 1, 2, 3].map((index) => (
-          <span key={index} className="absolute -left-1 h-1.5 w-2 border border-black bg-white" style={{ top: 7 + index * 8 }} />
+          <span
+            key={index}
+            className="absolute -left-1 h-1.5 w-2 border border-black bg-white"
+            style={{ top: 7 + index * 8 }}
+          />
         ))}
         <span className="absolute left-1/2 top-3 h-3 w-3 -translate-x-1/2 rounded-full border border-black bg-black" />
         <span className="absolute bottom-3 left-1/2 h-3 w-5 -translate-x-1/2 rounded-t-full border border-black bg-black" />
@@ -1829,7 +1127,11 @@ function FinderIcon({ kind }: { kind: IconKind }) {
       <span className="finder-icon relative mx-auto block h-12 w-10 border-2 border-black bg-[#fbfbf3] shadow-[2px_2px_0_rgba(0,0,0,0.6)]">
         <span className="absolute right-[-2px] top-[-2px] h-4 w-4 border-b-2 border-l-2 border-black bg-white" />
         {[0, 1, 2, 3].map((index) => (
-          <span key={index} className="absolute left-2 h-px w-5 bg-black" style={{ top: 19 + index * 6 }} />
+          <span
+            key={index}
+            className="absolute left-2 h-px w-5 bg-black"
+            style={{ top: 19 + index * 6 }}
+          />
         ))}
       </span>
     );
@@ -1840,79 +1142,6 @@ function FinderIcon({ kind }: { kind: IconKind }) {
       <span className="absolute left-[-2px] top-[-8px] h-3 w-7 border-2 border-b-0 border-black bg-[#f2f2e8]" />
       <span className="absolute inset-x-2 bottom-2 h-5 border border-black bg-white/70" />
     </span>
-  );
-}
-
-function FinderItem({
-  label,
-  kind,
-  active,
-  onOpen,
-}: {
-  label: string;
-  kind: IconKind;
-  active?: boolean;
-  onOpen: () => void;
-}) {
-  const reduceMotion = useReducedMotion();
-
-  return (
-    <motion.button
-      type="button"
-      onClick={onOpen}
-      className={`group grid min-h-[74px] place-items-center border px-1 py-1.5 text-center transition hover:border-black hover:bg-[#efefef] focus:outline-none focus:ring-2 focus:ring-black/70 [&_.finder-icon]:origin-bottom [&_.finder-icon]:scale-[0.82] sm:min-h-[98px] sm:px-2 sm:py-3 sm:[&_.finder-icon]:scale-100 ${
-        active ? "border-black bg-white" : "border-transparent"
-      }`}
-      aria-label={`Open ${label} in Esteban OS`}
-      whileHover={reduceMotion ? undefined : { y: -4, rotateX: 5, rotateY: -4 }}
-      whileTap={reduceMotion ? undefined : { y: 1, scale: 0.97 }}
-      transition={{ type: "spring", stiffness: 440, damping: 30 }}
-      style={{ transformStyle: "preserve-3d" }}
-    >
-      <FinderIcon kind={kind} />
-      <span className="mt-1 max-w-20 font-mono text-[10px] font-semibold leading-tight text-black sm:mt-3 sm:max-w-28 sm:text-[13px]">
-        {label}
-      </span>
-      <span className="mt-0.5 h-px w-8 bg-black/0 transition group-hover:bg-black/70 sm:mt-1" />
-    </motion.button>
-  );
-}
-
-function FinderDesktop({
-  activeSection,
-  onOpen,
-}: {
-  activeSection: SectionId | null;
-  onOpen: (section: SectionId) => void;
-}) {
-  return (
-    <div className="h-[min(56svh,440px)] overflow-y-auto bg-[#c4c4c4] px-3 py-3 shadow-[inset_1px_1px_0_#ffffff,inset_-1px_-1px_0_#7a7a7a] sm:h-auto sm:min-h-[326px] sm:px-8 sm:py-8">
-      <div className="mb-3 flex items-center justify-between gap-2 border border-black bg-[#eeeeee] px-2 py-1 font-mono text-[9px] shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset] sm:mb-4 sm:text-[10px]">
-        <span>Macintosh HD: Esteban Field Notes</span>
-        <span>{portfolioItems.length} items</span>
-      </div>
-      <p className="mb-3 max-w-2xl border border-black bg-[#f7f7f7] px-3 py-2 font-mono text-[11px] font-bold leading-relaxed shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.32)] sm:mb-4 sm:text-xs">
-        <span className="sm:hidden">
-          Ask a question, or open proof points, role fit, credentials, and AI notes.
-        </span>
-        <span className="hidden sm:inline">
-          Ask a direct question, or open the files I would use in an interview:
-          shipped systems, proof points, role fit, credentials, and AI-native
-          product notes.
-        </span>
-      </p>
-      <div className="grid grid-cols-3 gap-x-1 gap-y-1.5 sm:grid-cols-4 sm:gap-x-4 sm:gap-y-5 md:grid-cols-6">
-        {portfolioItems.map((item) => (
-          <FinderItem
-            key={item.href}
-            active={activeSection === item.id}
-            label={item.label}
-            kind={item.kind}
-            onOpen={() => onOpen(item.id)}
-          />
-        ))}
-      </div>
-    </div>
   );
 }
 
@@ -1972,14 +1201,19 @@ function WorkView() {
       </p>
       <div className="grid gap-3">
         {workRows.map((row) => (
-          <article key={row.title} className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.45)]">
+          <article
+            key={row.title}
+            className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.45)]"
+          >
             <div className="flex flex-col gap-1 sm:flex-row sm:items-baseline sm:justify-between">
               <h4 className="font-black">{row.title}</h4>
               <p className="text-[10px] uppercase tracking-[0.12em] text-black/55">
                 {row.meta}
               </p>
             </div>
-            <p className="mt-2 text-xs leading-relaxed text-black/70">{row.detail}</p>
+            <p className="mt-2 text-xs leading-relaxed text-black/70">
+              {row.detail}
+            </p>
           </article>
         ))}
       </div>
@@ -2008,7 +1242,9 @@ function ProjectsView() {
               {String(index + 1).padStart(2, "0")}
             </span>
             <div>
-              <p className="text-sm font-black leading-tight">{project.title}</p>
+              <p className="text-sm font-black leading-tight">
+                {project.title}
+              </p>
               <p className="mt-1 text-xs leading-relaxed text-black/70">
                 {project.detail}
               </p>
@@ -2038,7 +1274,10 @@ function AILabView() {
       </p>
       <div className="grid gap-2 sm:grid-cols-2">
         {labRows.map((item) => (
-          <div key={item.label} className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]">
+          <div
+            key={item.label}
+            className="border border-black/55 bg-white/55 p-3 shadow-[2px_2px_0_rgba(0,0,0,0.38)]"
+          >
             <p className="text-sm font-black">{item.label}</p>
             <p className="mt-1 text-xs leading-relaxed text-black/70">
               {item.detail}
@@ -2103,7 +1342,10 @@ function ResumeView() {
       </div>
       <div className="grid gap-2 sm:grid-cols-2">
         {resumeRows.map((strength) => (
-          <div key={strength.label} className="flex gap-2 border border-black/55 bg-white/55 px-3 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.35)]">
+          <div
+            key={strength.label}
+            className="flex gap-2 border border-black/55 bg-white/55 px-3 py-2 shadow-[2px_2px_0_rgba(0,0,0,0.35)]"
+          >
             <span className="h-2 w-2 shrink-0 bg-black" />
             <span>
               <span className="block text-sm font-black">{strength.label}</span>
@@ -2135,7 +1377,9 @@ function ProofPointsView() {
             key={row.label}
             className="border border-black bg-[#f7f7f7] p-3 shadow-[1px_1px_0_rgba(255,255,255,0.9)_inset,2px_2px_0_rgba(0,0,0,0.35)]"
           >
-            <p className="font-mono text-2xl font-black leading-none">{row.value}</p>
+            <p className="font-mono text-2xl font-black leading-none">
+              {row.value}
+            </p>
             <p className="mt-1 text-[11px] font-black uppercase tracking-[0.12em]">
               {row.label}
             </p>
@@ -2239,112 +1483,57 @@ function SectionView({
   );
 }
 
-function EstebanOS({ pointer }: { pointer: PointerMotion }) {
+function EstebanOS() {
   const [activeSection, setActiveSection] = useState<SectionId | null>(null);
-  const reduceMotion = useReducedMotion();
-  const rotateX = useTransform(pointer.y, (value) => value * -2.2);
-  const rotateY = useTransform(pointer.x, (value) => value * 3.4);
-  const shiftX = useTransform(pointer.x, (value) => value * 12);
-  const shiftY = useTransform(pointer.y, (value) => value * 6);
-  const parallaxTransform = useMotionTemplate`perspective(1200px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translate3d(${shiftX}px, ${shiftY}px, 0)`;
   const activeItem = portfolioItems.find((item) => item.id === activeSection);
-
   return (
-    <motion.div
-      className="pointer-events-none absolute inset-0 z-20 flex items-start justify-center px-2 pb-[4.75rem] pt-[5.9rem] sm:px-4 sm:pb-20 sm:pt-24 md:grid md:place-items-center md:px-8 md:py-12"
-      initial={{
-        opacity: 0,
-        scale: reduceMotion ? 1 : 0.95,
-        y: reduceMotion ? 0 : 22,
-        filter: reduceMotion ? "blur(0px)" : "blur(14px)",
-      }}
-      animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-      exit={{ opacity: 0, scale: reduceMotion ? 1 : 0.98, filter: reduceMotion ? "blur(0px)" : "blur(8px)" }}
-      transition={{ duration: reduceMotion ? 0.22 : 0.62, ease: cinematicEase }}
-    >
-      <div className="pointer-events-auto w-full sm:w-auto">
-        <motion.div
-          className="relative w-full max-h-[calc(100svh-10.65rem)] overflow-hidden border-2 border-black bg-[#bdbdbd] text-black shadow-[3px_3px_0_rgba(0,0,0,0.45),0_24px_90px_rgba(18,12,7,0.34)] sm:w-[min(94vw,900px)] sm:max-h-[78svh] sm:shadow-[6px_6px_0_rgba(0,0,0,0.45),0_34px_120px_rgba(18,12,7,0.32)] md:max-h-none"
-          style={{
-            transform: reduceMotion ? "none" : parallaxTransform,
-            // Flat on purpose: preserve-3d lets the tilted plane interleave
-            // above higher z-index overlays like the world picker.
-            willChange: reduceMotion ? "auto" : "transform",
-          }}
-        >
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.24),rgba(255,255,255,0)_42%),repeating-linear-gradient(45deg,rgba(255,255,255,0.1)_0_1px,rgba(0,0,0,0.03)_1px_3px)]" />
-          <div className="relative">
-            <ClassicTitleBar>{activeItem?.label ?? "Esteban OS 8"}</ClassicTitleBar>
-            <div className="flex items-center gap-2 border-b-2 border-black bg-[#efefef] px-2 py-1.5 font-mono text-[10px] text-black shadow-[0_1px_0_#ffffff_inset] sm:gap-3 sm:px-4">
-              <span className="font-black">Mac OS 8 Finder</span>
-              <span className="hidden font-bold sm:inline">File</span>
-              <span className="hidden font-bold sm:inline">Edit</span>
-              <span className="hidden font-bold sm:inline">View</span>
-              <span className="hidden font-bold sm:inline">Special</span>
+    <div className="lens-workspace-position">
+      <section
+        className="lens-workspace"
+        aria-label="Portfolio explorer"
+        data-lenis-prevent=""
+      >
+        <header className="lens-workspace-header">
+          <span className="workspace-lights" aria-hidden="true">
+            <i />
+            <i />
+            <i />
+          </span>
+          <h2>{activeItem?.label ?? "A few things from my world"}</h2>
+          <span>Esteban’s desk</span>
+        </header>
+        {activeSection ? (
+          <SectionView
+            activeSection={activeSection}
+            onBack={() => setActiveSection(null)}
+          />
+        ) : (
+          <div className="lens-desktop">
+            <p>Make yourself at home. Open something that interests you.</p>
+            <div className="lens-file-grid">
               {portfolioItems.map((item) => (
                 <button
                   key={item.id}
-                  type="button"
                   onClick={() => setActiveSection(item.id)}
-                  className={`hidden whitespace-nowrap hover:underline xl:inline ${activeSection === item.id ? "font-bold underline" : ""}`}
+                  className="lens-file"
                 >
-                  {item.label}
+                  <FinderIcon kind={item.kind} />
+                  <span>{item.label}</span>
                 </button>
               ))}
             </div>
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={activeSection ?? "desktop"}
-                initial={{
-                  opacity: 0,
-                  y: reduceMotion ? 0 : 10,
-                  scale: reduceMotion ? 1 : 0.985,
-                  filter: reduceMotion ? "blur(0px)" : "blur(4px)",
-                }}
-                animate={{ opacity: 1, y: 0, scale: 1, filter: "blur(0px)" }}
-                exit={{
-                  opacity: 0,
-                  y: reduceMotion ? 0 : -8,
-                  scale: reduceMotion ? 1 : 0.99,
-                  filter: reduceMotion ? "blur(0px)" : "blur(3px)",
-                }}
-                transition={{ duration: reduceMotion ? 0.14 : 0.22, ease: "easeOut" }}
-              >
-                {activeSection ? (
-                  <SectionView
-                    activeSection={activeSection}
-                    onBack={() => setActiveSection(null)}
-                  />
-                ) : (
-                  <FinderDesktop
-                    activeSection={activeSection}
-                    onOpen={setActiveSection}
-                  />
-                )}
-              </motion.div>
-            </AnimatePresence>
-            <div className="flex items-center justify-between gap-3 border-t-2 border-black bg-[#d8d8d8] px-3 py-2 font-mono text-[9px] text-black/75 shadow-[0_1px_0_#ffffff_inset] sm:px-4 sm:text-[10px]">
-              <span>{activeSection ? "1 window open" : `${portfolioItems.length} items`}</span>
-              <span className="hidden min-w-0 truncate sm:block">
-                {activeItem?.href ?? "Ask questions, scan proof, inspect shipped systems"}
-              </span>
-            </div>
+            <p className="lens-desktop-note">
+              Built things, learned things. Still curious.
+            </p>
           </div>
-        </motion.div>
-      </div>
-    </motion.div>
+        )}
+      </section>
+    </div>
   );
 }
 
-function AmbientHud({ phase }: { phase: ExperiencePhase }) {
-  return (
-    <div className="pointer-events-none absolute inset-0 z-[2]">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_52%_42%,rgba(255,224,171,0.02)_0%,rgba(20,14,8,0)_38%,rgba(10,7,4,0.34)_100%)]" />
-      {phase === "inside" ? (
-        <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.12)_1px,transparent_1px)] [background-size:100%_3px]" />
-      ) : null}
-    </div>
-  );
+function AmbientHud() {
+  return <div className="lens-vignette" aria-hidden="true" />;
 }
 
 export function EstebanWorld() {
@@ -2354,20 +1543,34 @@ export function EstebanWorld() {
   const [worldPickerOpen, setWorldPickerOpen] = useState(false);
   const [canvasDpr, setCanvasDpr] = useState(1.35);
   const reduceMotion = useReducedMotion();
-  const pointer = usePointerParallax();
+  const [sceneFailed, setSceneFailed] = useState(false);
+  const [sceneReady, setSceneReady] = useState(false);
+  const [paused, setPaused] = useState(false);
+  const [pageVisible, setPageVisible] = useState(true);
+  const [deskVisible, setDeskVisible] = useState(true);
+  const motionEnabled = !reduceMotion && !paused && pageVisible;
+  const handleSceneReady = useCallback(() => setSceneReady(true), []);
+  const handleSceneError = useCallback(() => {
+    setSceneFailed(true);
+    setSceneReady(false);
+  }, []);
   const worldWashTimeout = useRef<number | null>(null);
   const worldSelectTimeout = useRef<number | null>(null);
-  const worldImagePreloads = useRef<HTMLImageElement[]>([]);
+
   const gogglesOn = phase !== "outside";
   const selectedWorld =
-    worldOptions.find((world) => world.id === selectedWorldId) ?? worldOptions[0];
+    worldOptions.find((world) => world.id === selectedWorldId) ??
+    worldOptions[0];
 
   useEffect(() => {
     if (phase !== "transition") return;
 
-    const timeout = window.setTimeout(() => {
-      setPhase("inside");
-    }, reduceMotion ? reducedTransitionDurationMs : transitionDurationMs);
+    const timeout = window.setTimeout(
+      () => {
+        setPhase("inside");
+      },
+      reduceMotion ? reducedTransitionDurationMs : transitionDurationMs,
+    );
 
     return () => window.clearTimeout(timeout);
   }, [phase, reduceMotion]);
@@ -2388,55 +1591,28 @@ export function EstebanWorld() {
   }, []);
 
   useEffect(() => {
-    const savedWorldId = window.localStorage.getItem("esteban-world");
-    const savedWorld = worldOptions.find((world) => world.id === savedWorldId);
-
-    if (savedWorld) {
-      setSelectedWorldId(savedWorld.id);
+    try {
+      const saved = window.localStorage.getItem("esteban-world");
+      const world = worldOptions.find((item) => item.id === saved);
+      if (world) setSelectedWorldId(world.id);
+    } catch {
+      /* World selection works even when storage is unavailable. */
     }
   }, []);
 
   useEffect(() => {
-    // Load the featured worlds up front; defer the rest to idle time so they
-    // never compete with the visible world's texture on first paint.
-    const preloadWorld = (world: WorldOption) => {
-      useTexture.preload(world.image);
-
-      const preloadImage = new window.Image();
-      preloadImage.decoding = "async";
-      preloadImage.src = world.image;
-      worldImagePreloads.current.push(preloadImage);
-    };
-
-    const featured = worldOptions.filter((world) =>
-      featuredWorldIds.includes(world.id)
-    );
-    const deferred = worldOptions.filter(
-      (world) => !featuredWorldIds.includes(world.id)
-    );
-
-    featured.forEach(preloadWorld);
-
-    let cancelled = false;
-    const loadDeferred = () => {
-      if (cancelled) return;
-      deferred.forEach(preloadWorld);
-    };
-
-    const hasIdleCallback = typeof window.requestIdleCallback === "function";
-    const idleHandle = hasIdleCallback
-      ? window.requestIdleCallback(loadDeferred, { timeout: 4000 })
-      : window.setTimeout(loadDeferred, 1600);
-
-    return () => {
-      cancelled = true;
-      if (hasIdleCallback) {
-        window.cancelIdleCallback(idleHandle);
-      } else {
-        window.clearTimeout(idleHandle);
-      }
-    };
+    const onVisibility = () => setPageVisible(!document.hidden);
+    document.addEventListener("visibilitychange", onVisibility);
+    return () => document.removeEventListener("visibilitychange", onVisibility);
   }, []);
+
+  useEffect(() => {
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && worldPickerOpen) setWorldPickerOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [worldPickerOpen]);
 
   useEffect(() => {
     return () => {
@@ -2456,7 +1632,10 @@ export function EstebanWorld() {
   }, [phase, worldPickerOpen]);
 
   const handleWorldSelect = (worldId: WorldId) => {
-    if (worldId === selectedWorldId) return;
+    if (worldId === selectedWorldId) {
+      setWorldPickerOpen(false);
+      return;
+    }
 
     setWorldPickerOpen(false);
     setWorldWashActive(true);
@@ -2469,8 +1648,13 @@ export function EstebanWorld() {
     }
 
     const applyWorld = () => {
+      setSceneReady(false);
       setSelectedWorldId(worldId);
-      window.localStorage.setItem("esteban-world", worldId);
+      try {
+        window.localStorage.setItem("esteban-world", worldId);
+      } catch {
+        /* In-session selection still works. */
+      }
     };
 
     if (reduceMotion) {
@@ -2479,13 +1663,27 @@ export function EstebanWorld() {
       worldSelectTimeout.current = window.setTimeout(applyWorld, 92);
     }
 
-    worldWashTimeout.current = window.setTimeout(() => {
-      setWorldWashActive(false);
-    }, reduceMotion ? 240 : 560);
+    worldWashTimeout.current = window.setTimeout(
+      () => {
+        setWorldWashActive(false);
+      },
+      reduceMotion ? 240 : 560,
+    );
   };
 
   return (
-    <section className="relative left-1/2 h-svh min-h-[620px] w-screen -translate-x-1/2 overflow-hidden bg-[#0c0a07]">
+    <section
+      className="lens-experience"
+      data-motion={motionEnabled ? "on" : "off"}
+      data-renderer={
+        sceneFailed ? "fallback" : sceneReady ? "ready" : "loading"
+      }
+    >
+      <div
+        className="lens-photo-fallback"
+        style={{ backgroundImage: `url(${selectedWorld.image})` }}
+        aria-hidden="true"
+      />
       <motion.div
         className="absolute inset-0 z-0"
         animate={
@@ -2506,24 +1704,49 @@ export function EstebanWorld() {
             : { duration: reduceMotion ? 0.24 : 0.62, ease: cinematicEase }
         }
       >
-        <Canvas
-          className="h-full w-full"
-          dpr={[1, canvasDpr]}
-          camera={{ position: [0, 1.18, 4.18], fov: 50, near: 0.1, far: 70 }}
-          gl={{ antialias: canvasDpr > 1.2, alpha: false, powerPreference: "high-performance" }}
-          performance={{ min: 0.65, debounce: 220 }}
-        >
-          <WorldScene gogglesOn={gogglesOn} phase={phase} world={selectedWorld} />
-        </Canvas>
+        {!sceneFailed ? (
+          <SceneBoundary onError={handleSceneError}>
+            <Canvas
+              className="h-full w-full"
+              style={{
+                opacity: sceneReady ? 1 : 0,
+                transition: "opacity .6s ease",
+              }}
+              dpr={[1, canvasDpr]}
+              frameloop={motionEnabled ? "always" : "demand"}
+              camera={{
+                position: [0, 1.18, 4.18],
+                fov: 50,
+                near: 0.1,
+                far: 70,
+              }}
+              gl={{ antialias: false, alpha: true, powerPreference: "default" }}
+              onCreated={({ camera }) => camera.lookAt(0, 1.62, -8.2)}
+              fallback={<span>Scenic image mode</span>}
+            >
+              <SceneLifecycle onError={handleSceneError} />
+              <WorldScene
+                gogglesOn={gogglesOn}
+                phase={phase}
+                world={selectedWorld}
+                onReady={handleSceneReady}
+              />
+            </Canvas>
+          </SceneBoundary>
+        ) : null}
       </motion.div>
 
-      <AmbientHud phase={phase} />
-      <LensFrame phase={phase} />
+      <AmbientHud />
+
       <LensIntroPanel phase={phase} />
       <WorldChangeWash active={worldWashActive} />
-      <GoggleLift active={phase === "transition"} />
-      <LensBoot active={phase === "transition"} worldName={selectedWorld.name} />
-      <ArrivalBloom active={phase === "inside"} />
+
+      {phase === "transition" ? (
+        <div className="lens-arrival" role="status">
+          Welcome to {selectedWorld.name}.
+        </div>
+      ) : null}
+
       <WorldSelector
         selectedWorldId={selectedWorld.id}
         phase={phase}
@@ -2535,14 +1758,43 @@ export function EstebanWorld() {
 
       <AnimatePresence mode="wait">
         {phase === "outside" ? (
-          <PutOnGogglesPrompt key="prompt" onClick={() => setPhase("transition")} />
+          <PutOnGogglesPrompt
+            key="prompt"
+            onClick={() => setPhase("transition")}
+          />
         ) : null}
       </AnimatePresence>
 
       <AnimatePresence>
-        {phase === "inside" ? <EstebanOS key="esteban-os" pointer={pointer} /> : null}
+        {phase === "inside" && deskVisible ? (
+          <EstebanOS key="esteban-os" />
+        ) : null}
       </AnimatePresence>
       <ModernSiteLink phase={phase} />
+      {phase === "inside" ? (
+        <div className="lens-tools">
+          <button
+            type="button"
+            aria-pressed={!deskVisible}
+            onClick={() => setDeskVisible((visible) => !visible)}
+          >
+            {deskVisible ? "Enjoy the view" : "Open my desk"}
+          </button>
+          <button
+            type="button"
+            aria-pressed={paused || !!reduceMotion}
+            disabled={!!reduceMotion}
+            onClick={() => setPaused((value) => !value)}
+          >
+            {paused || reduceMotion ? "Motion paused" : "Pause motion"}
+          </button>
+        </div>
+      ) : null}
+      {sceneFailed ? (
+        <p className="lens-render-status" role="status">
+          Scenic image mode · You can still explore every world.
+        </p>
+      ) : null}
     </section>
   );
 }

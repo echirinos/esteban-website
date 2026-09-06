@@ -51,7 +51,7 @@ export default function AILabPage() {
           <div className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-end">
             <div className="max-w-4xl">
           <p className="annotation mb-4 text-primary">
-            Sht Q-01 &middot; Portfolio AI assistant
+            Portfolio AI assistant
           </p>
           <h1 className="font-display text-5xl font-semibold uppercase leading-[0.92] tracking-[0.02em] md:text-7xl">
             Ask the portfolio.

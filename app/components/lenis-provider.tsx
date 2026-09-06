@@ -1,10 +1,13 @@
 "use client";
 
 import Lenis from "lenis";
+import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 
 export function LenisProvider() {
+  const pathname = usePathname();
   useEffect(() => {
+    if (pathname === "/goggles") return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       return undefined;
     }
@@ -16,7 +19,7 @@ export function LenisProvider() {
     });
 
     return () => lenis.destroy();
-  }, []);
+  }, [pathname]);
 
   return null;
 }

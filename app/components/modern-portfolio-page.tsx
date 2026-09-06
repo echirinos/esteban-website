@@ -1,313 +1,294 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactNode } from "react";
 import { AskEstebanChat } from "./ask-esteban-chat";
-import { BlueprintContact, BlueprintHero } from "./blueprint-hero";
-import { DraftItem, DraftReveal, DraftStagger, RuleDraw } from "./blueprint-motion";
 import {
+  contactChannels,
   educationCredentials,
+  portfolioMetrics,
   projectEntries,
-  strengthAreas,
-  techStack,
   workExperiences,
 } from "../lib/portfolio-data";
 
-const featuredProjects = projectEntries
-  .filter((item) => item.highlighted)
-  .slice(0, 6);
-
-function SheetSection({
-  code,
-  title,
-  description,
-  action,
-  id,
-  children,
-}: {
-  code: string;
-  title: string;
-  description?: string;
-  action?: ReactNode;
-  id?: string;
-  children: ReactNode;
-}) {
-  return (
-    <section id={id} className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
-      <div className="flex items-center gap-4">
-        <span className="annotation shrink-0 text-primary">{code}</span>
-        <RuleDraw className="block h-px min-w-0 flex-1 bg-[var(--hairline)]" />
-        {action ? <span className="shrink-0">{action}</span> : null}
-      </div>
-      <DraftReveal>
-        <h2 className="mt-6 font-display text-4xl font-semibold uppercase leading-none tracking-[0.02em] sm:text-5xl">
-          {title}
-        </h2>
-        {description ? (
-          <p className="mt-4 max-w-2xl leading-relaxed text-base-content/65">
-            {description}
-          </p>
-        ) : null}
-      </DraftReveal>
-      {children}
-    </section>
-  );
-}
-
-function SheetLink({
-  href,
-  children,
-  external,
-}: {
-  href: string;
-  children: ReactNode;
-  external?: boolean;
-}) {
-  const className =
-    "annotation inline-flex min-h-11 items-center text-primary underline decoration-transparent underline-offset-4 transition hover:decoration-current";
-
-  if (external) {
-    return (
-      <a href={href} target="_blank" rel="noopener noreferrer" className={className}>
-        {children}
-      </a>
-    );
-  }
-
-  return (
-    <Link href={href} className={className}>
-      {children}
-    </Link>
-  );
-}
+const featuredProjects = projectEntries.filter(
+  (project) => project.highlighted,
+);
 
 export function ModernPortfolioPage() {
   return (
-    <div className="pb-0">
-      <BlueprintHero />
+    <div className="personal-site">
+      <section className="hello-section" aria-labelledby="hello-title">
+        <div className="hello-copy">
+          <p className="hello-byline">
+            A little corner of the internet by Esteban Chirinos
+          </p>
+          <h1 id="hello-title">
+            Good software.
+            <br />
+            Real people.
+            <br />A little curiosity.
+          </h1>
+          <p className="hello-intro">
+            Hey, I’m Esteban. I turn complicated technology into things people
+            can actually use.
+          </p>
+          <p className="hello-detail">
+            Founding Solutions Engineer at{" "}
+            <a
+              href="https://privy.io"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              Privy, a Stripe company
+            </a>
+            . Builder of demos, developer tools, and the occasional pickleball
+            business. Based in Miami.
+          </p>
+          <div className="hello-actions">
+            <Link className="draft-btn draft-btn-fill" href="/work">
+              View proof
+            </Link>
+            <Link className="text-link" href="/contact">
+              Say hello <span aria-hidden="true">↗</span>
+            </Link>
+          </div>
+        </div>
+        <div className="hello-keepsakes">
+          <figure className="portrait-note">
+            <div className="portrait-frame">
+              <Image
+                src="/images/esteban.png"
+                alt="Esteban Chirinos smiling on a hike"
+                width={250}
+                height={245}
+                priority
+              />
+            </div>
+            <figcaption>Usually building. Sometimes outside.</figcaption>
+          </figure>
+          <div className="currently-note">
+            <span className="note-pin" aria-hidden="true" />
+            <p>A few things about me</p>
+            <ul>
+              <li>Building at Privy / Stripe</li>
+              <li>Berkeley Haas MBA, ’28</li>
+              <li>Big on developer experience</li>
+              <li>Always up for pickleball</li>
+            </ul>
+          </div>
+        </div>
+      </section>
 
-      <SheetSection
-        code="Sht A-02 · Work"
-        title="Selected work"
-        description="Developer platforms, cloud, fintech, and marketplaces — and the customer signal that shaped better products at each stop."
-        action={<SheetLink href="/work">Full history</SheetLink>}
+      <div className="proof-ribbon" aria-label="Career highlights">
+        {portfolioMetrics.slice(0, 3).map((metric) => (
+          <p key={metric.label}>
+            <strong>{metric.value}</strong>
+            <span>{metric.label}</span>
+          </p>
+        ))}
+      </div>
+
+      <section
+        className="home-section work-section"
+        aria-labelledby="work-title"
       >
-        <DraftStagger className="mt-10">
-          {workExperiences.map((company, index) => (
-            <DraftItem key={company.name}>
-              <div
-                className={`group relative grid gap-x-6 gap-y-2 border-t py-6 hairline transition-colors hover:bg-base-200/50 sm:grid-cols-[8.5rem_minmax(0,1fr)_auto] sm:py-7 ${
-                  index === workExperiences.length - 1 ? "border-b" : ""
-                }`}
-              >
-                <p className="annotation pt-1.5 text-base-content/65">
-                  {company.period.replace(" - ", " — ")}
-                </p>
-                <div className="min-w-0">
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <span className="grid h-10 w-10 shrink-0 place-items-center border hairline bg-white p-1.5">
-                      {company.monogram ? (
-                        <span
-                          aria-hidden="true"
-                          className="font-display text-[13px] font-bold uppercase leading-none text-[#131c3b]"
-                        >
-                          {company.monogram}
-                        </span>
-                      ) : (
-                        <Image
-                          alt={`${company.name} logo`}
-                          src={company.logo}
-                          width={48}
-                          height={48}
-                          className="max-h-6 w-auto max-w-full object-contain"
-                        />
-                      )}
-                    </span>
-                    <div className="flex min-w-0 flex-wrap items-baseline gap-x-4 gap-y-1">
-                      <h3 className="font-display text-3xl font-semibold uppercase leading-none tracking-[0.02em]">
-                        {company.name}
-                      </h3>
-                      <p className="basis-full text-sm text-base-content/65 sm:basis-auto">
-                        {company.role}
-                      </p>
-                    </div>
-                  </div>
-                  {company.featured ? (
-                    <>
-                      <p className="mt-3 max-w-2xl text-[15px] leading-relaxed text-base-content/70">
-                        {company.summary}
-                      </p>
-                      <p className="mt-3 font-mono text-xs leading-relaxed text-primary">
-                        {company.impact[0]}
-                      </p>
-                    </>
-                  ) : (
-                    <p className="mt-2 max-w-2xl text-sm leading-relaxed text-base-content/65">
-                      {company.summary}
-                    </p>
-                  )}
-                </div>
-                {/* Stretched link: the whole schedule row is the tap target */}
-                <a
-                  href={company.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={`Open ${company.name}`}
-                  className="annotation pt-1.5 text-base-content/50 transition after:absolute after:inset-0 group-hover:text-primary"
-                >
-                  <span className="hidden sm:inline" aria-hidden="true">
-                    ↗
-                  </span>
-                </a>
+        <div className="home-section-heading">
+          <div>
+            <p className="section-note">The work, so far</p>
+            <h2 id="work-title">
+              Good company.
+              <br />
+              Interesting problems.
+            </h2>
+          </div>
+          <Link className="text-link" href="/work">
+            The full story <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+        <div className="career-list">
+          {workExperiences.slice(0, 3).map((company) => (
+            <a
+              className="career-row"
+              key={company.name}
+              href={company.url}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="career-logo">
+                <Image src={company.logo} alt="" width={48} height={48} />
+              </span>
+              <div className="career-role">
+                <h3>{company.name}</h3>
+                <p>{company.role}</p>
               </div>
-            </DraftItem>
+              <p className="career-impact">{company.impact[0]}</p>
+              <span className="career-date">
+                {company.period.replace(" - ", " – ")}{" "}
+                <span aria-hidden="true">↗</span>
+              </span>
+            </a>
           ))}
-        </DraftStagger>
-      </SheetSection>
+        </div>
+        <div className="earlier-work">
+          <span>Before that, a few familiar faces:</span>
+          <div>
+            {workExperiences.slice(3).map((company) => (
+              <a
+                key={company.name}
+                href={company.url}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {company.name}
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <SheetSection
-        code="Sht A-03 · Builds"
-        title="What I have built"
-        description="Reference apps, tutorials, founder products, and operator systems where product judgment and shipping speed both mattered."
-        action={<SheetLink href="/projects">All projects</SheetLink>}
-      >
-        <DraftStagger className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {featuredProjects.map((project, index) => {
-            const plate = (
-              <>
-                <div className="flex items-center justify-between">
-                  <span className="annotation text-base-content/65">
-                    P-0{index + 1}
-                  </span>
-                  <span className="annotation text-primary">
-                    {project.category}
-                  </span>
-                </div>
-                <h3 className="mt-5 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
-                  {project.name}
-                </h3>
-                <p className="mb-5 mt-3 flex-1 text-sm leading-relaxed text-base-content/65">
-                  {project.description}
-                </p>
-                <div className="mt-auto flex items-start justify-between gap-3 border-t pt-4 hairline">
-                  <span className="min-w-0 pt-0.5 font-mono text-[10px] uppercase leading-relaxed tracking-[0.14em] text-base-content/65">
-                    {project.tags.slice(0, 2).join(" · ")}
-                  </span>
-                  {project.href ? (
-                    <span className="annotation shrink-0 text-base-content/65 transition group-hover:text-primary">
-                      Open ↗
-                    </span>
-                  ) : null}
-                </div>
-              </>
-            );
-
-            const plateClass =
-              "group flex h-full flex-col border p-5 hairline bg-base-100 transition duration-200 hover:-translate-y-1 hover:border-primary";
-
-            return (
-              <DraftItem key={project.name} className="h-full">
-                {project.href ? (
-                  <a
-                    href={project.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className={plateClass}
-                  >
-                    {plate}
-                  </a>
-                ) : (
-                  <div className={plateClass}>{plate}</div>
-                )}
-              </DraftItem>
-            );
-          })}
-          <DraftItem className="h-full">
-            <Link
-              href="/projects"
-              className="group flex h-full flex-col justify-between border border-dashed p-5 hairline transition duration-200 hover:-translate-y-1 hover:border-solid hover:border-primary"
+      <section className="home-section" aria-labelledby="builds-title">
+        <div className="home-section-heading">
+          <div>
+            <p className="section-note">Made to be used</p>
+            <h2 id="builds-title">
+              Less slide deck.
+              <br />
+              More shipped product.
+            </h2>
+          </div>
+          <Link className="text-link" href="/projects">
+            All projects <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+        <div className="build-list">
+          {featuredProjects.map((project) => (
+            <a
+              className="build-row"
+              key={project.name}
+              href={project.href || "/projects"}
+              target={project.href ? "_blank" : undefined}
+              rel={project.href ? "noopener noreferrer" : undefined}
             >
               <div>
-                <div className="flex items-center justify-between">
-                  <span className="annotation text-base-content/65">
-                    P-0{featuredProjects.length + 1}
-                  </span>
-                  <span className="annotation text-primary">Index</span>
-                </div>
-                <h3 className="mt-5 font-display text-2xl font-semibold uppercase leading-[1.02] tracking-[0.02em]">
-                  Full drawing index
-                </h3>
-                <p className="mt-3 text-sm leading-relaxed text-base-content/65">
-                  Every project sheet: reference apps, tutorials, founder
-                  products, and operator systems.
-                </p>
+                <span className="project-category">{project.category}</span>
+                <h3>{project.name}</h3>
               </div>
-              <div className="mt-5 border-t pt-4 hairline">
-                <span className="annotation text-base-content/65 transition group-hover:text-primary">
-                  All projects →
-                </span>
-              </div>
-            </Link>
-          </DraftItem>
-        </DraftStagger>
-      </SheetSection>
-
-      <SheetSection
-        code="Sht A-04 · Q&A"
-        title="Ask the portfolio"
-        description="The strongest portfolios behave like tools. Ask for the exact proof you need instead of hunting through every route."
-        id="ask-esteban"
-        action={<SheetLink href="/ai-lab">Ask AI</SheetLink>}
-      >
-        <DraftReveal className="mt-10">
-          <AskEstebanChat variant="home" />
-        </DraftReveal>
-      </SheetSection>
-
-      <SheetSection
-        code="Sht A-05 · Spec"
-        title="How I work"
-        description="I sit between product, engineering, customers, and go-to-market teams. The output is a clearer product decision, a sharper roadmap signal, a stronger demo, or a faster path from customer need to shipped workflow."
-      >
-        <div className="mt-10 grid gap-10 lg:grid-cols-2">
-          <DraftReveal>
-            <p className="annotation text-base-content/65">Capabilities</p>
-            <div className="mt-4 flex flex-wrap gap-2">
-              {strengthAreas.map((item) => (
-                <span
-                  key={item}
-                  className="border px-3 py-1.5 hairline font-mono text-[11px] uppercase tracking-[0.1em] text-base-content/70"
-                >
-                  {item}
-                </span>
-              ))}
-            </div>
-
-            <p className="annotation mt-8 text-base-content/65">Stack</p>
-            <p className="mt-3 max-w-xl font-mono text-[13px] leading-relaxed text-base-content/65">
-              {techStack.map((tech) => tech.name).join(" · ")}
-            </p>
-          </DraftReveal>
-
-          <DraftReveal delay={0.06}>
-            <p className="annotation text-base-content/65">Training</p>
-            <div className="mt-4 grid gap-px border hairline bg-[var(--hairline)]">
-              {educationCredentials.map((item) => (
-                <div key={item.school} className="bg-base-100 p-4">
-                  <p className="annotation text-base-content/65">{item.school}</p>
-                  <p className="mt-1.5 font-display text-xl font-semibold uppercase tracking-[0.02em]">
-                    {item.credential}
-                  </p>
-                  <p className="mt-1.5 text-sm leading-relaxed text-base-content/65">
-                    {item.emphasis}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </DraftReveal>
+              <p>{project.description}</p>
+              <span className="project-open" aria-hidden="true">
+                ↗
+              </span>
+            </a>
+          ))}
         </div>
-      </SheetSection>
+      </section>
 
-      <BlueprintContact />
+      <section className="lens-invitation" aria-labelledby="lens-title">
+        <Image
+          src="/images/world-yosemite-immersive.webp"
+          alt="Golden light across a mountain valley"
+          fill
+          sizes="(max-width: 768px) 100vw, 1120px"
+          className="lens-landscape"
+        />
+        <div className="lens-invitation-shade" />
+        <div className="lens-invitation-copy">
+          <p className="section-note">Take the scenic route</p>
+          <h2 id="lens-title">
+            Same person.
+            <br />A different perspective.
+          </h2>
+          <p>
+            Put on the goggles. Wander through ten worlds, open the files, and
+            get to know the work.
+          </p>
+          <Link href="/goggles" className="draft-btn lens-invitation-button">
+            Try goggle mode <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+        <span className="lens-postcard-caption">
+          El Capitan Valley / one of ten places to explore
+        </span>
+      </section>
+
+      <section
+        className="home-section ask-section"
+        id="ask-esteban"
+        aria-labelledby="ask-title"
+      >
+        <div className="ask-intro">
+          <p className="section-note">The conversational version</p>
+          <h2 id="ask-title">
+            Go ahead.
+            <br />
+            Ask a question.
+          </h2>
+          <p>
+            Curious about a project, my background, or how I work? This
+            assistant answers from my portfolio and shows its sources.
+          </p>
+          <Link className="text-link" href="/ai-lab">
+            Open the full conversation <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+        <AskEstebanChat variant="home" />
+      </section>
+
+      <section
+        className="home-section about-section"
+        aria-labelledby="about-title"
+      >
+        <div>
+          <p className="section-note">How I work</p>
+          <h2 id="about-title">
+            Make it useful.
+            <br />
+            Make it human.
+          </h2>
+          <p>
+            I like working where engineering, product, and customers meet.
+            Listen closely. Build something concrete. Put it in someone’s hands.
+            Make it better.
+          </p>
+          <p>
+            That’s taken me from cloud platforms to crypto infrastructure to
+            applied AI. The tools change. The care stays.
+          </p>
+        </div>
+        <div className="education-note">
+          <h3>Always a student.</h3>
+          {educationCredentials.map((item) => (
+            <div key={item.school}>
+              <strong>{item.school}</strong>
+              <p>{item.credential}</p>
+            </div>
+          ))}
+          <Link className="text-link" href="/resume">
+            Read my résumé <span aria-hidden="true">↗</span>
+          </Link>
+        </div>
+      </section>
+
+      <footer className="personal-footer">
+        <p className="section-note">Thanks for stopping by.</p>
+        <h2>Have something in mind?</h2>
+        <Link className="draft-btn draft-btn-fill" href="/contact">
+          Let’s talk
+        </Link>
+        <div className="footer-bottom">
+          <span>© {new Date().getFullYear()} Esteban Chirinos · Miami, FL</span>
+          <div>
+            {contactChannels.map((channel) => (
+              <a
+                key={channel.label}
+                href={channel.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                {channel.label}
+              </a>
+            ))}
+          </div>
+        </div>
+      </footer>
     </div>
   );
 }
