@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { EstebanWorldLoader } from "../components/esteban-world-loader";
 
 export const metadata: Metadata = {
-  title: "Portfolio Lens",
+  title: "Goggle mode",
   description:
     "An immersive Esteban OS lens with interactive worlds, proof points, projects, and Ask Esteban.",
   alternates: {

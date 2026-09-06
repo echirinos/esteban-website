@@ -15,7 +15,7 @@ export function FooterWrapper() {
   }
 
   const footerLinks = [
-    { name: "Lens", href: "/goggles" },
+    { name: "Goggles", href: "/goggles" },
     { name: "Work", href: "/work" },
     { name: "Projects", href: "/projects" },
     { name: "Writing", href: "https://world.hey.com/echi/" },

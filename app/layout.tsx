@@ -1,7 +1,9 @@
 import "./global.css";
 import "lenis/dist/lenis.css";
 import type { Metadata } from "next";
-import { Archivo, Barlow_Condensed, IBM_Plex_Mono } from "next/font/google";
+import localFont from "next/font/local";
+import { GeistSans } from "geist/font/sans";
+import { GeistMono } from "geist/font/mono";
 import { NavbarWrapper } from "./components/navbar-wrapper";
 import { FooterWrapper } from "./components/footer-wrapper";
 import { LenisProvider } from "./components/lenis-provider";
@@ -9,23 +11,10 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { SandpackCSS } from "./blog/[slug]/sandpack";
 
-const archivo = Archivo({
-  subsets: ["latin"],
-  variable: "--font-body",
-  display: "swap",
-});
-
-const barlowCondensed = Barlow_Condensed({
-  subsets: ["latin"],
-  weight: ["500", "600", "700"],
+const displayFont = localFont({
+  src: "../public/fonts/kaisei-tokumin-bold.ttf",
   variable: "--font-display",
-  display: "swap",
-});
-
-const plexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  variable: "--font-annotation",
+  weight: "700",
   display: "swap",
 });
 
@@ -95,9 +84,9 @@ export default function RootLayout({
       data-theme="light"
       suppressHydrationWarning
       className={cx(
-        archivo.variable,
-        barlowCondensed.variable,
-        plexMono.variable
+        GeistSans.variable,
+        displayFont.variable,
+        GeistMono.variable,
       )}
     >
       <head>
@@ -115,8 +104,14 @@ export default function RootLayout({
       </head>
       <body className="antialiased relative">
         <LenisProvider />
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <NavbarWrapper />
-        <main className="flex-auto min-w-0 flex flex-col relative z-10">
+        <main
+          id="main-content"
+          className="flex-auto min-w-0 flex flex-col relative z-10"
+        >
           {children}
           <Analytics />
           <SpeedInsights />

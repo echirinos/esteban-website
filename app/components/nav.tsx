@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 
 const navItems = [
   { href: "/", name: "Home" },
-  { href: "/goggles", name: "Lens" },
+  { href: "/goggles", name: "Goggles" },
   { href: "/work", name: "Work" },
   { href: "/projects", name: "Projects" },
   { href: "/ai-lab", name: "Ask AI" },
@@ -35,7 +35,6 @@ function renderMenuItems(pathname: string) {
               : "text-base-content/70 hover:text-base-content"
           }`}
         >
-          {isActive ? <span aria-hidden="true">■&nbsp;</span> : null}
           {name}
         </Link>
       </li>
@@ -92,7 +91,7 @@ function MobileMenu({ pathname }: { pathname: string }) {
   }, [open]);
 
   return (
-    <div ref={containerRef} className="relative md:hidden">
+    <div ref={containerRef} className="relative lg:hidden">
       <button
         type="button"
         className="btn btn-ghost h-11 min-h-11 w-11 rounded-[2px] px-2"
@@ -154,16 +153,15 @@ export function Navbar() {
       <div className="mx-auto flex min-h-14 w-full max-w-6xl items-center justify-between gap-4 px-4 sm:px-8">
         <div className="flex items-center gap-1">
           <MobileMenu pathname={pathname} />
-          <Link
-            href="/"
-            className="px-1 font-display text-lg font-semibold uppercase tracking-[0.06em] text-base-content transition hover:text-primary sm:px-2"
-          >
-            Esteban Chirinos
+          <Link href="/" className="site-brand px-1 sm:px-2">
+            esteban<span aria-hidden="true">.</span>
           </Link>
         </div>
 
-        <nav className="hidden md:block" aria-label="Primary navigation">
-          <ul className="flex items-center gap-1">{renderMenuItems(pathname)}</ul>
+        <nav className="hidden lg:block" aria-label="Primary navigation">
+          <ul className="flex items-center gap-1">
+            {renderMenuItems(pathname)}
+          </ul>
         </nav>
 
         <label

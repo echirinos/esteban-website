@@ -23,7 +23,7 @@ export default function ProjectsPage() {
     <PageShell>
       <SurfaceCard className="mb-8">
         <PageIntro
-          code="Sht B-01 · Drawing index"
+          code="Projects"
           title="Projects with real users, operators, and outcomes."
           description="The first projects here are the clearest proof for applied AI, developer experience, technical product, solutions, and platform roles: reference apps, integration tools, tutorials, and products that made a platform easier to adopt."
         />
